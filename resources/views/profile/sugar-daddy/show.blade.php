@@ -3,6 +3,20 @@
 @section('page-title', 'Mi Perfil')
 
 @section('content')
+    @php
+        $photosForLightbox = [];
+        if (isset($user) && $user->photos && $user->photos->count() > 0) {
+            $photosForLightbox = $user->photos
+                ->map(function ($photo, $index) use ($user) {
+                    return [
+                        'url' => $photo->url,
+                        'alt' => $user->name . ' - Foto ' . ($index + 1),
+                    ];
+                })
+                ->toArray();
+        }
+    @endphp
+
     {{-- Mensaje de éxito --}}
     @if (session('success'))
         <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 3000)"
@@ -315,10 +329,10 @@
                 </div>
 
                 {{-- Grid de fotos - Más grande --}}
-                <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" x-data="lightboxGallery({{ json_encode($photosForLightbox) }})">
                     @foreach ($user->photos->take(12) as $photo)
-                        <div
-                            class="aspect-square rounded-2xl overflow-hidden bg-gray-100 relative group {{ $photo->is_primary ? 'ring-4 ring-amber-500' : '' }}">
+                        <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100 relative group {{ $photo->is_primary ? 'ring-4 ring-amber-500' : '' }}"
+                            @click="openLightbox({{ $loop->index }})">
                             <img src="{{ $photo->url }}" alt="Foto {{ $loop->iteration }}"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300 cursor-pointer">
 
@@ -346,6 +360,85 @@
                             <span class="text-xs mt-1">más fotos</span>
                         </a>
                     @endif
+
+                    {{-- NUEVO: Modal Lightbox --}}
+                    <div x-show="isOpen" x-cloak x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0" @keydown.window.escape="closeLightbox"
+                        @keydown.window.arrow-left="prev" @keydown.window.arrow-right="next"
+                        class="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4"
+                        @click="closeLightbox">
+
+                        <div class="relative w-full max-w-6xl h-[90vh]" @click.stop>
+
+                            {{-- Botón Cerrar --}}
+                            <button @click="closeLightbox"
+                                class="absolute top-4 right-4 z-50 p-3 bg-white/10 hover:bg-white/25 rounded-full transition-all duration-300 backdrop-blur-lg"
+                                aria-label="Cerrar galería">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+
+                            {{-- Contador --}}
+                            <div
+                                class="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 px-5 py-2.5 bg-black/60 backdrop-blur-lg rounded-full text-white text-sm font-bold border border-white/20">
+                                <span x-text="currentIndex + 1"></span> / <span x-text="photos.length"></span>
+                            </div>
+
+                            {{-- Imagen Principal --}}
+                            <div class="flex items-center justify-center h-full">
+                                <template x-for="(photo, index) in photos" :key="index">
+                                    <div x-show="currentIndex === index"
+                                        x-transition:enter="transition ease-out duration-300"
+                                        x-transition:enter-start="opacity-0 scale-95"
+                                        x-transition:enter-end="opacity-100 scale-100"
+                                        class="flex items-center justify-center h-full">
+                                        <img :src="photo.url" :alt="photo.alt"
+                                            class="max-h-full max-w-full object-contain rounded-2xl shadow-2xl">
+                                    </div>
+                                </template>
+                            </div>
+
+                            {{-- Botón Anterior --}}
+                            <button @click.stop="prev" x-show="photos.length > 1"
+                                class="absolute left-4 top-1/2 -translate-y-1/2 p-4 bg-white/10 hover:bg-white/25 rounded-full transition-all duration-300 backdrop-blur-lg"
+                                aria-label="Imagen anterior">
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                        d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </button>
+
+                            {{-- Botón Siguiente --}}
+                            <button @click.stop="next" x-show="photos.length > 1"
+                                class="absolute right-4 top-1/2 -translate-y-1/2 p-4 bg-white/10 hover:bg-white/25 rounded-full transition-all duration-300 backdrop-blur-lg"
+                                aria-label="Imagen siguiente">
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                        d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+
+                            {{-- Indicadores (Dots) --}}
+                            <div x-show="photos.length > 1"
+                                class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2">
+                                <template x-for="(photo, index) in photos" :key="index">
+                                    <button @click="currentIndex = index"
+                                        class="h-2.5 rounded-full transition-all duration-300"
+                                        :class="index === currentIndex ? 'bg-white w-10' : 'bg-white/50 hover:bg-white/75 w-2.5'"
+                                        :aria-label="`Ir a imagen ${index + 1}`">
+                                    </button>
+                                </template>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         @else
@@ -409,3 +502,40 @@
         </div>
     @endif
 @endsection
+
+@push('scripts')
+    <script>
+        function lightboxGallery(photos) {
+            return {
+                photos: photos,
+                currentIndex: 0,
+                isOpen: false,
+
+                openLightbox(index = 0) {
+                    this.currentIndex = index;
+                    this.isOpen = true;
+                    document.body.style.overflow = 'hidden';
+                },
+
+                closeLightbox() {
+                    this.isOpen = false;
+                    document.body.style.overflow = 'auto';
+                },
+
+                next() {
+                    this.currentIndex = (this.currentIndex + 1) % this.photos.length;
+                },
+
+                prev() {
+                    this.currentIndex = (this.currentIndex - 1 + this.photos.length) % this.photos.length;
+                }
+            }
+        }
+    </script>
+
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+@endpush
