@@ -43,6 +43,12 @@ class ProfilePhoto extends Model
      */
     public function getUrlAttribute(): string
     {
+        // Si la ruta ya es una URL, devolverla directamente
+        if (filter_var($this->photo_path, FILTER_VALIDATE_URL)) {
+            return $this->photo_path;
+        }
+
+        // Si no, usar Storage
         return Storage::url($this->photo_path);
     }
 

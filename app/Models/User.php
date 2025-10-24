@@ -79,6 +79,40 @@ class User extends Authenticatable
         return $this->hasOne(ProfilePhoto::class)->where('is_primary', true);
     }
 
+    /**
+     * Usuarios que este usuario ha dado like
+     */
+    public function likes()
+    {
+        return $this->belongsToMany(User::class, 'likes', 'user_id', 'liked_user_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Usuarios que han dado like a este usuario
+     */
+    public function likedBy()
+    {
+        return $this->belongsToMany(User::class, 'likes', 'liked_user_id', 'user_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Verificar si hay match mutuo con otro usuario
+     */
+    public function hasMatchWith(User $user): bool
+    {
+        return $this->likes()->where('liked_user_id', $user->id)->exists()
+            && $this->likedBy()->where('user_id', $user->id)->exists();
+    }
+
+    /**
+     * Verificar si le dio like a un usuario
+     */
+    public function hasLiked(User $user): bool
+    {
+        return $this->likes()->where('liked_user_id', $user->id)->exists();
+    }
 
     /**
      * Get the attributes that should be cast.
@@ -150,4 +184,13 @@ class User extends Authenticatable
     {
         return ProfilePhoto::MAX_PHOTOS - $this->photos()->count();
     }
+
+    /**
+     * Accesor para foto principal
+     */
+    public function getPrimaryPhotoAttribute()
+    {
+        return $this->photos()->where('is_primary', true)->first();
+    }
+
 }
