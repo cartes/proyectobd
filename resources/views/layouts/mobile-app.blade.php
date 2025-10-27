@@ -16,7 +16,6 @@
     {{-- Vite --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-{{-- FONDO DE COLOR COMPLETO --}}
 
 <body class="antialiased overflow-x-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50">
 
@@ -68,7 +67,7 @@
                 {{-- Explorar --}}
                 <a href="{{ route('discover.index') }}"
                     class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all
-                          {{ request()->routeIs('discover.*')
+                          {{ request()->routeIs('discover.index')
                               ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
                               : 'text-gray-700 hover:bg-gray-100' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,13 +77,12 @@
                     <span>Explorar</span>
                 </a>
 
-                {{-- Mis favoritos --}}
                 {{-- Mis Favoritos --}}
                 <a href="{{ route('discover.favorites') }}"
                     class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all
-          {{ request()->routeIs('discover.favorites')
-              ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-lg'
-              : 'text-gray-700 hover:bg-gray-100' }}">
+                          {{ request()->routeIs('discover.favorites')
+                              ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-lg'
+                              : 'text-gray-700 hover:bg-gray-100' }}">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
@@ -101,21 +99,29 @@
                     @endif
                 </a>
 
-                {{-- Matches --}}
-                <button onclick="alert('🚀 Matches próximamente!')"
-                    class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-gray-400 hover:bg-gray-50 transition-all text-left">
+                {{-- 🆕 MATCHES - AHORA FUNCIONAL --}}
+                <a href="{{ route('matches.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all
+                          {{ request()->routeIs('matches.*')
+                              ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg'
+                              : 'text-gray-700 hover:bg-gray-100' }}">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                            clip-rule="evenodd" />
+                        <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                     <span>Matches</span>
-                    <span class="ml-auto px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">
-                        SOON
-                    </span>
-                </button>
+                    @php
+                        $matchesCount = auth()->user()->matchesCount();
+                    @endphp
+                    @if ($matchesCount > 0)
+                        <span
+                            class="ml-auto px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full animate-pulse">
+                            {{ $matchesCount }}
+                        </span>
+                    @endif
+                </a>
 
-                {{-- Mensajes --}}
+                {{-- Mensajes (Próximamente) --}}
                 <button onclick="alert('💬 Mensajería en desarrollo!')"
                     class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-gray-400 hover:bg-gray-50 transition-all text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,10 +185,10 @@
             <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl z-50">
                 <div class="flex items-center justify-around h-16">
 
-                    {{-- Explorar / Discovery --}}
+                    {{-- Explorar --}}
                     <a href="{{ route('discover.index') }}"
                         class="flex flex-col items-center justify-center flex-1 h-full transition-all duration-200
-                              {{ request()->routeIs('discover.*') ? 'text-purple-600' : 'text-gray-500 hover:text-gray-700' }}">
+                              {{ request()->routeIs('discover.index') ? 'text-purple-600' : 'text-gray-500 hover:text-gray-700' }}">
                         <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -193,7 +199,7 @@
                     {{-- Mis Favoritos --}}
                     <a href="{{ route('discover.favorites') }}"
                         class="flex flex-col items-center justify-center flex-1 h-full transition-all duration-200
-                              {{ request()->routeIs('discover.favorites') ? 'text-purple-600' : 'text-gray-500 hover:text-gray-700' }}">
+                              {{ request()->routeIs('discover.favorites') ? 'text-pink-600' : 'text-gray-500 hover:text-gray-700' }}">
                         <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -201,24 +207,29 @@
                         <span class="text-xs font-semibold">Favoritos</span>
                     </a>
 
-                    {{-- Matches --}}
-                    <button onclick="alert('🚀 Función de Matches próximamente!')"
-                        class="flex flex-col items-center justify-center flex-1 h-full transition-all duration-200 text-gray-400">
+                    {{-- 🆕 MATCHES - AHORA FUNCIONAL --}}
+                    <a href="{{ route('matches.index') }}"
+                        class="flex flex-col items-center justify-center flex-1 h-full transition-all duration-200
+                              {{ request()->routeIs('matches.*') ? 'text-yellow-600' : 'text-gray-500 hover:text-gray-700' }}">
                         <div class="relative">
                             <svg class="w-6 h-6 mb-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                                    clip-rule="evenodd" />
+                                <path
+                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                             </svg>
-                            <span
-                                class="absolute -top-1 -right-2 px-1.5 py-0.5 bg-amber-400 text-white text-[8px] font-bold rounded-full">
-                                SOON
-                            </span>
+                            @php
+                                $matchesCount = auth()->user()->matchesCount();
+                            @endphp
+                            @if ($matchesCount > 0)
+                                <span
+                                    class="absolute -top-1 -right-2 px-1.5 py-0.5 bg-yellow-400 text-white text-[10px] font-bold rounded-full animate-pulse">
+                                    {{ $matchesCount }}
+                                </span>
+                            @endif
                         </div>
                         <span class="text-xs font-semibold">Matches</span>
-                    </button>
+                    </a>
 
-                    {{-- Mensajes --}}
+                    {{-- Mensajes (Próximamente) --}}
                     <button onclick="alert('💬 Mensajería en desarrollo!')"
                         class="flex flex-col items-center justify-center flex-1 h-full transition-all duration-200 text-gray-400">
                         <div class="relative">

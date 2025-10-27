@@ -109,4 +109,21 @@ class DiscoveryController extends Controller
         return view('discover.favorites', compact('favorites', 'interestsOptions'));
     }
 
+    /**
+     * Metodo para mostrar matches
+     */
+    public function matches()
+    {
+        $user = Auth::user();
+
+        // Obtener matches mutuos con paginación
+        $matches = $user->matches()
+            ->with(['profileDetail', 'photos'])
+            ->latest('likes.created_at')
+            ->paginate(12);
+
+        $interestsOptions = ProfileDetail::interestsOptions();
+
+        return view('discover.matches', compact('matches', 'interestsOptions'));
+    }
 }

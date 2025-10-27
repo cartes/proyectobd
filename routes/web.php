@@ -51,6 +51,9 @@ Route::middleware('auth')->group(function () {
         return view('coming-soon', ['feature' => 'Mensajería', 'icon' => '💬']);
     })->name('messages.index');
 
+
+    Route::get('/matches', [App\Http\Controllers\DiscoveryController::class, 'matches'])
+        ->name('matches.index');
 });
 
 

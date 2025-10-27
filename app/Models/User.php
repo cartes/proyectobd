@@ -98,6 +98,38 @@ class User extends Authenticatable
     }
 
     /**
+     * Obtener todos los matches mutuos del usuario
+     * (Usuarios que yo di like Y que me dieron like)
+     */
+    public function matches()
+    {
+        // Usuarios a los que yo di like
+        return $this->likes()
+            // Que TAMBIÉN me dieron like a mí
+            ->whereIn('users.id', function ($query) {
+                $query->select('user_id')
+                    ->from('likes')
+                    ->where('liked_user_id', $this->id);
+            });
+    }
+
+    /**
+     * Contar matches totales
+     */
+    public function matchesCount(): int
+    {
+        return $this->matches()->count();
+    }
+
+    /**
+     * Verificar si tiene al menos un match
+     */
+    public function hasMatches(): bool
+    {
+        return $this->matchesCount() > 0;
+    }
+
+    /**
      * Verificar si hay match mutuo con otro usuario
      */
     public function hasMatchWith(User $user): bool
