@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilePhotoController;
 use App\Http\Controllers\DiscoveryController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\MatchController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -54,6 +56,21 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/matches', [App\Http\Controllers\DiscoveryController::class, 'matches'])
         ->name('matches.index');
+
+    /**
+     * Prefijo chats
+     */
+    Route::prefix('chat')->name('chat.')->group(function () {
+        Route::get('/', [ChatController::class, 'index'])->name('index');
+        Route::get('/with/{user}', [ChatController::class, 'createOrFind'])->name('create');
+        Route::get('/{conversation}', [ChatController::class, 'show'])->name('show');
+        Route::post('/{conversation}/send', [ChatController::class, 'sendMessage'])->name('send');
+        Route::post('/{conversation}/read/{message}', [ChatController::class, 'markAsRead'])->name('read');
+        Route::post('/{conversation}/block', [ChatController::class, 'blockConversation'])->name('block');
+    });
+
+    Route::get('/matches', [MatchController::class, 'index'])->name('matches.index');
+
 });
 
 

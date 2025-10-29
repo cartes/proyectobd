@@ -225,4 +225,29 @@ class User extends Authenticatable
         return $this->photos()->where('is_primary', true)->first();
     }
 
+    /**
+     * Obtener mensajes enviados por el usuario
+     */
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    /**
+     * Obtener mensajes recibidos por el usuario
+     */
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+    /**
+     * Obtener conversaciones del usuario
+     */
+    public function conversations()
+    {
+        return Conversation::where('user_one_id', $this->id)
+            ->orWhere('user_two_id', $this->id);
+    }
+    
 }
