@@ -114,6 +114,32 @@ class User extends Authenticatable
     }
 
     /**
+     * Obtener acciones de moderación del usuario
+     */
+    public function actions()
+    {
+        return $this->hasMany(UserAction::class);
+    }
+
+    /**
+     * Summary of reports
+     * @return HasMany<Report, User>
+     */
+    public function reports()
+    {
+        return $this->hasMany(Report::class, 'reported_user_id');
+    }
+
+    /**
+     * Summary of reportsSubmitted
+     * @return HasMany<Report, User>
+     */
+    public function reportsSubmitted()
+    {
+        return $this->hasMany(Report::class, 'reporter_id');
+    }
+
+    /**
      * Contar matches totales
      */
     public function matchesCount(): int
@@ -249,5 +275,27 @@ class User extends Authenticatable
         return Conversation::where('user_one_id', $this->id)
             ->orWhere('user_two_id', $this->id);
     }
+
+    // Verificar si el usuario está suspendido o baneado
+    public function isSuspended(): bool
+    {
+        return $this->actions()
+            ->where('action_type', 'suspension')
+            ->where('is_active', true)
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                    ->orWhere('expires_at', '>', now());
+            })
+            ->exists();
+    }
     
+    // Verificar si el usuario está baneado
+    public function isBanned(): bool
+    {
+        return $this->actions()
+            ->where('action_type', 'ban')
+            ->where('is_active', true)
+            ->exists();
+    }
+
 }

@@ -12,10 +12,10 @@
 
 @section('content')
     @if (Auth::user()->isAdmin())
-        @include('dashboard.admin')
+        @include('dashboard.admin', ['stats' => $stats, 'recentActivity' => $recentActivity])
     @elseif(Auth::user()->isSugarDaddy())
-        @include('dashboard.sugar-daddy')
+        @include('dashboard.sugar-daddy', ['data' => $dashboardData])
     @else
-        @include('dashboard.sugar-baby')
+        @include('dashboard.sugar-baby', ['data' => $dashboardData])
     @endif
 @endsection

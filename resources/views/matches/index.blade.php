@@ -19,7 +19,7 @@
                 <div class="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all">
                     <!-- Imagen -->
                     <div class="h-64 bg-gradient-to-br from-purple-200 to-pink-200 relative">
-                        <img src="{{ $matchedUser->getPrimaryPhotoUrlAttribute ?? '/images/default-avatar.png' }}" 
+                        <img src="{{ $matchedUser->primary_photo_url ?? '/images/default-avatar.png' }}" 
                              alt="{{ $matchedUser->name }}"
                              class="w-full h-full object-cover">
                         <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
@@ -61,7 +61,7 @@
                     </svg>
                     <h3 class="text-xl font-semibold text-gray-700 mb-2">Aún no tienes matches</h3>
                     <p class="text-gray-500 mb-6">¡Sigue explorando perfiles y dando likes!</p>
-                    <a href="{{ route('discover') }}" 
+                    <a href="{{ route('discover.index') }}" 
                        class="inline-block px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:shadow-lg transition-all">
                         Explorar perfiles
                     </a>

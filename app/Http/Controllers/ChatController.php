@@ -7,11 +7,17 @@ use App\Models\Message;
 use App\Models\User;
 use App\Events\MessageSent;
 use App\Events\MessageRead;
+use App\Services\ModerationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ChatController extends Controller
 {
+    public function __construct(
+        private ModerationService $moderationService
+    ) {
+    }
+
     /**
      * Listado de conversaciones del usuario autenticado
      */
@@ -89,7 +95,6 @@ class ChatController extends Controller
         $userId = auth()->id();
         $currentUser = auth()->user();
 
-        // Verificar permisos
         abort_unless(
             $conversation->user_one_id === $userId ||
             $conversation->user_two_id === $userId,
@@ -102,17 +107,17 @@ class ChatController extends Controller
 
         $receiver = User::find($receiverId);
 
-        // Verificar match usando tu método
         if (!$currentUser->hasMatchWith($receiver)) {
             return response()->json(['error' => 'No hay match con este usuario'], 403);
         }
 
-        // Verificar si está bloqueada
         if ($conversation->is_blocked) {
             return response()->json(['error' => 'Conversación bloqueada'], 403);
         }
 
-        // Crear mensaje
+        // ✅ ESCANEAR MENSAJE
+        $scanResult = $this->moderationService->scanMessage($request->content);
+
         $message = Message::create([
             'conversation_id' => $conversation->id,
             'sender_id' => $userId,
@@ -121,14 +126,20 @@ class ChatController extends Controller
             'type' => $request->type ?? 'text',
         ]);
 
-        // Actualizar última actividad
+        // ✅ PROCESAR SI ESTÁ FLAGGED
+        if ($scanResult['is_flagged']) {
+            $this->moderationService->processMessage($message, $scanResult);
+            $message->refresh();
+        }
+
         $conversation->update(['last_message_at' => now()]);
 
-        // Transmitir en tiempo real
         broadcast(new MessageSent($message->load('sender')))->toOthers();
 
         return response()->json([
             'message' => $message->load('sender'),
+            'flagged' => $scanResult['is_flagged'],
+            'severity' => $scanResult['severity_level'],
         ]);
     }
 
@@ -229,10 +240,10 @@ class ChatController extends Controller
     /**
      * Bloquear conversación
      */
-        public function blockConversation(Conversation $conversation)
+    public function blockConversation(Conversation $conversation)
     {
         abort_unless(
-            $conversation->user_one_id === auth()->id() || 
+            $conversation->user_one_id === auth()->id() ||
             $conversation->user_two_id === auth()->id(),
             403
         );

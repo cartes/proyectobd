@@ -5,15 +5,18 @@ use App\Http\Controllers\ProfilePhotoController;
 use App\Http\Controllers\DiscoveryController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\MatchController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ModerationController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', \App\Http\Controllers\DashboardController::class)->name('dashboard');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -71,6 +74,44 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/matches', [MatchController::class, 'index'])->name('matches.index');
 
+    /**
+     * Palabras bloqueadas
+     */
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::post('/message/{message}', [ReportController::class, 'reportMessage'])->name('reports.message');
+        Route::post('/conversation/{conversation}', [ReportController::class, 'reportConversation'])->name('reports.conversation');
+        Route::post('/user', [ReportController::class, 'reportUser'])->name('reports.user');
+    });
+
+});
+
+
+/**
+ * Rutas de administración
+ */
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    /**
+     * Dashboard principal
+     */
+
+
+    // Dashboard
+    Route::get('/moderation', [ModerationController::class, 'dashboard'])->name('moderation.dashboard');
+
+    // Reportes
+    Route::get('/moderation/reports', [ModerationController::class, 'reports'])->name('moderation.reports');
+    Route::get('/moderation/reports/{report}', [ModerationController::class, 'showReport'])->name('moderation.reports.show');
+    Route::post('/moderation/reports/{report}/process', [ModerationController::class, 'processReport'])->name('moderation.reports.process');
+
+    // Palabras bloqueadas
+    Route::get('/moderation/blocked-words', [ModerationController::class, 'blockedWords'])->name('moderation.blocked-words');
+    Route::post('/moderation/blocked-words', [ModerationController::class, 'storeBlockedWord'])->name('moderation.blocked-words.store');
+    Route::delete('/moderation/blocked-words/{word}', [ModerationController::class, 'destroyBlockedWord'])->name('moderation.blocked-words.destroy');
+
+    // Usuarios
+    Route::get('/moderation/users', [ModerationController::class, 'users'])->name('moderation.users');
+    Route::get('/moderation/users/{user}', [ModerationController::class, 'showUser'])->name('moderation.users.show');
+    Route::post('/moderation/users/{user}/action', [ModerationController::class, 'userAction'])->name('moderation.users.action');
 });
 
 
