@@ -118,16 +118,18 @@
                 </div>
 
                 {{-- Botón editar --}}
-                <a href="{{ route('profile.edit') }}"
-                    class="px-8 py-4 bg-white/20 hover:bg-white/30 backdrop-blur-lg border-2 border-white/40 rounded-2xl text-white font-bold transition-all duration-300 hover:scale-105 shadow-xl">
-                    <span class="flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                        Editar Perfil
-                    </span>
-                </a>
+                @if ($isOwnProfile)
+                    <a href="{{ route('profile.edit') }}"
+                        class="px-8 py-4 bg-white/20 hover:bg-white/30 backdrop-blur-lg border-2 border-white/40 rounded-2xl text-white font-bold transition-all duration-300 hover:scale-105 shadow-xl">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            Editar Perfil
+                        </span>
+                    </a>
+                @endif
             </div>
 
             {{-- Bio destacada --}}
@@ -320,7 +322,7 @@
                             <span class="text-xs mt-1">más fotos</span>
                         </a>
                     @endif
-                    
+
                     {{-- NUEVO: Modal Lightbox --}}
                     <div x-show="isOpen" x-cloak x-transition:enter="transition ease-out duration-300"
                         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
@@ -485,23 +487,38 @@
     </div>
 
     {{-- CTA si no tiene perfil completo --}}
-    @if (!$user->profileDetail->aspirations || !$user->profileDetail->ideal_daddy)
+    @if ($isOwnProfile && (!$user->profileDetail->aspirations || !$user->profileDetail->ideal_daddy))
         <div
-            class="mt-8 bg-gradient-to-br from-pink-500 via-rose-500 to-fuchsia-600 rounded-3xl p-12 shadow-2xl text-center text-white relative overflow-hidden">
+            class="mt-8 bg-gradient-to-br from-pink-500 via-rose-500 to-fuchsia-600 rounded-3xl p-12 shadow-2xl text-center text-white relative overflow-hidden group">
+            <!-- Blur background -->
             <div class="absolute inset-0 bg-white/5 backdrop-blur-3xl"></div>
-            <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+            <div
+                class="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl transition-transform duration-500 group-hover:scale-110">
+            </div>
 
             <div class="relative z-10">
-                <div class="text-7xl mb-4">✨</div>
+                <!-- Emoji animado -->
+                <div class="text-7xl mb-4 animate-bounce">✨</div>
+
+                <!-- Contenido -->
                 <h3 class="text-3xl font-playfair font-bold text-white mb-3">
                     Haz tu perfil más atractivo
                 </h3>
-                <p class="text-white/90 mb-8 text-lg">
+                <p class="text-white/90 mb-8 text-lg leading-relaxed">
                     Completa tu perfil para atraer a los mejores Sugar Daddies
                 </p>
+
+                <!-- Botón mejorado -->
                 <a href="{{ route('profile.edit') }}"
-                    class="inline-block px-10 py-4 bg-white/20 hover:bg-white/30 backdrop-blur-lg border-2 border-white/40 rounded-2xl text-white font-bold transition-all duration-300 hover:scale-105 shadow-2xl">
-                    Completar Perfil →
+                    class="inline-block px-10 py-4 bg-white/20 hover:bg-white/30 backdrop-blur-lg border-2 border-white/40 hover:border-white/60 rounded-2xl text-white font-bold transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                    <span class="flex items-center gap-2">
+                        Completar Perfil
+                        <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </span>
                 </a>
             </div>
         </div>

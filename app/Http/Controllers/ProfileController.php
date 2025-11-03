@@ -6,19 +6,31 @@ use App\Models\ProfileDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
-    public function show()
+    public function show(User $user = null)
     {
-        $user = Auth::user()->load('profileDetail');
+        // Si no se pasa un usuario, mostrar el perfil del usuario autenticado
+        if (!$user) {
+            $user = Auth::user();
+        }
+
+        $authUser = Auth::user();
+
+        // Si es otro usuario, verificar que haya match
+        if ($user->id !== $authUser->id && !$authUser->hasMatchWith($user)) {
+            abort(403, 'No tienes permiso para ver este perfil.');
+        }
+
+        $user->load('profileDetail');
 
         if (!$user->profileDetail) {
             $user->profileDetail()->create([]);
             $user->load('profileDetail');
         }
 
-        // Pasar opciones a las vistas
         $options = [
             'bodyTypes' => ProfileDetail::bodyTypes(),
             'relationshipStatuses' => ProfileDetail::relationshipStatuses(),
@@ -35,11 +47,12 @@ class ProfileController extends Controller
             'fitnessLevels' => ProfileDetail::fitnessLevels(),
         ];
 
-        // Redirigir según el tipo de usuario
+        $isOwnProfile = $user->id === $authUser->id;
+
         if ($user->user_type === 'sugar_daddy') {
-            return view('profile.sugar-daddy.show', compact('user', 'options'));
+            return view('profile.sugar-daddy.show', compact('user', 'options', 'isOwnProfile'));
         } else {
-            return view('profile.sugar-baby.show', compact('user', 'options'));
+            return view('profile.sugar-baby.show', compact('user', 'options', 'isOwnProfile'));
         }
     }
 

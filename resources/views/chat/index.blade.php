@@ -22,9 +22,9 @@
 
                         <!-- Avatar -->
                         <div class="relative flex-shrink-0">
-                            <img src="{{ $conversation->other_user->profile_photo_url ?? '/images/default-avatar.png' }}"
-                                alt="{{ $conversation->other_user->name }}"
-                                class="w-16 h-16 rounded-full object-cover border-2 border-purple-200 group-hover:border-purple-400 transition-all">
+                            <!-- Esto maneja TODO: foto o iniciales -->
+                            <x-user-avatar :user="$conversation->other_user" size="lg"
+                                class="group-hover:scale-110 transition-transform" />
 
                             @if ($conversation->unread_count > 0)
                                 <span
