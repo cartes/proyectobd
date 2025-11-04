@@ -14,27 +14,35 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', \App\Http\Controllers\DashboardController::class)->name('dashboard');
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::get('/profile/{user?}', action: [ProfileController::class, 'show'])->name('profile.show');
 
     /**
-     * Rutas manejo de fotos de perfil
+     * Rutas de perfil con prefijo /profile
      */
-    Route::get('/profile/photos', function () {
-        return view('profile.photos');
-    })->name('profile.photos.index');
+    Route::prefix('profile')->name('profile.')->group(function () {
+        // Editar perfil
+        Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');
+        Route::put('/', [ProfileController::class, 'update'])->name('update');
 
-    Route::prefix('profile/photos')->name('profile.photos.')->group(function () {
-        Route::post('/', [ProfilePhotoController::class, 'store'])->name('store');
-        Route::put('/{photo}/set-primary', [ProfilePhotoController::class, 'setPrimary'])->name('setPrimary');
-        Route::post('/reorder', [ProfilePhotoController::class, 'reorder'])->name('reorder');
-        Route::delete('/{photo}', [ProfilePhotoController::class, 'destroy'])->name('destroy');
+        // Gestión de fotos
+        Route::prefix('photos')->name('photos.')->group(function () {
+            Route::get('/', function () {
+                return view('profile.photos');
+            })->name('index');
+
+            Route::post('/', [ProfilePhotoController::class, 'store'])->name('store');
+            Route::post('/reorder', [ProfilePhotoController::class, 'reorder'])->name('reorder');
+            Route::put('/{photo}/set-primary', [ProfilePhotoController::class, 'setPrimary'])->name('setPrimary');
+            Route::delete('/{photo}', [ProfilePhotoController::class, 'destroy'])->name('destroy');
+        });
+
+        // Ver perfil (propio u otro con match)
+        Route::get('/{user?}', [ProfileController::class, 'show'])->name('show');
     });
 
     /**
@@ -43,28 +51,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/discover', [DiscoveryController::class, 'index'])->name('discover.index');
     Route::post('/like/{user}', [DiscoveryController::class, 'like'])->name('discover.like');
     Route::delete('/unlike/{user}', [DiscoveryController::class, 'unlike'])->name('discover.unlike');
-
     Route::get('/favoritos', [DiscoveryController::class, 'favorites'])->name('discover.favorites');
 
-
-    // PLACEHOLDERS TEMPORALES
-    Route::get('/matches', function () {
-        return view('coming-soon', ['feature' => 'Matches', 'icon' => '❤️']);
-    })->name('matches.index');
-
-    Route::get('/messages', function () {
-        return view('coming-soon', ['feature' => 'Mensajería', 'icon' => '💬']);
-    })->name('messages.index');
-
-
-    Route::get('/matches', [App\Http\Controllers\DiscoveryController::class, 'matches'])
-        ->name('matches.index');
+    /**
+     * Matches management
+     */
+    Route::get('/matches', [MatchController::class, 'index'])->name('matches.index');
+    Route::delete('/matches/{user}', [MatchController::class, 'unmatch'])->name('matches.unmatch');
 
     /**
      * Prefijo chats
      */
     Route::prefix('chat')->name('chat.')->group(function () {
-        Route::get('/', [ChatController::class, 'index'])->name('index');
+        Route::get('/', action: [ChatController::class, 'index'])->name('index');
         Route::get('/with/{user}', [ChatController::class, 'createOrFind'])->name('create');
         Route::get('/{conversation}', [ChatController::class, 'show'])->name('show');
         Route::post('/{conversation}/send', [ChatController::class, 'sendMessage'])->name('send');
@@ -72,30 +71,20 @@ Route::middleware('auth')->group(function () {
         Route::post('/{conversation}/block', [ChatController::class, 'blockConversation'])->name('block');
     });
 
-    Route::get('/matches', [MatchController::class, 'index'])->name('matches.index');
-
     /**
-     * Palabras bloqueadas
+     * Reports
      */
     Route::prefix('reports')->name('reports.')->group(function () {
-        Route::post('/message/{message}', [ReportController::class, 'reportMessage'])->name('reports.message');
-        Route::post('/conversation/{conversation}', [ReportController::class, 'reportConversation'])->name('reports.conversation');
-        Route::post('/user', [ReportController::class, 'reportUser'])->name('reports.user');
+        Route::post('/message/{message}', [ReportController::class, 'reportMessage'])->name('message');
+        Route::post('/conversation/{conversation}', [ReportController::class, 'reportConversation'])->name('conversation');
+        Route::post('/user', [ReportController::class, 'reportUser'])->name('user');
     });
-
 });
-
 
 /**
  * Rutas de administración
  */
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    /**
-     * Dashboard principal
-     */
-
-
-    // Dashboard
     Route::get('/moderation', [ModerationController::class, 'dashboard'])->name('moderation.dashboard');
 
     // Reportes
@@ -113,6 +102,5 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/moderation/users/{user}', [ModerationController::class, 'showUser'])->name('moderation.users.show');
     Route::post('/moderation/users/{user}/action', [ModerationController::class, 'userAction'])->name('moderation.users.action');
 });
-
 
 require __DIR__ . '/auth.php';

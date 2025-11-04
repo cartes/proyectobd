@@ -268,19 +268,6 @@
             @endif
         </div>
     </div>
-
-    {{-- DEBUG: Mostrar todos los likes --}}
-    <div class="fixed bottom-4 left-4 bg-black text-white p-4 rounded-lg z-50 text-xs max-w-md">
-        <p class="font-bold mb-2">DEBUG INFO:</p>
-        <p>Usuario: {{ auth()->user()->name }} (ID: {{ auth()->user()->id }})</p>
-        <p>Likes dados: {{ auth()->user()->likes()->count() }}</p>
-        <div class="mt-2 max-h-32 overflow-auto">
-            @foreach (auth()->user()->likes as $liked)
-                <p>→ {{ $liked->name }} (ID: {{ $liked->id }})</p>
-            @endforeach
-        </div>
-    </div>
-
 @endsection
 
 @push('scripts')

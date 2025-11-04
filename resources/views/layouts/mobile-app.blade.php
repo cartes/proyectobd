@@ -121,18 +121,27 @@
                     @endif
                 </a>
 
-                {{-- Mensajes (Próximamente) --}}
-                <button onclick="alert('💬 Mensajería en desarrollo!')"
-                    class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-gray-400 hover:bg-gray-50 transition-all text-left">
+                {{-- Mensajes --}}
+                <a href="{{ route('chat.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all
+                        {{ request()->routeIs('chat.*')
+                            ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg'
+                            : 'text-gray-700 hover:bg-gray-100' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                     <span>Mensajes</span>
-                    <span class="ml-auto px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">
-                        SOON
-                    </span>
-                </button>
+                    @php
+                        $unreadCount = auth()->user()->receivedMessages()->where('is_read', false)->count();
+                    @endphp
+                    @if ($unreadCount > 0)
+                        <span
+                            class="ml-auto px-2 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full animate-pulse">
+                            {{ $unreadCount }}
+                        </span>
+                    @endif
+                </a>
 
                 {{-- Dashboard --}}
                 <a href="{{ route('dashboard') }}"

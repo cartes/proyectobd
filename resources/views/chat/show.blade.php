@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends( 'layouts.mobile-app' )
 
 @section('page-title')
     Chat con {{ $otherUser->name }}
@@ -112,7 +112,9 @@
             </div>
         </div>
     </div>
+@endsection
 
+@push('scripts')
     <script>
         function chatApp() {
             return {
@@ -177,3 +179,4 @@
             }
         }
     </script>
+@endpush

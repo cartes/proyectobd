@@ -29,6 +29,27 @@
         Mis Fotos
     </a>
 
+    <!-- Matches -->
+    <a href="{{ route('matches.index') }}"
+        class="flex items-center px-2 py-2 rounded-md text-sm font-medium {{ request()->routeIs('matches.*') ? 'bg-purple-100 text-purple-900' : 'text-gray-600 hover:bg-gray-50' }}">
+        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
+            <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+        </svg>
+        <span>Matches</span>
+
+        @php
+            $matchCount = auth()->user()->matchesCount();
+        @endphp
+
+        @if ($matchCount > 0)
+            <span
+                class="ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                {{ $matchCount }}
+            </span>
+        @endif
+    </a>
+
     <!-- Discover -->
     <a href="{{ route('discover.index') }}"
         class="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
@@ -39,10 +60,10 @@
         Descubrir Profiles
     </a>
 
-    <!-- Mensajes con contador -->
+    <!-- Mensajes -->
     <a href="{{ route('chat.index') }}"
-        class="flex items-center px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs('chat.*') ? 'bg-pink-100 text-pink-900' : 'text-gray-600 hover:bg-gray-50' }}">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        class="flex items-center px-2 py-2 rounded-md text-sm font-medium {{ request()->routeIs('chat.*') ? 'bg-pink-100 text-pink-900' : 'text-gray-600 hover:bg-gray-50' }}">
+        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
         </svg>
@@ -58,17 +79,6 @@
                 {{ $unreadCount }}
             </span>
         @endif
-    </a>
-
-    <!-- Matches -->
-    <a href="#"
-        class="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-        <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
-            </path>
-        </svg>
-        Matches
     </a>
 
     <!-- Separator -->
