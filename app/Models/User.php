@@ -58,6 +58,8 @@ class User extends Authenticatable
         ];
     }
 
+    // ==================== RELACIONES PERFIL ====================
+
     public function profileDetail(): HasOne
     {
         return $this->hasOne(ProfileDetail::class);
@@ -78,6 +80,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(ProfilePhoto::class)->where('is_primary', true);
     }
+
+    // ==================== RELACIONES MATCHING ====================
 
     /**
      * Usuarios que este usuario ha dado like
@@ -103,15 +107,15 @@ class User extends Authenticatable
      */
     public function matches()
     {
-        // Usuarios a los que yo di like
         return $this->likes()
-            // Que TAMBIÉN me dieron like a mí
             ->whereIn('users.id', function ($query) {
                 $query->select('user_id')
                     ->from('likes')
                     ->where('liked_user_id', $this->id);
             });
     }
+
+    // ==================== RELACIONES MODERACIÓN ====================
 
     /**
      * Obtener acciones de moderación del usuario
@@ -122,8 +126,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Summary of reports
-     * @return HasMany<Report, User>
+     * Reportes contra este usuario
      */
     public function reports()
     {
@@ -131,13 +134,67 @@ class User extends Authenticatable
     }
 
     /**
-     * Summary of reportsSubmitted
-     * @return HasMany<Report, User>
+     * Reportes que este usuario ha hecho
      */
     public function reportsSubmitted()
     {
         return $this->hasMany(Report::class, 'reporter_id');
     }
+
+    // ==================== RELACIONES MENSAJERÍA ====================
+
+    /**
+     * Obtener mensajes enviados por el usuario
+     */
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    /**
+     * Obtener mensajes recibidos por el usuario
+     */
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+
+    /**
+     * Obtener conversaciones del usuario
+     */
+    public function conversations()
+    {
+        return Conversation::where('user_one_id', $this->id)
+            ->orWhere('user_two_id', $this->id);
+    }
+
+    // ==================== RELACIONES PAGOS ====================
+
+    /**
+     * Relación: un usuario puede tener muchas suscripciones
+     */
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    /**
+     * Relación: un usuario puede tener muchas transacciones
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    /**
+     * Relación: un usuario puede tener muchas compras
+     */
+    public function purchases(): HasMany
+    {
+        return $this->hasMany(Purchase::class);
+    }
+
+    // ==================== MÉTODOS HELPER - MATCHING ====================
 
     /**
      * Contar matches totales
@@ -172,11 +229,8 @@ class User extends Authenticatable
         return $this->likes()->where('liked_user_id', $user->id)->exists();
     }
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    // ==================== MÉTODOS HELPER - TIPO USUARIO ====================
+
     public function isSugarDaddy(): bool
     {
         return $this->user_type === 'sugar_daddy';
@@ -192,10 +246,37 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    // ==================== MÉTODOS HELPER - PREMIUM & SUSCRIPCIÓN ====================
+
+    /**
+     * Obtener suscripción activa actual
+     * Prioriza verificar BD primero (más rápido), luego verifica en Mercado Pago
+     */
+    public function activeSubscription()
+    {
+        return $this->subscriptions()
+            ->where('status', 'active')
+            ->where('ends_at', '>', now())
+            ->latest('starts_at')
+            ->first();
+    }
+
+    /**
+     * Verificar si usuario es premium
+     * Usa la suscripción activa si existe, sino verifica el atributo legacy is_premium
+     */
     public function isPremium(): bool
     {
+        // Primero: verificar si tiene suscripción activa en BD
+        if ($this->activeSubscription() !== null) {
+            return true;
+        }
+
+        // Fallback: verificar atributo legacy (para usuarios migrados)
         return $this->is_premium;
     }
+
+    // ==================== MÉTODOS HELPER - PERFIL ====================
 
     public function getAgeAttribute(): ?int
     {
@@ -251,32 +332,11 @@ class User extends Authenticatable
         return $this->photos()->where('is_primary', true)->first();
     }
 
-    /**
-     * Obtener mensajes enviados por el usuario
-     */
-    public function sentMessages()
-    {
-        return $this->hasMany(Message::class, 'sender_id');
-    }
+    // ==================== MÉTODOS HELPER - MODERACIÓN ====================
 
     /**
-     * Obtener mensajes recibidos por el usuario
+     * Verificar si el usuario está suspendido
      */
-    public function receivedMessages()
-    {
-        return $this->hasMany(Message::class, 'receiver_id');
-    }
-
-    /**
-     * Obtener conversaciones del usuario
-     */
-    public function conversations()
-    {
-        return Conversation::where('user_one_id', $this->id)
-            ->orWhere('user_two_id', $this->id);
-    }
-
-    // Verificar si el usuario está suspendido o baneado
     public function isSuspended(): bool
     {
         return $this->actions()
@@ -288,8 +348,10 @@ class User extends Authenticatable
             })
             ->exists();
     }
-    
-    // Verificar si el usuario está baneado
+
+    /**
+     * Verificar si el usuario está baneado
+     */
     public function isBanned(): bool
     {
         return $this->actions()
@@ -297,5 +359,4 @@ class User extends Authenticatable
             ->where('is_active', true)
             ->exists();
     }
-
-}
+}   
