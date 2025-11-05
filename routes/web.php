@@ -8,6 +8,10 @@ use App\Http\Controllers\MatchController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ModerationController;
+use App\Http\Controllers\WebhookController;
+
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\PurchaseController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -79,7 +83,27 @@ Route::middleware('auth')->group(function () {
         Route::post('/conversation/{conversation}', [ReportController::class, 'reportConversation'])->name('conversation');
         Route::post('/user', [ReportController::class, 'reportUser'])->name('user');
     });
+
+    // Planes y suscripción
+    Route::get('/subscription/plans', [SubscriptionController::class, 'index'])->name('subscription.plans');
+    Route::post('/subscription/{plan}/checkout', [SubscriptionController::class, 'createCheckout'])->name('subscription.checkout');
+    Route::get('/subscription/success', [SubscriptionController::class, 'returnSuccess'])->name('subscription.success');
+    Route::get('/subscription/failure', [SubscriptionController::class, 'returnFailure'])->name('subscription.failure');
+    Route::get('/subscription/pending', [SubscriptionController::class, 'returnPending'])->name('subscription.pending');
+    Route::post('/subscription/cancel', [SubscriptionController::class, 'cancelSubscription'])->name('subscription.cancel');
+
+    // Compras
+    Route::post('/purchase/boost', [PurchaseController::class, 'buyBoost'])->name('purchase.boost');
+    Route::post('/purchase/super-likes', [PurchaseController::class, 'buySuperLikes'])->name('purchase.super-likes');
+    Route::post('/purchase/verification', [PurchaseController::class, 'buyVerification'])->name('purchase.verification');
+    Route::post('/purchase/gift/{recipient}', [PurchaseController::class, 'buyGift'])->name('purchase.gift');
+    Route::get('/purchase/success', [PurchaseController::class, 'returnSuccess'])->name('purchase.success');
+    Route::get('/purchase/failure', [PurchaseController::class, 'returnFailure'])->name('purchase.failure');
+    Route::get('/purchase/pending', [PurchaseController::class, 'returnPending'])->name('purchase.pending');
 });
+
+// Webhook de Mercado Pago (sin auth)
+Route::post('/webhook/mercadopago', [WebhookController::class, 'handleMercadoPagoWebhook'])->name('webhook.mercadopago');
 
 /**
  * Rutas de administración
