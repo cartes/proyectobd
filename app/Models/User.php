@@ -173,7 +173,7 @@ class User extends Authenticatable
     /**
      * Relación: un usuario puede tener muchas suscripciones
      */
-    public function subscriptions(): HasMany
+    public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
     }
@@ -181,7 +181,7 @@ class User extends Authenticatable
     /**
      * Relación: un usuario puede tener muchas transacciones
      */
-    public function transactions(): HasMany
+    public function transactions()
     {
         return $this->hasMany(Transaction::class);
     }
@@ -189,7 +189,7 @@ class User extends Authenticatable
     /**
      * Relación: un usuario puede tener muchas compras
      */
-    public function purchases(): HasMany
+    public function purchases()
     {
         return $this->hasMany(Purchase::class);
     }
@@ -254,11 +254,10 @@ class User extends Authenticatable
      */
     public function activeSubscription()
     {
-        return $this->subscriptions()
+        return $this->hasOne(Subscription::class)
             ->where('status', 'active')
             ->where('ends_at', '>', now())
-            ->latest('starts_at')
-            ->first();
+            ->latest();
     }
 
     /**
@@ -267,13 +266,20 @@ class User extends Authenticatable
      */
     public function isPremium(): bool
     {
-        // Primero: verificar si tiene suscripción activa en BD
-        if ($this->activeSubscription() !== null) {
+        // ✅ Obtener la suscripción activa
+        $activeSubscription = $this->activeSubscription()->first();
+
+        // ✅ Si tiene suscripción activa, es premium
+        if ($activeSubscription) {
             return true;
         }
 
-        // Fallback: verificar atributo legacy (para usuarios migrados)
-        return $this->is_premium;
+        // ✅ Si NO tiene suscripción activa pero is_premium=true, resetear a false
+        if ($this->is_premium) {
+            $this->update(['is_premium' => false]);
+        }
+
+        return false;
     }
 
     // ==================== MÉTODOS HELPER - PERFIL ====================
@@ -359,4 +365,13 @@ class User extends Authenticatable
             ->where('is_active', true)
             ->exists();
     }
-}   
+
+    /**
+     * Accesor para suscripción activa
+     */
+    public function getActiveSubscriptionAttribute()
+    {
+        return $this->activeSubscription()->first();
+    }
+
+}

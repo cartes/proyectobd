@@ -284,35 +284,39 @@ class SubscriptionService
     }
 
     /**
-     * Obtener todas las features para un usuario según su plan
+     * Obtener features disponibles para el usuario
      */
     public function getUserFeatures(User $user): array
     {
-        if (!$user->isPremium()) {
-            // Features gratuitas
+        // ✅ AGREGAR ->first() para obtener el modelo, no la relación
+        $subscription = $user->activeSubscription()->first();
+
+        // Si no tiene suscripción activa, retornar features gratuitas
+        if (!$subscription) {
             return [
-                'likes_per_day' => 5,
-                'super_likes_per_day' => 0,
-                'see_who_liked_you' => false,
+                'unlimited_likes' => false,
+                'super_likes' => false,
                 'rewind' => false,
                 'boost_monthly' => false,
                 'advanced_filters' => false,
                 'no_ads' => false,
                 'priority_verification' => false,
+                'plan_name' => 'Gratis',
+                'expires_at' => null,
             ];
         }
 
-        // Features premium
-        $subscription = $user->activeSubscription();
+        // Features según el plan (puedes personalizarlas por plan)
+        $features = $subscription->plan->features ?? [];
+
         return [
-            'likes_per_day' => 999, // ilimitados
-            'super_likes_per_day' => 5,
-            'see_who_liked_you' => true,
-            'rewind' => true,
-            'boost_monthly' => true,
-            'advanced_filters' => true,
-            'no_ads' => true,
-            'priority_verification' => true,
+            'unlimited_likes' => in_array('unlimited_likes', $features),
+            'super_likes' => in_array('super_likes', $features),
+            'rewind' => in_array('rewind', $features),
+            'boost_monthly' => in_array('boost_monthly', $features),
+            'advanced_filters' => in_array('advanced_filters', $features),
+            'no_ads' => in_array('no_ads', $features),
+            'priority_verification' => in_array('priority_verification', $features),
             'plan_name' => $subscription->plan->name,
             'expires_at' => $subscription->ends_at,
         ];

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Big-dad') }} - Dashboard</title>
+    <title>{{ config('app.name', 'Big-dad') }} - Planes Premium</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -17,8 +17,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased bg-gray-50">
-    <div class="min-h-screen bg-gray-50" x-data="{ sidebarOpen: false }">
+<body class="font-sans antialiased">
+    <div class="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
         <!-- Sidebar -->
         <div class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out md:translate-x-0"
             :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'">
@@ -84,74 +84,26 @@
             </div>
         </div>
 
-        <!-- Overlay for mobile -->
-        <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300"
-            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-            x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-40 md:hidden"
-            @click="sidebarOpen = false"></div>
-
         <!-- Main Content -->
         <div class="md:pl-64">
             <!-- Top Bar -->
-            <div
-                class="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-                <!-- Mobile sidebar toggle -->
-                <button type="button" class="md:hidden -m-2.5 p-2.5 text-gray-700 hover:text-gray-900"
-                    @click="sidebarOpen = true">
-                    <span class="sr-only">Open sidebar</span>
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                    </svg>
-                </button>
-
-                <!-- Page Title -->
+            <div class="sticky top-0 z-30 flex h-16 items-center gap-x-4 border-b border-purple-500/20 bg-purple-950/50 px-6 backdrop-blur-sm">
                 <div class="flex-1">
-                    <h1 class="text-xl font-semibold leading-6 text-gray-900">
-                        @yield('page-title', 'Dashboard')
-                    </h1>
+                    <h1 class="text-xl font-semibold text-white">@yield('page-title', 'Planes Premium')</h1>
                 </div>
-
-                <!-- Top Actions -->
-                <div class="flex items-center gap-x-4 lg:gap-x-6">
-                    <!-- Notifications -->
-                    <button type="button"
-                        class="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        <span class="sr-only">Ver notificaciones</span>
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                        </svg>
-                        <span class="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500"></span>
-                    </button>
-
-                    <!-- Premium Badge -->
-                    @if (!Auth::user()->isPremium())
-                        <a href="#"
-                            class="text-xs bg-gradient-to-r from-amber-400 to-amber-500 text-white px-3 py-1 rounded-full font-medium hover:from-amber-500 hover:to-amber-600 transition-colors">
-                            ⭐ Upgrade Premium
-                        </a>
-                    @else
-                        <span
-                            class="text-xs bg-gradient-to-r from-amber-400 to-amber-500 text-white px-3 py-1 rounded-full font-medium">
-                            👑 Premium
-                        </span>
-                    @endif
+                <div class="flex items-center gap-4">
+                    <a href="{{ route('dashboard') }}" class="text-white hover:text-purple-300">← Volver</a>
                 </div>
             </div>
 
             <!-- Page Content -->
-            <main class="py-6" id="main-content">
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" id="content-wrapper">
-                    @yield('content')
-                </div>
+            <main class="min-h-[calc(100vh-64px)]">
+                @yield('content')
             </main>
         </div>
     </div>
-    @stack('scripts')
 
+    @stack('scripts')
 </body>
 
 </html>

@@ -6,9 +6,9 @@ use App\Http\Controllers\DiscoveryController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ModerationController;
 use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\DashboardController;
 
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PurchaseController;
@@ -20,7 +20,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', \App\Http\Controllers\DashboardController::class)->name('dashboard');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
 });
 
 Route::middleware('auth')->group(function () {
@@ -84,13 +84,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/user', [ReportController::class, 'reportUser'])->name('user');
     });
 
-    // Planes y suscripción
-    Route::get('/subscription/plans', [SubscriptionController::class, 'index'])->name('subscription.plans');
-    Route::post('/subscription/{plan}/checkout', [SubscriptionController::class, 'createCheckout'])->name('subscription.checkout');
-    Route::get('/subscription/success', [SubscriptionController::class, 'returnSuccess'])->name('subscription.success');
-    Route::get('/subscription/failure', [SubscriptionController::class, 'returnFailure'])->name('subscription.failure');
-    Route::get('/subscription/pending', [SubscriptionController::class, 'returnPending'])->name('subscription.pending');
-    Route::post('/subscription/cancel', [SubscriptionController::class, 'cancelSubscription'])->name('subscription.cancel');
+    // En routes/web.php - dentro del grupo auth
+
+    Route::prefix('subscription')->name('subscription.')->group(function () {
+        Route::get('/plans', [SubscriptionController::class, 'index'])->name('plans');
+        Route::post('/{plan}/checkout', [SubscriptionController::class, 'createCheckout'])->name('checkout');
+        Route::get('/success', [SubscriptionController::class, 'returnSuccess'])->name('success');
+        Route::get('/failure', [SubscriptionController::class, 'returnFailure'])->name('failure');
+        Route::get('/pending', [SubscriptionController::class, 'returnPending'])->name('pending');
+
+        // ✅ AGREGAR ESTA RUTA
+        Route::get('/{subscription}', [SubscriptionController::class, 'show'])->name('show');
+    });
 
     // Compras
     Route::post('/purchase/boost', [PurchaseController::class, 'buyBoost'])->name('purchase.boost');

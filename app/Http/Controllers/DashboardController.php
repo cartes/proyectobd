@@ -11,13 +11,14 @@ class DashboardController extends Controller
     public function __invoke()
     {
         $user = auth()->user();
+        $activeSubscription = $user->activeSubscription()->first();
 
         // Si es admin, mostrar dashboard principal del admin
         if ($user->isAdmin()) {
             return view('dashboard', [
                 'stats' => $this->getAdminStats(),
                 'recentActivity' => $this->getAdminActivity(),
-                'dashboardData' => null, // ← Agregar esto para evitar errores
+                'dashboardData' => null,
             ]);
         }
 
@@ -27,6 +28,7 @@ class DashboardController extends Controller
                 'stats' => null, // ← Para evitar conflictos
                 'recentActivity' => null,
                 'dashboardData' => $this->getSugarDaddyData(),
+                'activeSubscription' => $activeSubscription,
             ]);
         }
 
@@ -35,6 +37,7 @@ class DashboardController extends Controller
             'stats' => null, // ← Para evitar conflictos
             'recentActivity' => null,
             'dashboardData' => $this->getSugarBabyData(),
+            'activeSubscription' => $activeSubscription,
         ]);
     }
 

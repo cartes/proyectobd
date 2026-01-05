@@ -2,31 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Purchase;
+use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
-use App\Models\User;
 use App\Models\Transaction;
-use App\Services\SubscriptionService;
+use App\Models\User;
 use App\Services\MercadoPagoService;
+use App\Services\SubscriptionService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
 {
-    protected SubscriptionService $subscriptionService;
     protected MercadoPagoService $mpService;
+    protected SubscriptionService $subscriptionService;
 
     public function __construct(
-        SubscriptionService $subscriptionService,
-        MercadoPagoService $mpService
+        MercadoPagoService $mpService,
+        SubscriptionService $subscriptionService
     ) {
-        $this->subscriptionService = $subscriptionService;
         $this->mpService = $mpService;
+        $this->subscriptionService = $subscriptionService;
     }
 
     /**
      * Manejar webhooks de Mercado Pago
      */
-    public function handleMercadoPagoWebhook(Request $request)
+    public function handleMercadoPagoWebhook(Request $request): JsonResponse
     {
         // Log de todos los webhooks
         Log::info('MP Webhook received', $request->all());
@@ -37,7 +41,7 @@ class WebhookController extends Controller
         $topic = $request->query('topic');
 
         // Procesar según el tipo de evento
-        if ($topic === 'payment') {
+        if ($topic === 'payment' || $type === 'payment') {
             return $this->handlePaymentNotification($id);
         } elseif ($topic === 'plan') {
             return $this->handlePlanNotification($id);
@@ -45,13 +49,13 @@ class WebhookController extends Controller
             return $this->handlePreApprovalNotification($id);
         }
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'message' => 'Event type not handled']);
     }
 
     /**
      * Procesar notificación de pago
      */
-    protected function handlePaymentNotification(string $paymentId): \Illuminate\Http\JsonResponse
+    protected function handlePaymentNotification(string $paymentId): JsonResponse
     {
         try {
             // Obtener info del pago desde MP
@@ -59,159 +63,249 @@ class WebhookController extends Controller
 
             if (!$paymentInfo['success']) {
                 Log::error('Failed to get payment info', ['payment_id' => $paymentId]);
-                return response()->json(['success' => false], 400);
+                return response()->json(['success' => false, 'error' => 'Failed to get payment info'], 400);
             }
 
             $status = $paymentInfo['status'];
             $externalReference = $paymentInfo['external_reference'];
+            $metadata = $paymentInfo['metadata'] ?? [];
 
-            // Parsear la referencia para identificar tipo de transacción
-            // Formato: {type}_{user_id}_{plan_id}_{timestamp}_{random}
+            Log::info('Processing payment', [
+                'payment_id' => $paymentId,
+                'status' => $status,
+                'external_reference' => $externalReference,
+                'metadata' => $metadata
+            ]);
+
+            // Parsear external_reference
+            // Formato: {type}_{user_id}_{plan_id_or_timestamp}_{timestamp}_{random}
             $parts = explode('_', $externalReference);
             $transactionType = $parts[0] ?? null; // 'subscription' o 'purchase'
             $userId = $parts[1] ?? null;
-            $planId = $parts[2] ?? null;
 
             $user = User::find($userId);
             if (!$user) {
                 Log::error('User not found', ['user_id' => $userId]);
-                return response()->json(['success' => false], 400);
+                return response()->json(['success' => false, 'error' => 'User not found'], 400);
             }
 
-            // Si es una suscripción
+            // ✅ VALIDACIÓN DE DUPLICADOS - Verificar si ya procesamos este pago
+            $existingTransaction = Transaction::where('mp_payment_id', $paymentId)->first();
+            if ($existingTransaction) {
+                Log::info('Payment already processed', [
+                    'payment_id' => $paymentId,
+                    'transaction_id' => $existingTransaction->id
+                ]);
+                return response()->json(['success' => true, 'message' => 'Already processed']);
+            }
+
+            // Determinar si es suscripción o compra
             if ($transactionType === 'subscription') {
+                $planId = $parts[2] ?? null;
                 return $this->processSubscriptionPayment($user, $planId, $paymentInfo, $status);
             }
 
-            // Si es una compra única
             if ($transactionType === 'purchase') {
-                return $this->processPurchasePayment($user, $paymentInfo, $status);
+                // Para compras, obtener product_type desde metadata
+                $productType = $metadata['product_type'] ?? 'unknown';
+                return $this->processPurchasePayment($user, $paymentInfo, $status, $productType);
             }
 
-            return response()->json(['success' => true]);
+            Log::warning('Unknown transaction type', ['type' => $transactionType]);
+            return response()->json(['success' => false, 'error' => 'Unknown transaction type'], 400);
+
         } catch (\Exception $e) {
             Log::error('Error handling payment notification', [
                 'error' => $e->getMessage(),
                 'payment_id' => $paymentId,
+                'trace' => $e->getTraceAsString()
             ]);
-
-            return response()->json(['success' => false], 500);
+            return response()->json(['success' => false, 'error' => 'Internal error'], 500);
         }
     }
 
     /**
      * Procesar pago de suscripción
      */
-    protected function processSubscriptionPayment(User $user, $planId, array $paymentInfo, string $status)
+    protected function processSubscriptionPayment(User $user, $planId, array $paymentInfo, string $status): JsonResponse
     {
-        $plan = SubscriptionPlan::find($planId);
-
-        if (!$plan) {
-            Log::error('Plan not found', ['plan_id' => $planId]);
-            return response()->json(['success' => false], 400);
-        }
-
-        if ($status === 'approved') {
-            // Activar suscripción
-            $result = $this->subscriptionService->activateSubscription(
-                $user,
-                $plan,
-                $paymentInfo['payment_id'], // usar como preapproval_id temporalmente
-                $paymentInfo['payment_id'],
-                $paymentInfo['amount']
-            );
-
-            if ($result['success']) {
-                Log::info('Subscription activated', [
-                    'user_id' => $user->id,
-                    'plan_id' => $plan->id,
-                ]);
-
-                // Enviar email de confirmación
-                \Mail::queue(new \App\Mail\SubscriptionActivatedMail($user, $result['subscription']));
-
-                return response()->json(['success' => true]);
+        try {
+            $plan = SubscriptionPlan::find($planId);
+            if (!$plan) {
+                Log::error('Plan not found', ['plan_id' => $planId]);
+                return response()->json(['success' => false, 'error' => 'Plan not found'], 400);
             }
-        } elseif ($status === 'rejected' || $status === 'cancelled') {
-            // Crear transacción fallida
-            Transaction::create([
-                'user_id' => $user->id,
-                'type' => 'subscription',
-                'mp_payment_id' => $paymentInfo['payment_id'],
-                'amount' => $paymentInfo['amount'],
-                'currency' => 'ARS',
-                'status' => $status === 'rejected' ? 'rejected' : 'cancelled',
-                'description' => "Pago de suscripción: {$plan->name}",
-                'external_reference' => $paymentInfo['external_reference'],
-            ]);
 
-            Log::warning('Subscription payment failed', [
-                'user_id' => $user->id,
+            // Solo procesar si el pago fue aprobado
+            if ($status === 'approved') {
+                DB::transaction(function () use ($user, $plan, $paymentInfo) {
+                    // Activar suscripción
+                    $result = $this->subscriptionService->activateSubscription(
+                        $user,
+                        $plan,
+                        $paymentInfo['payment_id'], // Usar payment_id como preapproval_id temporal
+                        $paymentInfo['payment_id'],
+                        $paymentInfo['amount']
+                    );
+
+                    Log::info('Subscription activated', [
+                        'user_id' => $user->id,
+                        'plan_id' => $plan->id,
+                        'subscription_id' => $result['subscription']->id ?? null
+                    ]);
+                });
+
+                return response()->json(['success' => true, 'message' => 'Subscription activated']);
+            }
+
+            // Registrar estados no aprobados
+            Log::info('Payment not approved', [
                 'status' => $status,
-            ]);
-        } elseif ($status === 'pending') {
-            // Crear transacción pendiente
-            Transaction::create([
                 'user_id' => $user->id,
-                'type' => 'subscription',
-                'mp_payment_id' => $paymentInfo['payment_id'],
-                'amount' => $paymentInfo['amount'],
-                'currency' => 'ARS',
-                'status' => 'pending',
-                'description' => "Pago de suscripción: {$plan->name} (pendiente)",
-                'external_reference' => $paymentInfo['external_reference'],
+                'plan_id' => $planId
             ]);
-        }
 
-        return response()->json(['success' => true]);
+            return response()->json(['success' => true, 'message' => "Payment status: {$status}"]);
+
+        } catch (\Exception $e) {
+            Log::error('Error processing subscription payment', [
+                'error' => $e->getMessage(),
+                'user_id' => $user->id,
+                'plan_id' => $planId
+            ]);
+            return response()->json(['success' => false, 'error' => 'Error processing subscription'], 500);
+        }
     }
 
     /**
-     * Procesar pago de compra única
+     * Procesar compra única (boost, super likes, etc.)
      */
-    protected function processPurchasePayment(User $user, array $paymentInfo, string $status)
+    protected function processPurchasePayment(User $user, array $paymentInfo, string $status, string $productType): JsonResponse
     {
-        if ($status === 'approved') {
-            // Extraer tipo de producto de los metadatos
-            $metadata = $paymentInfo['raw']['metadata'] ?? [];
-            $productType = $metadata['product_type'] ?? 'unknown';
-
-            // Registrar compra
-            $result = $this->subscriptionService->recordPurchase(
-                $user,
-                $productType,
-                1,
-                $paymentInfo['amount'],
-                $paymentInfo['payment_id'],
-                $metadata
-            );
-
-            if ($result['success']) {
-                Log::info('Purchase completed', [
-                    'user_id' => $user->id,
-                    'product_type' => $productType,
+        try {
+            // ✅ VALIDACIÓN DE DUPLICADOS para purchases
+            $existingPurchase = Purchase::where('mp_payment_id', $paymentInfo['payment_id'])->first();
+            if ($existingPurchase) {
+                Log::info('Purchase already processed', [
+                    'payment_id' => $paymentInfo['payment_id'],
+                    'purchase_id' => $existingPurchase->id
                 ]);
-
-                return response()->json(['success' => true]);
+                return response()->json(['success' => true, 'message' => 'Already processed']);
             }
-        }
 
-        return response()->json(['success' => true]);
+            if ($status === 'approved') {
+                DB::transaction(function () use ($user, $paymentInfo, $productType) {
+                    // Obtener cantidad desde metadata (para super likes)
+                    $metadata = $paymentInfo['metadata'] ?? [];
+                    $quantity = $metadata['quantity'] ?? 1;
+
+                    // Crear registro de compra
+                    $purchase = Purchase::create([
+                        'user_id' => $user->id,
+                        'product_type' => $productType,
+                        'quantity' => $quantity,
+                        'amount' => $paymentInfo['amount'],
+                        'currency' => $paymentInfo['currency'],
+                        'mp_payment_id' => $paymentInfo['payment_id'],
+                        'status' => 'completed',
+                        'metadata' => $metadata,
+                    ]);
+
+                    // Crear transacción
+                    Transaction::create([
+                        'user_id' => $user->id,
+                        'subscription_id' => null,
+                        'type' => 'purchase',
+                        'mp_payment_id' => $paymentInfo['payment_id'],
+                        'amount' => $paymentInfo['amount'],
+                        'currency' => $paymentInfo['currency'],
+                        'status' => 'approved',
+                        'description' => "Compra: {$productType}",
+                        'external_reference' => $paymentInfo['external_reference'],
+                        'metadata' => $metadata,
+                    ]);
+
+                    // Aplicar el producto al usuario (según el tipo)
+                    $this->applyPurchaseToUser($user, $productType, $quantity);
+
+                    Log::info('Purchase completed', [
+                        'user_id' => $user->id,
+                        'product_type' => $productType,
+                        'purchase_id' => $purchase->id
+                    ]);
+                });
+
+                return response()->json(['success' => true, 'message' => 'Purchase completed']);
+            }
+
+            Log::info('Purchase payment not approved', [
+                'status' => $status,
+                'user_id' => $user->id,
+                'product_type' => $productType
+            ]);
+
+            return response()->json(['success' => true, 'message' => "Payment status: {$status}"]);
+
+        } catch (\Exception $e) {
+            Log::error('Error processing purchase payment', [
+                'error' => $e->getMessage(),
+                'user_id' => $user->id,
+                'product_type' => $productType
+            ]);
+            return response()->json(['success' => false, 'error' => 'Error processing purchase'], 500);
+        }
     }
 
     /**
-     * Procesar notificación de plan
+     * Aplicar compra al usuario (boost, super likes, verification)
      */
-    protected function handlePlanNotification(string $planId): \Illuminate\Http\JsonResponse
+    protected function applyPurchaseToUser(User $user, string $productType, int $quantity): void
+    {
+        switch ($productType) {
+            case 'boost':
+                // Activar boost por 1 hora
+                $user->profileDetail()->update([
+                    'boost_until' => now()->addHour(),
+                ]);
+                Log::info('Boost activated', ['user_id' => $user->id]);
+                break;
+
+            case 'super_likes':
+                // Agregar super likes
+                $user->profileDetail()->increment('super_likes_remaining', $quantity);
+                Log::info('Super likes added', ['user_id' => $user->id, 'quantity' => $quantity]);
+                break;
+
+            case 'verification':
+                // Marcar como verificado
+                $user->update(['is_verified' => true]);
+                Log::info('User verified', ['user_id' => $user->id]);
+                break;
+
+            case 'gift':
+                // Registrar regalo (implementar según lógica de negocio)
+                Log::info('Gift received', ['user_id' => $user->id]);
+                break;
+
+            default:
+                Log::warning('Unknown product type', ['product_type' => $productType]);
+        }
+    }
+
+    /**
+     * Manejar notificaciones de plan
+     */
+    protected function handlePlanNotification(string $planId): JsonResponse
     {
         Log::info('Plan notification received', ['plan_id' => $planId]);
+        // Implementar según necesidad
         return response()->json(['success' => true]);
     }
 
     /**
-     * Procesar notificación de preaprobación (suscripción recurrente)
+     * Manejar notificaciones de preaprobación
      */
-    protected function handlePreApprovalNotification(string $preApprovalId): \Illuminate\Http\JsonResponse
+    protected function handlePreApprovalNotification(string $preApprovalId): JsonResponse
     {
         try {
             $preApprovalInfo = $this->mpService->getPreApprovalInfo($preApprovalId);
@@ -223,19 +317,31 @@ class WebhookController extends Controller
 
             $status = $preApprovalInfo['status'];
 
-            // Procesar según el estado
-            if ($status === 'active') {
-                Log::info('Preapproval activated', ['preapproval_id' => $preApprovalId]);
-            } elseif ($status === 'cancelled') {
-                Log::info('Preapproval cancelled', ['preapproval_id' => $preApprovalId]);
+            Log::info('PreApproval notification', [
+                'preapproval_id' => $preApprovalId,
+                'status' => $status
+            ]);
+
+            // Actualizar estado de suscripción según el status
+            $subscription = Subscription::where('mp_preapproval_id', $preApprovalId)->first();
+
+            if ($subscription) {
+                if ($status === 'cancelled') {
+                    $subscription->update([
+                        'status' => 'cancelled',
+                        'cancelled_at' => now()
+                    ]);
+                    Log::info('Subscription cancelled via webhook', ['subscription_id' => $subscription->id]);
+                }
             }
 
             return response()->json(['success' => true]);
+
         } catch (\Exception $e) {
             Log::error('Error handling preapproval notification', [
                 'error' => $e->getMessage(),
+                'preapproval_id' => $preApprovalId
             ]);
-
             return response()->json(['success' => false], 500);
         }
     }

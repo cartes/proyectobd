@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +29,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // ✅ Forzar HTTPS en producción Y en ngrok
+        if (
+            $this->app->environment(['production']) ||
+            (request()->getHost() && str_contains(request()->getHost(), 'ngrok'))
+        ) {
+            URL::forceScheme('https');
+        }
+
     }
 }

@@ -7,231 +7,331 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Str;
 use WandesCardoso\MercadoPago\Facades\MercadoPago;
+use Illuminate\Support\Facades\Log;
+use WandesCardoso\MercadoPago\DTO\Preference;
+use WandesCardoso\MercadoPago\DTO\Item;
+use WandesCardoso\MercadoPago\DTO\Payer;
+use WandesCardoso\MercadoPago\DTO\BackUrls;
+use WandesCardoso\MercadoPago\Enums\Currency;
 use Exception;
 
 class MercadoPagoService
 {
+
+    protected string $accessToken;
+    protected string $publicKey;
+    protected string $env;
+    protected string $currency;
+
+    public function __construct()
+    {
+        $this->accessToken = config('services.mercadopago.access_token');
+        $this->publicKey = config('services.mercadopago.public_key');
+        $this->env = config('services.mercadopago.env', 'sandbox');
+        $this->currency = config('services.mercadopago.currency', 'ARS');
+    }
+
     /**
-     * Crear preferencia de pago para una compra única (boost, super likes, etc.)
+     * Convertir stdClass a array recursivamente
+     */
+    private function objectToArray($obj)
+    {
+        if (is_object($obj) || is_array($obj)) {
+            return json_decode(json_encode($obj), true);
+        }
+        return $obj;
+    }
+
+    /**
+     * Obtener valor seguro de respuesta - busca en múltiples ubicaciones
+     */
+    private function getResponseValue($response, $keys)
+    {
+        $arr = $this->objectToArray($response);
+
+        foreach ($keys as $key) {
+            // Buscar directo
+            if (isset($arr[$key])) {
+                return $arr[$key];
+            }
+
+            // Buscar en body
+            if (isset($arr['body'][$key])) {
+                return $arr['body'][$key];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Crear preferencia de pago para compra única (boost, super likes, etc.)
      */
     public function createPaymentPreference(User $user, string $productType, float $amount, array $metadata = []): array
     {
         try {
             $externalReference = $this->generateExternalReference($user->id, $productType);
 
-            $preference = [
+            // ✅ AGREGAR product_type a metadata para identificar en webhook
+            $metadata['product_type'] = $productType;
+            $metadata['user_id'] = $user->id;
+
+            // Usar cURL directo para evitar PolicyAgent
+            $url = 'https://api.mercadopago.com/checkout/preferences';
+
+            $preferenceData = [
+                'external_reference' => $externalReference,
+                'payer' => [
+                    'email' => $user->email,
+                    'name' => $user->name,
+                ],
                 'items' => [
                     [
                         'title' => $this->getProductTitle($productType),
                         'description' => $this->getProductDescription($productType),
-                        'picture_url' => config('app.url') . '/images/products/' . $productType . '.png',
-                        'category_id' => 'services',
                         'quantity' => 1,
                         'unit_price' => $amount,
+                        'currency_id' => $this->currency,
+                        'category_id' => 'services'
                     ]
-                ],
-                'payer' => [
-                    'email' => $user->email,
-                    'name' => $user->name,
                 ],
                 'back_urls' => [
                     'success' => route('purchase.success'),
-                    'failure' => route('purchase.failure'),
                     'pending' => route('purchase.pending'),
+                    'failure' => route('purchase.failure'),
                 ],
                 'auto_return' => 'approved',
-                'external_reference' => $externalReference,
-                'notification_url' => route('webhook.mercadopago'),
-                'metadata' => array_merge([
-                    'user_id' => $user->id,
-                    'product_type' => $productType,
-                ], $metadata),
+                'metadata' => $metadata, // ✅ INCLUIR METADATA
             ];
 
-            $response = MercadoPago::preference()->create($preference);
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($preferenceData));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Authorization: Bearer ' . $this->accessToken,
+                'Content-Type: application/json'
+            ]);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            if ($httpCode !== 201) {
+                \Log::error('MP createPaymentPreference failed', [
+                    'http_code' => $httpCode,
+                    'response' => $response
+                ]);
+                return ['success' => false, 'error' => 'Failed to create preference'];
+            }
+
+            $data = json_decode($response, true);
 
             return [
                 'success' => true,
-                'init_point' => $response['body']['init_point'],
-                'external_reference' => $externalReference,
-                'preference_id' => $response['body']['id'],
+                'preference_id' => $data['id'] ?? null,
+                'init_point' => $data['init_point'] ?? null,
+                'sandbox_init_point' => $data['sandbox_init_point'] ?? null,
             ];
-        } catch (Exception $e) {
-            \Log::error('Error creating MP payment preference', [
-                'error' => $e->getMessage(),
-            ]);
 
-            return [
-                'success' => false,
-                'error' => 'No se pudo crear la preferencia de pago',
-            ];
+        } catch (\Exception $e) {
+            \Log::error('Error creating payment preference', [
+                'error' => $e->getMessage()
+            ]);
+            return ['success' => false, 'error' => $e->getMessage()];
         }
     }
 
     /**
-     * Crear plan de suscripción en Mercado Pago
+     * Crear preferencia de pago para suscripción
      */
-    public function createPlan(SubscriptionPlan $plan): array
+    public function createSubscriptionPreference($user, SubscriptionPlan $plan)
     {
-        try {
-            // Verificar si el plan ya existe en MP
-            if ($plan->mp_plan_id) {
-                return [
-                    'success' => true,
-                    'plan_id' => $plan->mp_plan_id,
-                ];
-            }
+        Log::info('Creating MP preference', [
+            'user_id' => $user->id,
+            'plan_id' => $plan->id,
+            'plan_amount' => $plan->amount,
+        ]);
 
-            $mpPlan = [
-                'reason' => $plan->name,
-                'auto_recurring' => [
-                    'frequency' => $plan->frequency,
-                    'frequency_type' => $plan->frequency_type,
-                    'transaction_amount' => $plan->amount,
-                    'currency_id' => 'ARS',
-                ],
-            ];
+        $payload = [
+            'items' => [
+                [
+                    'title' => $plan->name . ' - Suscripción Big-Dad',
+                    'quantity' => 1,
+                    'unit_price' => (float) $plan->amount,
+                ]
+            ],
+            'back_urls' => [
+                'success' => route('subscription.success'),
+                'failure' => route('subscription.failure'),
+                'pending' => route('subscription.pending'),
+            ],
+            'auto_return' => 'approved',
+            'external_reference' => 'USER_' . $user->id . '_PLAN_' . $plan->id . '_' . time(),
+            'notification_url' => route('webhook.mercadopago'),
+        ];
 
-            $response = MercadoPago::plan()->create($mpPlan);
+        // ✅ LOGUEAR EL PAYLOAD COMPLETO
+        Log::debug('MP Request Payload', [
+            'payload' => json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
+        ]);
 
-            $planId = $response['body']['id'];
+        // Realizar request a Mercado Pago
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://api.mercadopago.com/checkout/preferences');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $this->accessToken,
+            'Content-Type: application/json',
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
 
-            // Guardar ID del plan en la BD
-            $plan->update(['mp_plan_id' => $planId]);
+        // ✅ CAPTURAR HEADERS DE LA RESPUESTA
+        $headerData = [];
+        curl_setopt($ch, CURLOPT_HEADERFUNCTION, function($curl, $header) use (&$headerData) {
+            $len = strlen($header);
+            $header = explode(':', $header, 2);
+            if (count($header) < 2) return $len;
+            $name = strtolower(trim($header[0]));
+            $value = trim($header[1]);
+            $headerData[$name] = $value;
+            return $len;
+        });
 
-            return [
-                'success' => true,
-                'plan_id' => $planId,
-            ];
-        } catch (Exception $e) {
-            \Log::error('Error creating MP plan', [
-                'error' => $e->getMessage(),
-                'plan' => $plan->id,
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        // ✅ LOGUEAR HEADERS COMPLETOS
+        Log::debug('MP Response Headers', [
+            'x-request-id' => $headerData['x-request-id'] ?? 'N/A',
+            'x-idempotency-key' => $headerData['x-idempotency-key'] ?? 'N/A',
+            'date' => $headerData['date'] ?? 'N/A',
+            'all-headers' => $headerData,
+        ]);
+
+        Log::debug('MP Preference Response', [
+            'status' => $httpCode,
+            'response' => $response,
+            'curl_error' => $curlError,
+        ]);
+
+        $responseArray = json_decode($response, true);
+
+        if ($httpCode !== 201) {
+            // ✅ LOGUEAR ERROR CON X-REQUEST-ID Y PAYLOAD
+            Log::error('Preference creation failed', [
+                'status' => $httpCode,
+                'x-request-id' => $headerData['x-request-id'] ?? 'N/A',
+                'payload_sent' => json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
+                'response' => $responseArray,
             ]);
 
             return [
                 'success' => false,
-                'error' => 'No se pudo crear el plan en Mercado Pago',
+                'error' => $responseArray['message'] ?? 'Error desconocido',
+                'status' => $httpCode,
+                'x-request-id' => $headerData['x-request-id'] ?? 'N/A',
             ];
         }
-    }
 
-    /**
-     * Crear preferencia de suscripción (preapproval)
-     */
-    public function createSubscriptionPreference(User $user, SubscriptionPlan $plan): array
-    {
-        try {
-            // Crear plan si no existe
-            $planResult = $this->createPlan($plan);
-            if (!$planResult['success']) {
-                return $planResult;
-            }
+        Log::info('Preference created successfully', [
+            'preference_id' => $responseArray['id'] ?? null,
+            'x-request-id' => $headerData['x-request-id'] ?? 'N/A',
+            'user_id' => $user->id,
+            'plan_id' => $plan->id,
+        ]);
 
-            $externalReference = $this->generateExternalReference($user->id, 'subscription', $plan->id);
-
-            $preference = [
-                'reason' => $plan->name,
-                'auto_recurring' => [
-                    'frequency' => $plan->frequency,
-                    'frequency_type' => $plan->frequency_type,
-                    'transaction_amount' => $plan->amount,
-                    'currency_id' => 'ARS',
-                    'start_date' => now()->toIso8601String(),
-                ],
-                'payer' => [
-                    'email' => $user->email,
-                    'name' => $user->name,
-                ],
-                'back_urls' => [
-                    'success' => route('subscription.success'),
-                    'failure' => route('subscription.failure'),
-                ],
-                'external_reference' => $externalReference,
-                'notification_url' => route('webhook.mercadopago'),
-            ];
-
-            $response = MercadoPago::preference()->create($preference);
-
-            return [
-                'success' => true,
-                'init_point' => $response['body']['init_point'],
-                'external_reference' => $externalReference,
-                'preference_id' => $response['body']['id'],
-            ];
-        } catch (Exception $e) {
-            \Log::error('Error creating MP subscription preference', [
-                'error' => $e->getMessage(),
-                'user_id' => $user->id,
-                'plan_id' => $plan->id,
-            ]);
-
-            return [
-                'success' => false,
-                'error' => 'No se pudo crear la preferencia de suscripción',
-            ];
-        }
+        return [
+            'success' => true,
+            'preference_id' => $responseArray['id'],
+            'init_point' => $responseArray['init_point'],
+            'sandbox_init_point' => $responseArray['sandbox_init_point'] ?? $responseArray['init_point'],
+            'x-request-id' => $headerData['x-request-id'] ?? 'N/A',
+        ];
     }
 
     /**
      * Obtener información de un pago
      */
-    public function getPaymentInfo(string $paymentId): array
+    public function getPaymentInfo($paymentId)
     {
-        try {
-            $response = MercadoPago::payment()->get($paymentId);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://api.mercadopago.com/v1/payments/' . $paymentId);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $this->accessToken,
+        ]);
 
-            return [
-                'success' => true,
-                'payment_id' => $response['body']['id'],
-                'status' => $response['body']['status'],
-                'status_detail' => $response['body']['status_detail'],
-                'amount' => $response['body']['transaction_amount'],
-                'external_reference' => $response['body']['external_reference'],
-                'payer_email' => $response['body']['payer']['email'] ?? null,
-                'raw' => $response['body'],
-            ];
-        } catch (Exception $e) {
-            \Log::error('Error getting MP payment info', [
-                'error' => $e->getMessage(),
-                'payment_id' => $paymentId,
-            ]);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
 
+        $responseArray = json_decode($response, true);
+
+        if ($httpCode !== 200) {
             return [
                 'success' => false,
-                'error' => 'No se pudo obtener la información del pago',
+                'error' => $responseArray['message'] ?? 'Error al obtener pago',
             ];
         }
+
+        return [
+            'success' => true,
+            'status' => $responseArray['status'],
+            'payment_data' => $responseArray,
+        ];
     }
 
     /**
-     * Obtener información de una preaprobación (suscripción)
+     * Obtener información de una pre-aprobación (suscripción)
      */
     public function getPreApprovalInfo(string $preApprovalId): array
     {
         try {
-            $response = MercadoPago::preapproval()->get($preApprovalId);
+            $url = "https://api.mercadopago.com/preapproval/{$preApprovalId}";
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Authorization: Bearer ' . $this->accessToken,
+                'Content-Type: application/json'
+            ]);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            if ($httpCode !== 200) {
+                \Log::error('MP getPreApprovalInfo failed', [
+                    'preapproval_id' => $preApprovalId,
+                    'http_code' => $httpCode,
+                    'response' => $response
+                ]);
+                return ['success' => false, 'error' => 'Failed to get preapproval info'];
+            }
+
+            $data = json_decode($response, true);
 
             return [
                 'success' => true,
-                'preapproval_id' => $response['body']['id'],
-                'status' => $response['body']['status'],
-                'payer_email' => $response['body']['payer']['email'] ?? null,
-                'plan_id' => $response['body']['plan_id'] ?? null,
-                'reason' => $response['body']['reason'] ?? null,
-                'next_payment_date' => $response['body']['next_payment_date'] ?? null,
-                'raw' => $response['body'],
+                'preapproval_id' => $data['id'] ?? null,
+                'status' => $data['status'] ?? 'unknown',
+                'external_reference' => $data['external_reference'] ?? null,
+                'auto_recurring' => $data['auto_recurring'] ?? [],
+                'payer_email' => $data['payer_email'] ?? null,
+                'raw' => $data
             ];
-        } catch (Exception $e) {
-            \Log::error('Error getting MP preapproval info', [
-                'error' => $e->getMessage(),
-                'preapproval_id' => $preApprovalId,
-            ]);
 
-            return [
-                'success' => false,
-                'error' => 'No se pudo obtener la información de la suscripción',
-            ];
+        } catch (\Exception $e) {
+            \Log::error('Error getting preapproval info', [
+                'preapproval_id' => $preApprovalId,
+                'error' => $e->getMessage()
+            ]);
+            return ['success' => false, 'error' => $e->getMessage()];
         }
     }
 
@@ -241,7 +341,7 @@ class MercadoPagoService
     public function cancelPreApproval(string $preApprovalId): array
     {
         try {
-            MercadoPago::preapproval()->update($preApprovalId, [
+            $response = MercadoPago::request()->put("/preapproval/{$preApprovalId}", [
                 'status' => 'cancelled',
             ]);
 
@@ -250,7 +350,7 @@ class MercadoPagoService
                 'message' => 'Suscripción cancelada exitosamente',
             ];
         } catch (Exception $e) {
-            \Log::error('Error cancelling MP preapproval', [
+            \Log::error('Error cancelling preapproval', [
                 'error' => $e->getMessage(),
                 'preapproval_id' => $preApprovalId,
             ]);
@@ -270,11 +370,15 @@ class MercadoPagoService
         $timestamp = now()->timestamp;
         $random = Str::random(8);
 
-        return "{$type}_{$userId}_{$planId}_{$timestamp}_{$random}";
+        if ($planId) {
+            return "{$type}_{$userId}_{$planId}_{$timestamp}_{$random}";
+        }
+
+        return "{$type}_{$userId}_{$timestamp}_{$random}";
     }
 
     /**
-     * Obtener título del producto para mostrar en MP
+     * Obtener título del producto
      */
     protected function getProductTitle(string $productType): string
     {
