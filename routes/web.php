@@ -88,12 +88,11 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('subscription')->name('subscription.')->group(function () {
         Route::get('/plans', [SubscriptionController::class, 'index'])->name('plans');
-        Route::post('/{plan}/checkout', [SubscriptionController::class, 'createCheckout'])->name('checkout');
+        Route::post('/checkout/{plan}', [SubscriptionController::class, 'createCheckout'])->name('checkout');
         Route::get('/success', [SubscriptionController::class, 'returnSuccess'])->name('success');
         Route::get('/failure', [SubscriptionController::class, 'returnFailure'])->name('failure');
         Route::get('/pending', [SubscriptionController::class, 'returnPending'])->name('pending');
-
-        // ✅ AGREGAR ESTA RUTA
+        Route::post('/cancel', [SubscriptionController::class, 'cancelSubscription'])->name('cancel');
         Route::get('/{subscription}', [SubscriptionController::class, 'show'])->name('show');
     });
 

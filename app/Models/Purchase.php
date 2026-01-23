@@ -14,8 +14,10 @@ class Purchase extends Model
         'amount',
         'currency',
         'mp_payment_id',
+        'mp_preference_id',
         'status',
         'metadata',
+        'recipient_id',
     ];
 
     protected $casts = [

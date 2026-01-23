@@ -9,273 +9,234 @@
     <title>@yield('page-title', 'Big-Dad') - {{ config('app.name') }}</title>
 
     {{-- Fonts --}}
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=playfair-display:400,500,600,700,800,900&display=swap"
-        rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Outfit:wght@400;700;900&display=swap"
+        rel="stylesheet">
 
     {{-- Vite --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="antialiased overflow-x-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50">
+@php
+    $user = auth()->user();
+    $themeClass = $user->user_type === 'sugar_daddy' ? 'theme-sd' : 'theme-sb';
+@endphp
 
-    {{-- Layout Container: Flex en Desktop --}}
+<body class="antialiased overflow-x-hidden font-sans {{ $themeClass }}" style="background: var(--theme-bg);">
+
+    {{-- Layout Container --}}
     <div class="flex min-h-screen">
 
         {{-- SIDEBAR - Solo Desktop (≥768px) --}}
         <aside
-            class="hidden md:flex md:flex-col md:w-64 lg:w-72 bg-white border-r border-gray-200 shadow-lg fixed h-screen z-40">
+            class="hidden md:flex md:flex-col md:w-64 lg:w-72 fixed h-screen z-40 border-r border-white/5 shadow-2xl transition-colors duration-500"
+            style="background: var(--theme-sidebar);">
 
-            {{-- Logo / Branding --}}
-            <div class="p-6 border-b border-gray-200">
-                <h1
-                    class="text-3xl font-playfair font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            {{-- Logo / Branding Premium --}}
+            <div class="p-8 border-b border-white/5">
+                <h1 class="text-3xl font-black uppercase tracking-tighter text-theme-title">
                     Big-Dad
                 </h1>
-                <p class="text-sm text-gray-500 mt-1">
-                    @if (auth()->user()->user_type === 'sugar_daddy')
-                        Sugar Daddy
-                    @else
-                        Sugar Baby
-                    @endif
+                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mt-2">
+                    @if ($user->user_type === 'sugar_daddy') Sugar Daddy @else Sugar Baby @endif
                 </p>
             </div>
 
-            {{-- Perfil User --}}
-            <div class="p-4 border-b border-gray-200">
+            {{-- Perfil User Premium --}}
+            <div class="p-6">
                 <a href="{{ route('profile.show') }}"
-                    class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all group">
-                    @if (auth()->user()->primaryPhoto)
-                        <img src="{{ auth()->user()->primaryPhoto->url }}" alt="{{ auth()->user()->name }}"
-                            class="w-12 h-12 rounded-full object-cover ring-2 ring-purple-200 group-hover:ring-purple-400 transition-all">
+                    class="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/5 transition-all group border border-transparent hover:border-white/10">
+                    @if ($user->primaryPhoto)
+                        <img src="{{ $user->primaryPhoto->url }}" alt="{{ $user->name }}"
+                            class="w-12 h-12 rounded-xl object-cover ring-2 ring-white/10 group-hover:ring-teal-400 transition-all">
                     @else
-                        <div
-                            class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white font-bold text-xl">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg"
+                            style="background: var(--theme-gradient);">
+                            {{ strtoupper(substr($user->name, 0, 1)) }}
                         </div>
                     @endif
                     <div class="flex-1 min-w-0">
-                        <p class="font-bold text-gray-900 truncate">{{ auth()->user()->name }}</p>
-                        <p class="text-xs text-gray-500 truncate">Ver mi perfil</p>
+                        <p class="font-black text-gray-900 theme-sd:text-white truncate text-sm">{{ $user->name }}</p>
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Mi Perfil</p>
                     </div>
                 </a>
             </div>
 
             {{-- Navigation Links --}}
-            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-
+            <nav class="flex-1 px-6 space-y-2 overflow-y-auto">
                 {{-- Explorar --}}
-                <a href="{{ route('discover.index') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all
+                <a href="{{ route('discover.index') }}" class="group flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all
                           {{ request()->routeIs('discover.index')
-                              ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
-                              : 'text-gray-700 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+    ? 'bg-white/10 text-white shadow-xl border border-white/20'
+    : 'text-gray-500 hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                     <span>Explorar</span>
                 </a>
 
                 {{-- Mis Favoritos --}}
-                <a href="{{ route('discover.favorites') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all
+                <a href="{{ route('discover.favorites') }}" class="group flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all
                           {{ request()->routeIs('discover.favorites')
-                              ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-lg'
-                              : 'text-gray-700 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    ? 'bg-white/10 text-white shadow-xl border border-white/20'
+    : 'text-gray-500 hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="currentColor"
+                        viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
                             clip-rule="evenodd" />
                     </svg>
-                    <span>Mis Favoritos</span>
-                    @php
-                        $favCount = auth()->user()->likes()->count();
-                    @endphp
-                    @if ($favCount > 0)
-                        <span class="ml-auto px-2 py-1 bg-pink-100 text-pink-700 text-xs font-bold rounded-full">
-                            {{ $favCount }}
-                        </span>
-                    @endif
+                    <span>Favoritos</span>
                 </a>
 
-                {{-- 🆕 MATCHES - AHORA FUNCIONAL --}}
-                <a href="{{ route('matches.index') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all
+                {{-- Matches --}}
+                <a href="{{ route('matches.index') }}" class="group flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all
                           {{ request()->routeIs('matches.*')
-                              ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg'
-                              : 'text-gray-700 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    ? 'bg-white/10 text-white shadow-xl border border-white/20'
+    : 'text-gray-500 hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="currentColor"
+                        viewBox="0 0 20 20">
                         <path
                             d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                     <span>Matches</span>
-                    @php
-                        $matchesCount = auth()->user()->matchesCount();
-                    @endphp
-                    @if ($matchesCount > 0)
-                        <span
-                            class="ml-auto px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full animate-pulse">
-                            {{ $matchesCount }}
-                        </span>
-                    @endif
                 </a>
 
                 {{-- Mensajes --}}
-                <a href="{{ route('chat.index') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all
-                        {{ request()->routeIs('chat.*')
-                            ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg'
-                            : 'text-gray-700 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                <a href="{{ route('chat.index') }}" class="group flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all
+                          {{ request()->routeIs('chat.*')
+    ? 'bg-white/10 text-white shadow-xl border border-white/20'
+    : 'text-gray-500 hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                             d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                     <span>Mensajes</span>
-                    @php
-                        $unreadCount = auth()->user()->receivedMessages()->where('is_read', false)->count();
-                    @endphp
-                    @if ($unreadCount > 0)
-                        <span
-                            class="ml-auto px-2 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full animate-pulse">
-                            {{ $unreadCount }}
-                        </span>
-                    @endif
                 </a>
 
                 {{-- Dashboard --}}
-                <a href="{{ route('dashboard') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all
-                          {{ request()->routeIs('dashboard') ? 'bg-purple-50 text-purple-700' : 'text-gray-700 hover:bg-gray-100' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                <a href="{{ route('dashboard') }}" class="group flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all
+                          {{ request()->routeIs('dashboard')
+    ? 'bg-white/10 text-white shadow-xl border border-white/20'
+    : 'text-gray-500 hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                             d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                     <span>Dashboard</span>
                 </a>
-
             </nav>
 
-            {{-- Logout Button --}}
-            <div class="p-4 border-t border-gray-200">
+            {{-- Logout Button Premium --}}
+            <div class="p-8 border-t border-white/5">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit"
-                        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-red-600 hover:bg-red-50 transition-all">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        class="w-full flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-red-400 hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20 group">
+                        <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
-                        <span>Cerrar Sesión</span>
+                        <span>Salir</span>
                     </button>
                 </form>
             </div>
         </aside>
 
         {{-- MAIN CONTENT AREA --}}
-        <div class="flex-1 md:ml-64 lg:ml-72">
-            {{-- Contenido Principal --}}
+        <div class="flex-1 md:ml-64 lg:ml-72 transition-all duration-500">
             <main class="pb-20 md:pb-0 min-h-screen">
                 <div class="md:max-w-none">
                     @yield('content')
                 </div>
             </main>
 
-            {{-- BOTÓN FLOTANTE - Solo Mobile (<768px) --}}
-            <a href="{{ route('dashboard') }}"
-                class="md:hidden fixed bottom-24 right-6 z-40 w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-            </a>
+            {{-- BOTTOM NAVIGATION - Solo Mobile (<768px) --}} <nav
+                class="md:hidden fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.3)] z-50 transition-colors duration-500"
+                style="background: rgba(var(--primary-rgb, 79, 70, 229), 0.1);">
+                <div class="flex items-center justify-around h-20 px-4">
 
-            {{-- BOTTOM NAVIGATION - Solo Mobile (<768px) --}}
-            <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl z-50">
-                <div class="flex items-center justify-around h-16">
+                    {{-- Link helper --}}
+                    @php
+                        $navItemClass = "flex flex-col items-center justify-center flex-1 h-full transition-all duration-300 gap-1";
+                        $activeClass = "text-white scale-110";
+                        $inactiveClass = "text-gray-500 hover:text-gray-300";
+                    @endphp
 
-                    {{-- Explorar --}}
                     <a href="{{ route('discover.index') }}"
-                        class="flex flex-col items-center justify-center flex-1 h-full transition-all duration-200
-                              {{ request()->routeIs('discover.index') ? 'text-purple-600' : 'text-gray-500 hover:text-gray-700' }}">
-                        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        <span class="text-xs font-semibold">Explorar</span>
-                    </a>
-
-                    {{-- Mis Favoritos --}}
-                    <a href="{{ route('discover.favorites') }}"
-                        class="flex flex-col items-center justify-center flex-1 h-full transition-all duration-200
-                              {{ request()->routeIs('discover.favorites') ? 'text-pink-600' : 'text-gray-500 hover:text-gray-700' }}">
-                        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                        <span class="text-xs font-semibold">Favoritos</span>
-                    </a>
-
-                    {{-- 🆕 MATCHES - AHORA FUNCIONAL --}}
-                    <a href="{{ route('matches.index') }}"
-                        class="flex flex-col items-center justify-center flex-1 h-full transition-all duration-200
-                              {{ request()->routeIs('matches.*') ? 'text-yellow-600' : 'text-gray-500 hover:text-gray-700' }}">
-                        <div class="relative">
-                            <svg class="w-6 h-6 mb-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path
-                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        class="{{ $navItemClass }} {{ request()->routeIs('discover.index') ? $activeClass : $inactiveClass }}">
+                        <div
+                            class="p-2 rounded-xl {{ request()->routeIs('discover.index') ? 'bg-white/10 shadow-lg' : '' }}">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
-                            @php
-                                $matchesCount = auth()->user()->matchesCount();
-                            @endphp
-                            @if ($matchesCount > 0)
-                                <span
-                                    class="absolute -top-1 -right-2 px-1.5 py-0.5 bg-yellow-400 text-white text-[10px] font-bold rounded-full animate-pulse">
-                                    {{ $matchesCount }}
-                                </span>
-                            @endif
                         </div>
-                        <span class="text-xs font-semibold">Matches</span>
+                        <span class="text-[10px] font-black uppercase tracking-tighter">Explorar</span>
                     </a>
 
-                    {{-- Mensajes (Próximamente) --}}
-                    <button onclick="alert('💬 Mensajería en desarrollo!')"
-                        class="flex flex-col items-center justify-center flex-1 h-full transition-all duration-200 text-gray-400">
-                        <div class="relative">
-                            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <a href="{{ route('discover.favorites') }}"
+                        class="{{ $navItemClass }} {{ request()->routeIs('discover.favorites') ? $activeClass : $inactiveClass }}">
+                        <div
+                            class="p-2 rounded-xl {{ request()->routeIs('discover.favorites') ? 'bg-white/10 shadow-lg' : '' }}">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-tighter">Favoritos</span>
+                    </a>
+
+                    <a href="{{ route('dashboard') }}"
+                        class="flex flex-col items-center justify-center flex-1 h-full -top-6 relative">
+                        <div class="w-16 h-16 rounded-full shadow-[0_10px_25px_rgba(0,0,0,0.4)] flex items-center justify-center border-4 border-white/10 transform transition-transform hover:scale-110 active:scale-95"
+                            style="background: var(--theme-gradient);">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                        </div>
+                    </a>
+
+                    <a href="{{ route('chat.index') }}"
+                        class="{{ $navItemClass }} {{ request()->routeIs('chat.*') ? $activeClass : $inactiveClass }}">
+                        <div class="p-2 rounded-xl {{ request()->routeIs('chat.*') ? 'bg-white/10 shadow-lg' : '' }}">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                     d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                             </svg>
-                            <span
-                                class="absolute -top-1 -right-2 px-1.5 py-0.5 bg-amber-400 text-white text-[8px] font-bold rounded-full">
-                                SOON
-                            </span>
                         </div>
-                        <span class="text-xs font-semibold">Mensajes</span>
-                    </button>
+                        <span class="text-[10px] font-black uppercase tracking-tighter">Chat</span>
+                    </a>
 
-                    {{-- Perfil --}}
                     <a href="{{ route('profile.show') }}"
-                        class="flex flex-col items-center justify-center flex-1 h-full transition-all duration-200
-                              {{ request()->routeIs('profile.*') ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-700' }}">
-                        @if (auth()->user()->primaryPhoto)
-                            <img src="{{ auth()->user()->primaryPhoto->url }}" alt="Perfil"
-                                class="w-6 h-6 rounded-full object-cover mb-1 {{ request()->routeIs('profile.*') ? 'ring-2 ring-indigo-600' : '' }}">
-                        @else
-                            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                        @endif
-                        <span class="text-xs font-semibold">Perfil</span>
+                        class="{{ $navItemClass }} {{ request()->routeIs('profile.*') ? $activeClass : $inactiveClass }}">
+                        <div
+                            class="p-2 rounded-xl {{ request()->routeIs('profile.*') ? 'bg-white/10 shadow-lg' : '' }}">
+                            @if ($user->primaryPhoto)
+                                <img src="{{ $user->primaryPhoto->url }}" class="w-6 h-6 rounded-lg object-cover">
+                            @else
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            @endif
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-tighter">Perfil</span>
                     </a>
 
                 </div>
-            </nav>
+                </nav>
         </div>
     </div>
 
-    {{-- Scripts --}}
     @stack('scripts')
 </body>
 

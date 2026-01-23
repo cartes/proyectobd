@@ -1,3 +1,105 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        /* Default / Base colors */
+        --primary: #6366f1;
+        --primary-rgb: 99, 102, 241;
+    }
+
+    /* Sugar Baby Theme: Playful & Vibrant */
+    .theme-sb {
+        --theme-primary: #FF3366;
+        --theme-primary-rgb: 255, 51, 102;
+        --theme-secondary: #FF8C42;
+        --theme-accent: #00F5D4;
+        --theme-bg: #FDFAFD;
+        --theme-sidebar: #FFFFFF;
+        --theme-text: #1F2937;
+        --theme-gradient: linear-gradient(135deg, #FF3366 0%, #FF8C42 100%);
+        --theme-gradient-deep: linear-gradient(135deg, #FF3366 0%, #7C3AED 100%);
+        --theme-font-heading: 'Outfit', sans-serif;
+        --theme-button-shadow: rgba(255, 51, 102, 0.4);
+    }
+
+    /* Sugar Daddy Theme: Premium Playful */
+    .theme-sd {
+        --theme-primary: #4F46E5;
+        --theme-primary-rgb: 79, 70, 229;
+        --theme-secondary: #818CF8;
+        --theme-accent: #C084FC;
+        --theme-bg: #0B0E14;
+        --theme-sidebar: #131720;
+        --theme-text: #F9FAFB;
+        --theme-gradient: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+        --theme-gradient-deep: linear-gradient(135deg, #1E1B4B 0%, #0B0E14 100%);
+        --theme-font-heading: 'Inter', sans-serif;
+        --theme-button-shadow: rgba(79, 70, 229, 0.4);
+    }
+
+    body {
+        font-family: var(--theme-font-heading, inherit);
+    }
+}
+
+@layer components {
+    .glass-card {
+        @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
+    }
+
+    .theme-sd .glass-card {
+        @apply bg-gray-900/60 backdrop-blur-lg border border-gray-700/30 shadow-2xl;
+    }
+
+    .theme-btn {
+        @apply px-6 py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all duration-300 transform active:scale-95 shadow-xl;
+        background: var(--theme-gradient);
+        color: white;
+    }
+
+    .theme-btn:hover {
+        @apply shadow-2xl translate-y-[-2px];
+        box-shadow: 0 10px 25px -5px var(--theme-button-shadow);
+    }
+
+    .btn-theme {
+        @apply px-4 py-2 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 text-white;
+        background: var(--theme-gradient);
+    }
+
+    .text-theme-title {
+        @apply bg-clip-text text-transparent;
+        background-image: var(--theme-gradient);
+    }
+}
+
+/* Overrides for SD theme to force dark mode elements */
+.theme-sd body {
+    background-color: var(--theme-bg) !important;
+    color: var(--theme-text);
+}
+
+.theme-sd .min-h-screen {
+    background-color: var(--theme-bg) !important;
+}
+
+.theme-sd .bg-white {
+    background-color: var(--theme-sidebar) !important;
+}
+
+.theme-sd .text-gray-900 {
+    color: var(--theme-text) !important;
+}
+
+.theme-sd .text-gray-700,
+.theme-sd .text-gray-600,
+.theme-sd .text-gray-500 {
+    color: #9CA3AF !important;
+}
+
+.theme-sd .border-gray-200,
+.theme-sd .border-gray-100 {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\ProfileDetail;
+use App\Models\PaymentMethod;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -34,6 +35,17 @@ class User extends Authenticatable
         'is_premium',
         'is_verified',
         'is_active',
+
+        'premium_until',
+        'premium_plan_type',
+        'super_likes_remaining',
+        'profile_boost_active',
+        'boost_until',
+        'boost_count',
+        'mercado_pago_customer_id',
+        'primary_payment_method_id',
+        'auto_renew',
+        'payment_preferences',
     ];
 
     /**
@@ -55,6 +67,12 @@ class User extends Authenticatable
             'is_premium' => 'boolean',
             'is_verified' => 'boolean',
             'is_active' => 'boolean',
+
+            'premium_until' => 'datetime',
+            'boost_until' => 'datetime',
+            'profile_boost_active' => 'boolean',
+            'auto_renew' => 'boolean',
+            'payment_preferences' => 'json',
         ];
     }
 
@@ -187,11 +205,47 @@ class User extends Authenticatable
     }
 
     /**
+     * ⭐ NUEVA: Relación con reembolsos
+     */
+    public function refunds()
+    {
+        return $this->hasMany(Refund::class);
+    }
+
+    /**
+     * ⭐ NUEVA: Relación con métodos de pago guardados
+     */
+    public function paymentMethods()
+    {
+        return $this->hasMany(PaymentMethod::class);
+    }
+
+
+    /**
      * Relación: un usuario puede tener muchas compras
      */
     public function purchases()
     {
         return $this->hasMany(Purchase::class);
+    }
+
+
+    /**
+     * ⭐ NUEVA: Relación con logs de auditoría de pagos
+     */
+    public function paymentAuditLogs()
+    {
+        return $this->hasMany(PaymentAuditLog::class);
+    }
+
+    /**
+     * ⭐ NUEVA: Obtener método de pago por defecto
+     */
+    public function defaultPaymentMethod()
+    {
+        return $this->hasOne(PaymentMethod::class)
+            ->where('is_active', true)
+            ->where('is_default', true);
     }
 
     // ==================== MÉTODOS HELPER - MATCHING ====================
@@ -258,6 +312,87 @@ class User extends Authenticatable
             ->where('status', 'active')
             ->where('ends_at', '>', now())
             ->latest();
+    }
+
+    /**
+     * ⭐ NUEVA: Obtener método de pago activo para usar
+     */
+    public function getActivePaymentMethod(): ?PaymentMethod
+    {
+        return $this->paymentMethods()
+            ->where('is_active', true)
+            ->orderByDesc('is_default')
+            ->first();
+    }
+
+    /**
+     * ⭐ NUEVA: Verificar si tiene métodos de pago guardados
+     */
+    public function hasPaymentMethods(): bool
+    {
+        return $this->paymentMethods()
+            ->where('is_active', true)
+            ->exists();
+    }
+
+    /**
+     * ⭐ NUEVA: Obtener últimas N transacciones
+     */
+    public function recentTransactions(int $limit = 10)
+    {
+        return $this->transactions()
+            ->latest()
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * ⭐ NUEVA: Contar super likes restantes
+     */
+    public function hasSuperLikesAvailable(): bool
+    {
+        return $this->super_likes_remaining > 0;
+    }
+
+    /**
+     * ⭐ NUEVA: Usar un super like
+     */
+    public function useSuperLike(): bool
+    {
+        if ($this->super_likes_remaining > 0) {
+            return $this->decrement('super_likes_remaining');
+        }
+        return false;
+    }
+
+    /**
+     * ⭐ NUEVA: Verificar si boost está activo
+     */
+    public function hasActiveBoost(): bool
+    {
+        return $this->profile_boost_active && $this->boost_until?->isFuture();
+    }
+
+    /**
+     * ⭐ NUEVA: Desactivar boost
+     */
+    public function deactivateBoost(): bool
+    {
+        return $this->update([
+            'profile_boost_active' => false,
+        ]);
+    }
+
+    /**
+     * ⭐ NUEVA: Renovar boost
+     */
+    public function renewBoost(int $days = 7): bool
+    {
+        return $this->update([
+            'profile_boost_active' => true,
+            'boost_until' => now()->addDays($days),
+            'boost_count' => $this->boost_count + 1,
+        ]);
     }
 
     /**

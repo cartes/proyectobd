@@ -36,8 +36,12 @@ return [
     ],
 
     'mercadopago' => [
-        'access_token' => env('MP_ACCESS_TOKEN'),
-        'public_key' => env('MP_PUBLIC_KEY'),
+        'api_url' => env('MERCADO_PAGO_API_URL', 'https://api.mercadopago.com'),
+        'checkout_url' => env('MERCADO_PAGO_CHECKOUT_URL', '...'),
+        'access_token' => env('MERCADO_PAGO_ACCESS_TOKEN'),
+        'public_key' => env('MERCADO_PAGO_PUBLIC_KEY'),
+        'env' => env('MERCADO_PAGO_ENV', 'sandbox'),
+        'currency' => env('MERCADO_PAGO_CURRENCY', 'USD'),
     ],
 
 ];

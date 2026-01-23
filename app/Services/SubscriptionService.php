@@ -157,9 +157,8 @@ class SubscriptionService
      */
     protected function applyBoost(User $user, array $metadata): void
     {
-        // TODO: Implementar lógica de boost
-        // Agregar a cola de boosts, cache, etc.
-        \Log::info('Boost applied', ['user_id' => $user->id]);
+        $days = $metadata['days'] ?? 7;
+        $this->mpService->grantBoost($user, $days);
     }
 
     /**
@@ -167,9 +166,7 @@ class SubscriptionService
      */
     protected function addSuperLikes(User $user, int $quantity): void
     {
-        // TODO: Implementar lógica de super likes
-        // Almacenar en atributo o tabla separada
-        \Log::info('Super likes added', ['user_id' => $user->id, 'quantity' => $quantity]);
+        $this->mpService->grantSuperLikes($user, $quantity);
     }
 
     /**
@@ -177,8 +174,7 @@ class SubscriptionService
      */
     protected function fastTrackVerification(User $user): void
     {
-        // TODO: Marcar verificación como prioritaria
-        \Log::info('Verification fast tracked', ['user_id' => $user->id]);
+        $this->mpService->grantVerification($user);
     }
 
     /**

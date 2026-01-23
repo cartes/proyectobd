@@ -24,3 +24,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // PÚBLICAS (webhook DEBE ser público)
 Route::post('/webhook/mercadopago', [WebhookController::class, 'handleMercadoPagoWebhook']);
+
+Route::post('/mercado-pago/webhook', [
+    \App\Http\Controllers\Api\WebhookController::class, 
+    'handle'
+])->name('webhook.mercadopago');
+
+Route::get('/mercado-pago/webhook/test', [
+    \App\Http\Controllers\Api\WebhookController::class, 
+    'test'
+]);

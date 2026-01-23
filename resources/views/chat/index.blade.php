@@ -1,87 +1,98 @@
 @extends('layouts.mobile-app')
 
-@section('content')
-    <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50 py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+@section('page-title', 'Mensajes')
 
-            <!-- Header -->
-            <div class="mb-8">
-                <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
-                    style="font-family: 'Playfair Display', serif;">
-                    Mensajes
-                </h1>
-                <p class="text-gray-600 mt-2">Tus conversaciones activas</p>
+@section('content')
+    <div class="min-h-screen py-10" style="background: var(--theme-gradient-deep);">
+        <div class="max-w-7xl mx-auto px-6">
+
+            <!-- Header Premium -->
+            <div class="mb-10 flex items-center justify-between">
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter drop-shadow-lg">
+                        Mensajes
+                    </h1>
+                    <p class="text-white/60 mt-2 font-bold uppercase tracking-widest text-[10px]">Tus conexiones activas</p>
+                </div>
             </div>
 
             <!-- Conversaciones -->
-            <div
-                class="bg-white rounded-3xl shadow-xl overflow-hidden @if ($conversations->isEmpty()) max-h-[500px] @endif">
+            <div class="glass-card rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl">
                 @forelse($conversations as $conversation)
                     <a href="{{ route('chat.show', $conversation) }}"
-                        class="flex items-center p-4 border-b border-gray-100 hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-300 group">
+                        class="flex items-center p-6 border-b border-white/5 hover:bg-white/5 transition-all duration-300 group">
 
-                        <!-- Avatar -->
+                        <!-- Avatar Premium -->
                         <div class="relative flex-shrink-0">
-                            <!-- Esto maneja TODO: foto o iniciales -->
                             <x-user-avatar :user="$conversation->other_user" size="lg"
-                                class="group-hover:scale-110 transition-transform" />
+                                class="rounded-2xl group-hover:scale-110 transition-transform duration-500 ring-2 ring-white/10" />
 
                             @if ($conversation->unread_count > 0)
                                 <span
-                                    class="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-lg">
+                                    class="absolute -top-2 -right-2 bg-rose-500 text-white text-[10px] font-black rounded-full w-6 h-6 flex items-center justify-center shadow-xl border-2 border-white animate-bounce">
                                     {{ $conversation->unread_count }}
                                 </span>
                             @endif
                         </div>
 
                         <!-- Info -->
-                        <div class="ml-4 flex-1 min-w-0">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-lg font-semibold text-gray-900 truncate">
+                        <div class="ml-6 flex-1 min-w-0">
+                            <div class="flex items-center justify-between mb-1">
+                                <h3
+                                    class="text-xl font-black text-gray-900 theme-sd:text-white truncate tracking-tight uppercase">
                                     {{ $conversation->other_user->name }}
                                 </h3>
                                 @if ($conversation->latestMessage)
-                                    <span class="text-xs text-gray-500">
+                                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">
                                         {{ $conversation->latestMessage->created_at->diffForHumans() }}
                                     </span>
                                 @endif
                             </div>
 
-                            <p class="text-sm text-gray-600 capitalize">
-                                {{ $conversation->other_user->user_type }} • {{ $conversation->other_user->city }}
+                            <p class="text-[10px] font-black uppercase tracking-widest text-emerald-500 mb-2">
+                                {{ strtoupper($conversation->other_user->user_type) }} • {{ $conversation->other_user->city }}
                             </p>
 
                             @if ($conversation->latestMessage)
-                                <p class="text-sm text-gray-500 truncate mt-1">
+                                <p
+                                    class="text-sm text-gray-400 theme-sd:text-gray-500 truncate group-hover:text-gray-200 transition-colors">
                                     @if ($conversation->latestMessage->sender_id === auth()->id())
-                                        <span class="font-medium">Tú:</span>
+                                        <span class="font-black text-xs uppercase tracking-widest text-white/30 mr-1">Tú:</span>
                                     @endif
-                                    {{ Str::limit($conversation->latestMessage->content, 50) }}
+                                    {{ $conversation->latestMessage->content }}
                                 </p>
                             @endif
                         </div>
 
-                        <!-- Indicador de nuevo mensaje -->
+                        <!-- Indicador de nuevo mensaje Premium -->
                         @if ($conversation->unread_count > 0)
-                            <div class="ml-4 flex-shrink-0">
-                                <div
-                                    class="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse">
-                                </div>
+                            <div class="ml-6 flex-shrink-0">
+                                <div class="w-3 h-3 rounded-full shadow-[0_0_15px_rgba(255,51,102,1)]"
+                                    style="background: var(--theme-primary);"></div>
+                            </div>
+                        @else
+                            <div class="ml-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <svg class="w-5 h-5 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                                </svg>
                             </div>
                         @endif
                     </a>
                 @empty
-                    <div class="p-16 text-center">
-                        <svg class="w-20 h-20 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                        </svg>
-                        <h3 class="text-xl font-semibold text-gray-700 mb-2">No tienes conversaciones</h3>
-                        <p class="text-gray-500 mb-6">Empieza a conectar con otros usuarios</p>
-                        <a href="{{ route('discover.index') }}"
-                            class="inline-block px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:shadow-lg transition-all">
-                            Explorar perfiles
+                    <!-- Empty State Premium -->
+                    <div class="p-20 text-center">
+                        <div
+                            class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
+                            <svg class="w-12 h-12 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-3xl font-black text-white uppercase tracking-tighter mb-4">Silencio absoluto...</h3>
+                        <p class="text-white/40 font-bold mb-10 max-w-sm mx-auto">Tus próximas conexiones están a un "Like" de
+                            distancia. Empieza a descubrir perfiles increíbles.</p>
+                        <a href="{{ route('discover.index') }}" class="theme-btn px-10 py-5">
+                            Comenzar a Explorar
                         </a>
                     </div>
                 @endforelse

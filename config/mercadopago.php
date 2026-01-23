@@ -1,7 +1,8 @@
 <?php
-declare(strict_types=1);
 
 return [
-    'access_token' => env('MP_ACCESS_TOKEN', ''),
+    'public_key' => env('MERCADO_PAGO_PUBLIC_KEY'),
+    'access_token' => env('MERCADO_PAGO_ACCESS_TOKEN'),
+    'environment' => env('MERCADO_PAGO_ENV', 'sandbox'),
+    'webhook_token' => env('MERCADO_PAGO_WEBHOOK_TOKEN', 'your-secure-webhook-token'),
 ];
-
