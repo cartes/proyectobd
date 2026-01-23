@@ -11,35 +11,19 @@ use Illuminate\Support\Str;
 
 class ProfilePhotoController extends Controller
 {
-    public function store(Request $request)
+    public function store(\App\Http\Requests\StorePhotoRequest $request)
     {
         $user = Auth::user();
-
-        // Validar que pueda subir más fotos
-        if (!$user->canUploadMorePhotos()) {
-            return back()->withErrors(['photo' => 'Has alcanzado el límite máximo de ' . ProfilePhoto::MAX_PHOTOS . ' fotos.']);
-        }
-
-        // Validación
-        $request->validate([
-            'photo' => [
-                'required',
-                'image',
-                'mimes:' . implode(',', ProfilePhoto::ALLOWED_TYPES),
-                'max:' . ProfilePhoto::MAX_FILE_SIZE,
-            ],
-        ], [
-            'photo.required' => 'Debes seleccionar una foto',
-            'photo.image' => 'El archivo debe ser una imagen',
-            'photo.mimes' => 'Solo se permiten fotos en formato: ' . implode(', ', ProfilePhoto::ALLOWED_TYPES),
-            'photo.max' => 'La foto no debe superar 5MB',
-        ]);
 
         try {
             // Guardar archivo
             $file = $request->file('photo');
-            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs("profiles/{$user->id}", $filename, 'public');
+            // ✅ USAR extension() EN LUGAR DE getClientOriginalExtension() PARA MAYOR SEGURIDAD
+            $extension = $file->extension();
+            $filename = Str::uuid() . '.' . $extension;
+
+            // ✅ USAR RUTA OFUSCADA
+            $path = $file->storeAs($user->getStoragePath(), $filename, 'public');
 
             // Crear registro
             $photo = $user->photos()->create([
@@ -90,8 +74,12 @@ class ProfilePhotoController extends Controller
         ]);
 
         foreach ($request->order as $index => $photoId) {
-            $photo = ProfilePhoto::find($photoId);
-            if ($photo && $photo->user_id === $user->id) {
+            // ✅ ASEGURAR QUE LA FOTO PERTENECE AL USUARIO ANTES DE ACTUALIZAR
+            $photo = ProfilePhoto::where('id', $photoId)
+                ->where('user_id', $user->id)
+                ->first();
+
+            if ($photo) {
                 $photo->update(['order' => $index]);
             }
         }

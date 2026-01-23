@@ -22,6 +22,16 @@ class Conversation extends Model
         'last_message_at' => 'datetime',
     ];
 
+    // ==================== SCOPES ====================
+
+    public function scopeForUser($query, $userId)
+    {
+        return $query->where(function ($q) use ($userId) {
+            $q->where('user_one_id', $userId)
+                ->orWhere('user_two_id', $userId);
+        });
+    }
+
     public function userOne(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_one_id');

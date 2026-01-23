@@ -28,7 +28,14 @@ class SubscriptionController extends Controller
      */
     public function index()
     {
-        $plans = SubscriptionPlan::where('is_active', true)->get();
+        $user = Auth::user();
+
+        $plans = SubscriptionPlan::where('is_active', true)
+            ->where(function ($query) use ($user) {
+                $query->where('target_user_type', $user->user_type)
+                    ->orWhereNull('target_user_type');
+            })
+            ->get();
 
         // Formatear features de cada plan
         $plans = $plans->map(function ($plan) {
@@ -97,6 +104,32 @@ class SubscriptionController extends Controller
                 'plan_name' => $plan->name,
                 'plan_amount' => $plan->amount,
             ]);
+
+            // ✅ MANEJO DE PLAN GRATUITO
+            if ($plan->amount == 0) {
+                // Activar suscripción directamente
+                $result = $this->subscriptionService->activateSubscription(
+                    $user,
+                    $plan,
+                    'FREE_' . \Illuminate\Support\Str::random(10), // ID simulado
+                    'FREE_' . \Illuminate\Support\Str::random(10),
+                    0.00
+                );
+
+                if ($result['success']) {
+                    return response()->json([
+                        'success' => true,
+                        'is_free' => true, // Flag para el frontend
+                        'message' => '¡Plan gratuito activado correctamente!',
+                        'redirect' => route('dashboard')
+                    ]);
+                } else {
+                     return response()->json([
+                        'success' => false,
+                        'error' => 'Error al activar el plan gratuito'
+                    ], 500);
+                }
+            }
 
             $preference = $this->mpService->createSubscriptionPreference($user, $plan);
 

@@ -20,6 +20,9 @@ class DiscoveryController extends Controller
         $query = User::where('user_type', $targetUserType)
             ->where('is_active', true)
             ->where('id', '!=', $user->id)
+            ->whereHas('profileDetail', function ($q) {
+                $q->where('is_private', false);
+            })
             ->with(['profileDetail', 'photos']);
 
         // Filtro por ciudad

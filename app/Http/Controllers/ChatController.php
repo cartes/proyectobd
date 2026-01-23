@@ -25,10 +25,7 @@ class ChatController extends Controller
     {
         $userId = auth()->id();
 
-        $conversations = Conversation::where(function ($query) use ($userId) {
-            $query->where('user_one_id', $userId)
-                ->orWhere('user_two_id', $userId);
-        })
+        $conversations = Conversation::forUser($userId)
             ->with(['userOne', 'userTwo', 'latestMessage'])
             ->orderBy('last_message_at', 'desc')
             ->get()

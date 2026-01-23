@@ -12,8 +12,22 @@ use Illuminate\Support\Str;
 class ModerationService
 {
     private array $leetMap = [
-        '4' => 'a', '@' => 'a', '3' => 'e', '1' => 'i', '!' => 'i',
-        '0' => 'o', '$' => 's', '7' => 't', '2' => 'z', '5' => 's',
+        '4' => 'a',
+        '@' => 'a',
+        '3' => 'e',
+        '1' => 'i',
+        '!' => 'i',
+        '|' => 'i',
+        '0' => 'o',
+        '$' => 's',
+        '7' => 't',
+        '2' => 'z',
+        '5' => 's',
+        '8' => 'b',
+        '9' => 'g',
+        '6' => 'g',
+        'x' => 'x',
+        '+' => 't',
     ];
 
     /**
@@ -50,13 +64,13 @@ class ModerationService
     public function maskProfanity(string $text): string
     {
         $blockedWords = BlockedWord::active()->pluck('word')->toArray();
-        
+
         foreach ($blockedWords as $word) {
             $pattern = '/\b' . preg_quote($word, '/') . '\b/iu';
             $replacement = str_repeat('*', strlen($word));
             $text = preg_replace($pattern, $replacement, $text);
         }
-        
+
         return $text;
     }
 
@@ -71,8 +85,8 @@ class ModerationService
         $message->update([
             'is_flagged' => true,
             'flagged_reason' => implode(', ', array_column($scanResult['flagged_words'], 'word')),
-            'content' => $severity === 'high' 
-                ? $this->maskProfanity($message->content) 
+            'content' => $severity === 'high'
+                ? $this->maskProfanity($message->content)
                 : $message->content,
         ]);
 
@@ -198,7 +212,14 @@ class ModerationService
     {
         $text = strtolower($text);
         $text = strtr($text, $this->leetMap);
-        return preg_replace('/[^a-z0-9]/', '', $text);
+
+        // Eliminar caracteres no alfanuméricos (espacios, puntos, etc. entre letras)
+        $text = preg_replace('/[^a-z0-9]/', '', $text);
+
+        // ✅ ELIMINAR CARACTERES REPETIDOS (evita bypass como "p.aaaa.l.4.b.r.4")
+        $text = preg_replace('/(.)\1+/', '$1', $text);
+
+        return $text;
     }
 
     private function containsWord(string $text, string $word): bool
@@ -209,7 +230,7 @@ class ModerationService
 
     private function severityScore(string $severity): int
     {
-        return match($severity) {
+        return match ($severity) {
             'low' => 1,
             'medium' => 3,
             'high' => 5,
@@ -219,8 +240,10 @@ class ModerationService
 
     private function determineSeverity(int $score): string
     {
-        if ($score >= 5) return 'high';
-        if ($score >= 3) return 'medium';
+        if ($score >= 5)
+            return 'high';
+        if ($score >= 3)
+            return 'medium';
         return 'low';
     }
 }

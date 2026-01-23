@@ -450,11 +450,30 @@ class User extends Authenticatable
     }
 
     /**
+     * Obtener el límite máximo de fotos según el plan
+     */
+    public function getMaxPhotosCount(): int
+    {
+        $features = app(\App\Services\SubscriptionService::class)->getUserFeatures($this);
+
+        if ($features['extended_photos'] ?? false) {
+            return 12; // Límite para PRO
+        }
+
+        // Daddies premium también podrían tener más
+        if ($this->isPremium()) {
+            return 10;
+        }
+
+        return ProfilePhoto::MAX_PHOTOS; // Límite por defecto (8)
+    }
+
+    /**
      * Verificar si puede subir más fotos
      */
     public function canUploadMorePhotos()
     {
-        return $this->photos()->count() < ProfilePhoto::MAX_PHOTOS;
+        return $this->photos()->count() < $this->getMaxPhotosCount();
     }
 
     /**
@@ -462,7 +481,7 @@ class User extends Authenticatable
      */
     public function remainingPhotosCount()
     {
-        return ProfilePhoto::MAX_PHOTOS - $this->photos()->count();
+        return $this->getMaxPhotosCount() - $this->photos()->count();
     }
 
     /**
@@ -499,6 +518,75 @@ class User extends Authenticatable
             ->where('action_type', 'ban')
             ->where('is_active', true)
             ->exists();
+    }
+
+    /**
+     * Obtener una ruta de almacenamiento ofuscada para archivos del usuario
+     */
+    public function getStoragePath(): string
+    {
+        // Usar un hash simple basado en el ID y la app_key para que no sea predecible
+        $hash = substr(hash('sha256', $this->id . config('app.key')), 0, 12);
+        return "profiles/{$hash}";
+    }
+
+    /**
+     * Actualiza el perfil de forma coordinada (User + ProfileDetail)
+     */
+    public function updateProfile(array $data): bool
+    {
+        // 1. Actualizar datos base en la tabla 'users'
+        $this->update([
+            'city' => $data['city'] ?? $this->city,
+            'birth_date' => $data['birth_date'] ?? $this->birth_date,
+            'bio' => $data['bio'] ?? $this->bio,
+        ]);
+
+        // 2. Preparar datos para 'profile_details'
+        $profileData = [
+            'height' => $data['height'] ?? null,
+            'body_type' => $data['body_type'] ?? null,
+            'relationship_status' => $data['relationship_status'] ?? null,
+            'children' => $data['children'] ?? null,
+            'education' => $data['education'] ?? null,
+            'occupation' => $data['occupation'] ?? null,
+            'interests' => $data['interests'] ?? [],
+            'languages' => $data['languages'] ?? [],
+            'lifestyle' => $data['lifestyle'] ?? [],
+            'looking_for' => $data['looking_for'] ?? null,
+            'availability' => $data['availability'] ?? null,
+            'is_private' => isset($data['is_private']) ? (bool) $data['is_private'] : false,
+            'social_instagram' => $data['social_instagram'] ?? null,
+            'social_whatsapp' => $data['social_whatsapp'] ?? null,
+        ];
+
+        // 3. Campos específicos
+        if ($this->isSugarDaddy()) {
+            $profileData = array_merge($profileData, [
+                'income_range' => $data['income_range'] ?? null,
+                'net_worth' => $data['net_worth'] ?? null,
+                'industry' => $data['industry'] ?? null,
+                'company_size' => $data['company_size'] ?? null,
+                'travel_frequency' => $data['travel_frequency'] ?? null,
+                'what_i_offer' => $data['what_i_offer'] ?? null,
+                'mentorship_areas' => $data['mentorship_areas'] ?? [],
+            ]);
+        }
+
+        if ($this->isSugarBaby()) {
+            $profileData = array_merge($profileData, [
+                'appearance_details' => $data['appearance_details'] ?? null,
+                'personal_style' => $data['personal_style'] ?? null,
+                'fitness_level' => $data['fitness_level'] ?? null,
+                'aspirations' => $data['aspirations'] ?? null,
+                'ideal_daddy' => $data['ideal_daddy'] ?? null,
+            ]);
+        }
+
+        return (bool) $this->profileDetail()->updateOrCreate(
+            ['user_id' => $this->id],
+            $profileData
+        );
     }
 
     /**

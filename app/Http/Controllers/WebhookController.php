@@ -35,7 +35,59 @@ class WebhookController extends Controller
     public function handleMercadoPagoWebhook(Request $request)
     {
         try {
-            Log::info('Mercado Pago webhook received', [
+            // ✅ VERIFICAR FIRMA DE MERCADO PAGO
+            $xSignature = $request->header('x-signature');
+            $xRequestId = $request->header('x-request-id');
+            $webhookSecret = config('services.mercadopago.webhook_secret');
+
+            if (!$xSignature || !$xRequestId || !$webhookSecret) {
+                Log::warning('Mercado Pago webhook missing signature header or secret not configured', [
+                    'has_signature' => !empty($xSignature),
+                    'has_request_id' => !empty($xRequestId),
+                    'has_secret' => !empty($webhookSecret),
+                ]);
+                return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
+            }
+
+            // Parsear x-signature (formato: ts=...,v1=...)
+            $parts = explode(',', $xSignature);
+            $ts = null;
+            $v1 = null;
+
+            foreach ($parts as $part) {
+                $kv = explode('=', $part);
+                if (count($kv) === 2) {
+                    if (trim($kv[0]) === 'ts')
+                        $ts = trim($kv[1]);
+                    if (trim($kv[0]) === 'v1')
+                        $v1 = trim($kv[1]);
+                }
+            }
+
+            if (!$ts || !$v1) {
+                Log::warning('Invalid x-signature format', ['signature' => $xSignature]);
+                return response()->json(['status' => 'error', 'message' => 'Invalid signature format'], 401);
+            }
+
+            // El ID del recurso está en data.id o en el query param id
+            $resourceId = $request->input('data.id') ?? $request->query('id');
+
+            if ($resourceId) {
+                // Manifest string: id:[id];ts:[ts];
+                $manifest = "id:{$resourceId};ts:{$ts};";
+                $sha256 = hash_hmac('sha256', $manifest, $webhookSecret);
+
+                if (!hash_equals($sha256, $v1)) {
+                    Log::error('Mercado Pago webhook signature mismatch!', [
+                        'expected' => $sha256,
+                        'received' => $v1,
+                        'manifest' => $manifest
+                    ]);
+                    return response()->json(['status' => 'error', 'message' => 'Invalid signature'], 401);
+                }
+            }
+
+            Log::info('Mercado Pago webhook received and verified', [
                 'type' => $request->input('type'),
                 'data' => $request->input('data'),
             ]);

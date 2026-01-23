@@ -17,6 +17,7 @@ class SubscriptionPlan extends Model
         'description',
         'features',
         'is_active',
+        'target_user_type',
     ];
 
     protected $casts = [

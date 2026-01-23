@@ -113,6 +113,42 @@
                                     {{ explode(' - ', ProfileDetail::fitnessLevels()[$user->profileDetail->fitness_level])[0] ?? 'Activa' }}
                                 </span>
                             @endif
+
+                            {{-- ✅ INSTAGRAM PREMIUM --}}
+                            @if($user->profileDetail->social_instagram)
+                                @if($canSeeInstagram || $isOwnProfile)
+                                    <a href="https://instagram.com/{{ str_replace('@', '', $user->profileDetail->social_instagram) }}"
+                                        target="_blank"
+                                        class="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-lg border border-white/30 font-bold shadow-lg flex items-center gap-2 hover:bg-white/30 transition-all text-sm">
+                                        <span>📸</span> {{ $user->profileDetail->social_instagram }}
+                                    </a>
+                                @else
+                                    <div class="px-4 py-1.5 rounded-full bg-black/10 backdrop-blur-lg border border-white/10 text-white/60 text-xs flex items-center gap-2 cursor-help group relative"
+                                        title="Suscríbete a Premium para ver Redes Sociales">
+                                        <span>📸</span> Instagram oculto 🔒
+                                        <div
+                                            class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-black/80 rounded-lg text-[10px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none text-center">
+                                            Suscríbete a Premium para <br> desbloquear redes sociales
+                                        </div>
+                                    </div>
+                                @endif
+                            {{-- ✅ WHATSAPP PREMIUM (SOLO BABIES) --}}
+                            @if($user->profileDetail->social_whatsapp)
+                                @if($canSeeWhatsapp || $isOwnProfile)
+                                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $user->profileDetail->social_whatsapp) }}" 
+                                       target="_blank"
+                                       class="px-4 py-1.5 rounded-full bg-green-500/30 backdrop-blur-lg border border-green-400/50 font-bold shadow-lg flex items-center gap-2 hover:bg-green-500/50 transition-all text-sm">
+                                        <span>💬</span> WhatsApp
+                                    </a>
+                                @else
+                                    <div class="px-4 py-1.5 rounded-full bg-black/10 backdrop-blur-lg border border-white/10 text-white/60 text-xs flex items-center gap-2 cursor-help group relative" title="Suscríbete a Premium para ver WhatsApp">
+                                        <span>💬</span> WhatsApp oculto 🔒
+                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-black/80 rounded-lg text-[10px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none text-center">
+                                            Suscríbete a Premium para <br> desbloquear contacto directo
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -291,7 +327,8 @@
                 </div>
 
                 {{-- Grid de fotos - 6 columnas --}}
-                <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" x-data="lightboxGallery({{ json_encode($photosForLightbox) }})">
+                <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
+                    x-data="lightboxGallery({{ json_encode($photosForLightbox) }})">
                     @foreach ($user->photos->take(12) as $photo)
                         <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100 relative group {{ $photo->is_primary ? 'ring-4 ring-amber-500' : '' }}"
                             @click="openLightbox({{ $loop->index }})">
@@ -338,8 +375,7 @@
                             <button @click="closeLightbox"
                                 class="absolute top-4 right-4 z-50 p-3 bg-white/10 hover:bg-white/25 rounded-full transition-all duration-300 backdrop-blur-lg"
                                 aria-label="Cerrar galería">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -354,8 +390,7 @@
                             {{-- Imagen Principal --}}
                             <div class="flex items-center justify-center h-full">
                                 <template x-for="(photo, index) in photos" :key="index">
-                                    <div x-show="currentIndex === index"
-                                        x-transition:enter="transition ease-out duration-300"
+                                    <div x-show="currentIndex === index" x-transition:enter="transition ease-out duration-300"
                                         x-transition:enter-start="opacity-0 scale-95"
                                         x-transition:enter-end="opacity-100 scale-100"
                                         class="flex items-center justify-center h-full">
@@ -369,10 +404,8 @@
                             <button @click.stop="prev" x-show="photos.length > 1"
                                 class="absolute left-4 top-1/2 -translate-y-1/2 p-4 bg-white/10 hover:bg-white/25 rounded-full transition-all duration-300 backdrop-blur-lg"
                                 aria-label="Imagen anterior">
-                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                        d="M15 19l-7-7 7-7" />
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
                                 </svg>
                             </button>
 
@@ -380,10 +413,8 @@
                             <button @click.stop="next" x-show="photos.length > 1"
                                 class="absolute right-4 top-1/2 -translate-y-1/2 p-4 bg-white/10 hover:bg-white/25 rounded-full transition-all duration-300 backdrop-blur-lg"
                                 aria-label="Imagen siguiente">
-                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                        d="M9 5l7 7-7 7" />
+                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
                                 </svg>
                             </button>
 
@@ -391,8 +422,7 @@
                             <div x-show="photos.length > 1"
                                 class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2">
                                 <template x-for="(photo, index) in photos" :key="index">
-                                    <button @click="currentIndex = index"
-                                        class="h-2.5 rounded-full transition-all duration-300"
+                                    <button @click="currentIndex = index" class="h-2.5 rounded-full transition-all duration-300"
                                         :class="index === currentIndex ? 'bg-white w-10' : 'bg-white/50 hover:bg-white/75 w-2.5'"
                                         :aria-label="`Ir a imagen ${index + 1}`">
                                     </button>
@@ -513,8 +543,8 @@
                     class="inline-block px-10 py-4 bg-white/20 hover:bg-white/30 backdrop-blur-lg border-2 border-white/40 hover:border-white/60 rounded-2xl text-white font-bold transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                     <span class="flex items-center gap-2">
                         Completar Perfil
-                        <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                             </path>
                         </svg>

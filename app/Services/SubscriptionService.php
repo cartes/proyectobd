@@ -297,6 +297,9 @@ class SubscriptionService
                 'advanced_filters' => false,
                 'no_ads' => false,
                 'priority_verification' => false,
+                'private_profiles' => false,
+                'extended_photos' => false,
+                'share_data' => false,
                 'plan_name' => 'Gratis',
                 'expires_at' => null,
             ];
@@ -313,6 +316,9 @@ class SubscriptionService
             'advanced_filters' => in_array('advanced_filters', $features),
             'no_ads' => in_array('no_ads', $features),
             'priority_verification' => in_array('priority_verification', $features),
+            'private_profiles' => in_array('private_profiles', $features),
+            'extended_photos' => in_array('extended_photos', $features),
+            'share_data' => in_array('share_data', $features),
             'plan_name' => $subscription->plan->name,
             'expires_at' => $subscription->ends_at,
         ];

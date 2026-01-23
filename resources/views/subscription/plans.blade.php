@@ -145,13 +145,23 @@
                     return response.json();
                 })
                 .then(data => {
-                    if (data.success && data.init_point) {
-                        window.location.href = data.init_point;
-                    } else {
-                        alert('Error: ' + (data.error || 'Error desconocido'));
-                        btn.disabled = false;
-                        btn.innerHTML = originalText;
+                    if (data.success) {
+                        if (data.is_free && data.redirect) {
+                            alert(data.message);
+                            window.location.href = data.redirect;
+                            return;
+                        }
+
+                        if (data.init_point) {
+                            window.location.href = data.init_point;
+                            return;
+                        }
                     }
+                    
+                    // Fallback para error
+                    alert('Error: ' + (data.error || 'Error desconocido'));
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
                 })
                 .catch(error => {
                     console.error('Error:', error);

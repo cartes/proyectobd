@@ -38,6 +38,9 @@ class ProfileDetail extends Model
         'fitness_level',
         'aspirations',
         'ideal_daddy',
+        'is_private',
+        'social_instagram',
+        'social_whatsapp',
     ];
 
     protected function casts(): array
@@ -47,6 +50,7 @@ class ProfileDetail extends Model
             'languages' => 'array',
             'lifestyle' => 'array',
             'mentorship_areas' => 'array',
+            'is_private' => 'boolean',
         ];
     }
 
