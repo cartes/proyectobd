@@ -132,18 +132,21 @@
                                         </div>
                                     </div>
                                 @endif
+                            @endif
                             {{-- ✅ WHATSAPP PREMIUM (SOLO BABIES) --}}
                             @if($user->profileDetail->social_whatsapp)
                                 @if($canSeeWhatsapp || $isOwnProfile)
-                                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $user->profileDetail->social_whatsapp) }}" 
-                                       target="_blank"
-                                       class="px-4 py-1.5 rounded-full bg-green-500/30 backdrop-blur-lg border border-green-400/50 font-bold shadow-lg flex items-center gap-2 hover:bg-green-500/50 transition-all text-sm">
+                                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $user->profileDetail->social_whatsapp) }}"
+                                        target="_blank"
+                                        class="px-4 py-1.5 rounded-full bg-green-500/30 backdrop-blur-lg border border-green-400/50 font-bold shadow-lg flex items-center gap-2 hover:bg-green-500/50 transition-all text-sm">
                                         <span>💬</span> WhatsApp
                                     </a>
                                 @else
-                                    <div class="px-4 py-1.5 rounded-full bg-black/10 backdrop-blur-lg border border-white/10 text-white/60 text-xs flex items-center gap-2 cursor-help group relative" title="Suscríbete a Premium para ver WhatsApp">
+                                    <div class="px-4 py-1.5 rounded-full bg-black/10 backdrop-blur-lg border border-white/10 text-white/60 text-xs flex items-center gap-2 cursor-help group relative"
+                                        title="Suscríbete a Premium para ver WhatsApp">
                                         <span>💬</span> WhatsApp oculto 🔒
-                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-black/80 rounded-lg text-[10px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none text-center">
+                                        <div
+                                            class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-black/80 rounded-lg text-[10px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none text-center">
                                             Suscríbete a Premium para <br> desbloquear contacto directo
                                         </div>
                                     </div>

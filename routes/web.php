@@ -113,7 +113,8 @@ Route::post('/webhook/mercadopago', [WebhookController::class, 'handleMercadoPag
  * Rutas de administración
  */
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/moderation', [ModerationController::class, 'dashboard'])->name('moderation.dashboard');
+    // Super Admin Dashboard
+    Route::get('/dashboard', [App\Http\Controllers\Admin\AdminController::class, 'dashboard'])->name('dashboard');
 
     // Reportes
     Route::get('/moderation/reports', [ModerationController::class, 'reports'])->name('moderation.reports');
@@ -129,6 +130,34 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/moderation/users', [ModerationController::class, 'users'])->name('moderation.users');
     Route::get('/moderation/users/{user}', [ModerationController::class, 'showUser'])->name('moderation.users.show');
     Route::post('/moderation/users/{user}/action', [ModerationController::class, 'userAction'])->name('moderation.users.action');
+    Route::post('/moderation/users/{user}/verify', [ModerationController::class, 'toggleVerification'])->name('moderation.users.verify');
+    Route::post('/moderation/users/{user}/change-role', [ModerationController::class, 'changeRole'])->name('moderation.users.change-role');
+
+    // Gestión de Planes (Precios y Ofertas)
+    Route::get('/plans', [App\Http\Controllers\Admin\PlanController::class, 'index'])->name('plans.index');
+    Route::get('/plans/{plan}/edit', [App\Http\Controllers\Admin\PlanController::class, 'edit'])->name('plans.edit');
+    Route::put('/plans/{plan}', [App\Http\Controllers\Admin\PlanController::class, 'update'])->name('plans.update');
+
+    // Finanzas
+    Route::get('/transactions', [App\Http\Controllers\Admin\FinanceController::class, 'transactions'])->name('finance.transactions');
+
+    // Moderación de Fotos
+    Route::get('/moderation/photos', [App\Http\Controllers\Admin\PhotoModerationController::class, 'index'])->name('moderation.photos.index');
+    Route::post('/moderation/photos/{photo}/approve', [App\Http\Controllers\Admin\PhotoModerationController::class, 'approve'])->name('moderation.photos.approve');
+    Route::post('/moderation/photos/{photo}/reject', [App\Http\Controllers\Admin\PhotoModerationController::class, 'reject'])->name('moderation.photos.reject');
+
+    // Moderación de Propuestas (Perfil)
+    Route::get('/moderation/proposals', [App\Http\Controllers\Admin\ContentModerationController::class, 'index'])->name('moderation.proposals.index');
+    Route::post('/moderation/proposals/{user}/approve', [App\Http\Controllers\Admin\ContentModerationController::class, 'approve'])->name('moderation.proposals.approve');
+    Route::post('/moderation/proposals/{user}/reject', [App\Http\Controllers\Admin\ContentModerationController::class, 'reject'])->name('moderation.proposals.reject');
+
+    // Módulos en desarrollo (Placeholders)
+    Route::get('/finance/reports', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('finance.reports')->defaults('title', 'Reportes Financieros');
+    Route::get('/system/config', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('system.config')->defaults('title', 'Configuración Global');
+    Route::get('/system/logs', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('system.logs')->defaults('title', 'Logs del Sistema');
+    Route::get('/system/stats', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('system.stats')->defaults('title', 'Estadísticas Generales');
+    Route::get('/marketing/promotions', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('marketing.promotions')->defaults('title', 'Promociones');
+    Route::get('/marketing/notifications', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('marketing.notifications')->defaults('title', 'Notificaciones Push');
 });
 
 require __DIR__ . '/auth.php';

@@ -70,8 +70,9 @@
 
                     {{-- Drop Zone --}}
                     <div class="relative">
-                        <input type="file" id="photoInput" name="photo" accept="image/jpeg,image/png,image/webp"
-                            class="hidden" @change="previewImage($event)">
+                        <input type="file" id="photoInput" name="photo" accept="image/jpeg,image/png,image/webp" class="hidden"
+                            @change="previewImage($event)">
+                        <input type="hidden" name="potential_nudity" x-model="potentialNudity">
 
                         <label for="photoInput" class="block cursor-pointer">
                             <div class="border-2 border-dashed {{ Auth::user()->user_type === 'sugar_daddy' ? 'border-purple-300 hover:border-purple-400 bg-purple-50' : 'border-pink-300 hover:border-pink-400 bg-pink-50' }} rounded-2xl p-12 text-center transition-all duration-300 hover:scale-[1.02]"
@@ -79,8 +80,7 @@
 
                                 {{-- Preview --}}
                                 <div x-show="previewUrl" class="mb-4">
-                                    <img :src="previewUrl" alt="Preview"
-                                        class="max-h-64 mx-auto rounded-2xl shadow-lg">
+                                    <img :src="previewUrl" alt="Preview" class="max-h-64 mx-auto rounded-2xl shadow-lg">
                                 </div>
 
                                 {{-- Upload Icon --}}
@@ -98,9 +98,18 @@
                                     </p>
                                 </div>
 
-                                <p x-show="previewUrl" class="text-sm text-gray-600 mt-4">
+                                <p x-show="previewUrl && !isAnalyzing" class="text-sm text-gray-600 mt-4">
                                     Click para cambiar la foto
                                 </p>
+
+                                {{-- Analyzing State --}}
+                                <div x-show="isAnalyzing" class="mt-4 flex items-center justify-center gap-2 text-amber-600 font-bold animate-pulse">
+                                    <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Analizando imagen...
+                                </div>
                             </div>
                         </label>
                     </div>
@@ -111,7 +120,8 @@
                             class="px-6 py-3 bg-gray-100 hover:bg-gray-200 border-2 border-gray-300 rounded-xl text-gray-700 font-bold transition-all duration-300">
                             Cancelar
                         </button>
-                        <button type="submit"
+                        <button type="submit" :disabled="isAnalyzing"
+                            :class="{'opacity-50 cursor-not-allowed': isAnalyzing}"
                             class="px-8 py-3 bg-gradient-to-r {{ Auth::user()->user_type === 'sugar_daddy' ? 'from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800' : 'from-pink-500 to-pink-700 hover:from-pink-600 hover:to-pink-800' }} rounded-xl text-white font-bold transition-all duration-300 shadow-lg hover:scale-105">
                             📤 Subir Foto
                         </button>
@@ -125,7 +135,8 @@
                     <p class="text-2xl mb-2">📸</p>
                     <p class="text-lg font-bold text-gray-800 mb-2">Has alcanzado el límite de fotos</p>
                     <p class="text-gray-600">Tienes {{ Auth::user()->photos()->count() }} fotos subidas (máximo
-                        {{ \App\Models\ProfilePhoto::MAX_PHOTOS }})</p>
+                        {{ \App\Models\ProfilePhoto::MAX_PHOTOS }})
+                    </p>
                     <p class="text-sm text-gray-500 mt-2">Elimina alguna foto para subir una nueva</p>
                 </div>
             </div>
@@ -231,22 +242,63 @@
     </div>
 
     @push('scripts')
+        <!-- TensorFlow.js and NSFWJS CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/nsfwjs@latest/dist/browser/nsfwjs.min.js"></script>
         <script>
             function photoGallery() {
                 return {
                     previewUrl: null,
                     draggedElement: null,
+                    model: null,
+                    isAnalyzing: false,
+                    potentialNudity: 0,
 
-                    init() {
+                    async init() {
                         console.log('Photo gallery initialized');
+                        try {
+                            // Cargar el modelo NSFWJS de forma asíncrona al iniciar
+                            this.model = await nsfwjs.load();
+                            console.log('NSFW Model loaded');
+                        } catch (e) {
+                            console.error('Error loading NSFW model:', e);
+                        }
                     },
 
-                    previewImage(event) {
+                    async previewImage(event) {
                         const file = event.target.files[0];
                         if (file) {
+                            // Reset flags
+                            this.potentialNudity = 0;
+                            this.isAnalyzing = true;
+
                             const reader = new FileReader();
-                            reader.onload = (e) => {
+                            reader.onload = async (e) => {
                                 this.previewUrl = e.target.result;
+
+                                // Analizar la imagen
+                                if (this.model) {
+                                    const img = new Image();
+                                    img.src = e.target.result;
+                                    img.onload = async () => {
+                                        const predictions = await this.model.classify(img);
+                                        console.log('NSFW Predictions:', predictions);
+
+                                        // Las categorías son: Porn, Sexy, Hentai, Neutral, Drawing
+                                        // Sumamos las categorías de riesgo
+                                        const risky = predictions.filter(p => 
+                                            (['Porn', 'Sexy', 'Hentai'].includes(p.className)) && p.probability > 0.4
+                                        );
+
+                                        if (risky.length > 0) {
+                                            console.warn('Potential nudity detected!');
+                                            this.potentialNudity = 1;
+                                        }
+                                        this.isAnalyzing = false;
+                                    };
+                                } else {
+                                    this.isAnalyzing = false;
+                                }
                             };
                             reader.readAsDataURL(file);
                         }
@@ -254,6 +306,8 @@
 
                     clearPreview() {
                         this.previewUrl = null;
+                        this.potentialNudity = 0;
+                        this.isAnalyzing = false;
                         document.getElementById('photoInput').value = '';
                     },
 

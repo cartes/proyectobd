@@ -30,6 +30,7 @@ class StorePhotoRequest extends FormRequest
                 'mimes:' . implode(',', ProfilePhoto::ALLOWED_TYPES),
                 'max:' . ProfilePhoto::MAX_FILE_SIZE,
             ],
+            'potential_nudity' => 'nullable|boolean',
         ];
     }
 

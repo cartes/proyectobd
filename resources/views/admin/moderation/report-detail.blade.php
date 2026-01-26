@@ -1,185 +1,274 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Expediente de Reporte #' . $report->id)
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-red-50 via-purple-50 to-pink-50 py-8">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <!-- Header -->
-        <div class="mb-8">
-            <a href="{{ route('admin.moderation.reports') }}" class="text-red-600 hover:text-red-800 font-medium mb-4 inline-block">
-                ← Volver a reportes
+    <div class="space-y-8">
+        <!-- Navigation & Badge -->
+        <div class="flex items-center justify-between">
+            <a href="{{ route('admin.moderation.reports') }}"
+                class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-white transition-colors uppercase tracking-widest">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Volver a Reportes
             </a>
-            <h1 class="text-4xl font-bold text-red-600" style="font-family: 'Playfair Display', serif;">
-                Detalle del Reporte #{{ $report->id }}
-            </h1>
+            <div class="flex items-center gap-2">
+                <span
+                    class="px-3 py-1 bg-rose-500/10 text-rose-500 border border-rose-500/20 rounded-xl text-xs font-black uppercase tracking-widest">
+                    PRIORIDAD ALTA
+                </span>
+            </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Información Principal -->
-            <div class="lg:col-span-2">
-                <!-- Reporte Info -->
-                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Información del Reporte</h2>
-                    
-                    <div class="space-y-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Estado</label>
-                                <span class="mt-1 inline-block px-3 py-1 text-xs font-semibold rounded-full 
-                                    {{ $report->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                                       ($report->status === 'reviewed' ? 'bg-blue-100 text-blue-800' :
-                                       ($report->status === 'resolved' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800')) }}">
-                                    {{ ucfirst($report->status) }}
-                                </span>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Tipo</label>
-                                <p class="mt-1 text-gray-900 capitalize">{{ $report->type }}</p>
-                            </div>
-                        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Case Data -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Incident Overview Card -->
+                <div class="bg-[#0c111d] border border-white/5 rounded-[2.5rem] p-10 relative overflow-hidden shadow-2xl">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-rose-500/5 blur-3xl rounded-full -mr-32 -mt-32"></div>
 
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Razón</label>
-                                <span class="mt-1 inline-block px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                                    {{ ucfirst(str_replace('_', ' ', $report->reason)) }}
-                                </span>
+                    <div class="relative space-y-8">
+                        <div class="flex items-start justify-between">
+                            <div class="space-y-2">
+                                <h2 class="text-xs font-black text-rose-500 uppercase tracking-[0.2em]">Incidente de
+                                    {{ ucfirst($report->type) }}</h2>
+                                <h3 class="text-4xl font-outfit font-black text-white italic">
+                                    "{{ ucfirst(str_replace('_', ' ', $report->reason)) }}"</h3>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Fecha</label>
-                                <p class="mt-1 text-gray-900">{{ $report->created_at->format('d/m/Y H:i') }}</p>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Descripción</label>
-                            <p class="mt-1 text-gray-700 bg-gray-50 p-3 rounded">{{ $report->description ?? 'Sin descripción' }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Usuario Reportado -->
-                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Usuario Reportado</h3>
-                    
-                    <div class="flex items-start space-x-4">
-                        <img src="{{ $report->reportedUser->getPrimaryPhotoUrlAttribute ?? '/images/default-avatar.png' }}" 
-                             class="w-20 h-20 rounded-full object-cover">
-                        <div class="flex-1">
-                            <h4 class="text-lg font-semibold text-gray-900">{{ $report->reportedUser->name }}</h4>
-                            <p class="text-gray-600">{{ $report->reportedUser->email }}</p>
-                            <p class="text-sm text-gray-500 mt-1">
-                                <span class="capitalize">{{ $report->reportedUser->user_type }}</span> • 
-                                {{ $report->reportedUser->age }} años • {{ $report->reportedUser->city }}
-                            </p>
-                            
-                            <div class="mt-3 space-y-2">
-                                <p class="text-sm"><strong>Mensajes enviados:</strong> {{ $report->reportedUser->sentMessages()->count() }}</p>
-                                <p class="text-sm"><strong>Reportes en su contra:</strong> {{ $userHistory->count() }}</p>
-                            </div>
-
-                            <a href="{{ route('admin.moderation.users.show', $report->reportedUser) }}" 
-                               class="mt-3 inline-block text-red-600 hover:text-red-800 font-medium">
-                                Ver perfil completo →
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mensaje Reportado -->
-                @if($report->message)
-                    <div class="bg-white rounded-2xl shadow-lg p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-4">Mensaje Reportado</h3>
-                        
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <p class="text-gray-800">{{ $report->message->content }}</p>
-                            <div class="mt-3 flex items-center justify-between text-sm text-gray-500">
-                                <span>{{ $report->message->created_at->format('d/m/Y H:i') }}</span>
-                                @if($report->message->is_flagged)
-                                    <span class="inline-block px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-semibold">
-                                        ⚠️ Moderado
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                @endif
-            </div>
-
-            <!-- Acciones Laterales -->
-            <div class="lg:col-span-1">
-                <!-- Histórico del Usuario -->
-                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">Histórico de Reportes</h3>
-                    
-                    <div class="space-y-3">
-                        @forelse($userHistory as $hist)
-                            <div class="p-3 bg-gray-50 rounded-lg">
-                                <p class="text-sm font-medium text-gray-900">
-                                    {{ ucfirst(str_replace('_', ' ', $hist->reason)) }}
+                            <div class="text-right">
+                                <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Fecha del Suceso
                                 </p>
-                                <p class="text-xs text-gray-500 mt-1">{{ $hist->created_at->diffForHumans() }}</p>
-                                <p class="text-xs text-gray-600 mt-1">Por: {{ $hist->reporter->name }}</p>
+                                <p class="text-white font-bold">{{ $report->created_at->format('d M, Y - H:i') }} hs</p>
                             </div>
-                        @empty
-                            <p class="text-sm text-gray-500">No hay reportes anteriores</p>
-                        @endforelse
-                    </div>
-                </div>
+                        </div>
 
-                <!-- Acciones Disponibles -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">Acciones</h3>
-                    
-                    @if($report->status === 'pending')
-                        <form method="POST" action="{{ route('admin.moderation.reports.process', $report) }}" class="space-y-4">
-                            @csrf
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Acción</label>
-                                <select name="action" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500" required>
-                                    <option value="">Selecciona una acción</option>
-                                    <option value="dismiss">Rechazar reporte</option>
-                                    <option value="warn">Advertencia</option>
-                                    <option value="suspend">Suspender</option>
-                                    <option value="ban">Banear</option>
-                                </select>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 py-8 border-y border-white/5">
+                            <!-- Reporter -->
+                            <div class="space-y-4">
+                                <p class="text-xs font-black text-gray-500 uppercase tracking-widest px-1">Enviado por</p>
+                                <div class="flex items-center gap-4 bg-white/[0.02] border border-white/5 p-4 rounded-3xl">
+                                    <div
+                                        class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-500 font-black">
+                                        {{ substr($report->reporter->name, 0, 1) }}
+                                    </div>
+                                    <div class="overflow-hidden">
+                                        <p class="text-sm font-bold text-white truncate">{{ $report->reporter->name }}</p>
+                                        <p class="text-[10px] text-gray-500 uppercase font-black truncate">ID:
+                                            #{{ $report->reporter_id }}</p>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div id="days-container" style="display: none;">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Días de suspensión</label>
-                                <input type="number" name="days" min="1" max="365" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <!-- Reported User -->
+                            <div class="space-y-4">
+                                <p class="text-xs font-black text-rose-500 uppercase tracking-widest px-1">Usuario Acusado
+                                </p>
+                                <div
+                                    class="flex items-center gap-4 bg-rose-500/5 border border-rose-500/10 p-4 rounded-3xl">
+                                    <div
+                                        class="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center text-rose-500 font-black overflow-hidden">
+                                        @if($report->reportedUser->primary_photo_url)
+                                            <img src="{{ $report->reportedUser->primary_photo_url }}"
+                                                class="w-full h-full object-cover">
+                                        @else
+                                            {{ substr($report->reportedUser->name, 0, 1) }}
+                                        @endif
+                                    </div>
+                                    <div class="overflow-hidden">
+                                        <p class="text-sm font-bold text-white truncate">{{ $report->reportedUser->name }}
+                                        </p>
+                                        <a href="{{ route('admin.moderation.users.show', $report->reportedUser) }}"
+                                            class="text-[10px] text-rose-400 uppercase font-black hover:underline">Ver
+                                            Historial Penal</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Evidence Section -->
+                        <div class="space-y-4">
+                            <p class="text-xs font-black text-gray-500 uppercase tracking-widest px-1">Evidencia & Contexto
+                            </p>
+
+                            <!-- Description given by reporter -->
+                            <div class="bg-white/2 p-6 rounded-3xl border border-white/5 space-y-4 italic text-gray-400">
+                                <p class="text-sm font-medium leading-relaxed">
+                                    "{{ $report->description ?? 'El denunciante no proporcionó comentarios adicionales.' }}"
+                                </p>
                             </div>
 
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Notas</label>
-                                <textarea name="notes" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Notas sobre la acción..."></textarea>
-                            </div>
-
-                            <button type="submit" class="w-full px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all">
-                                Procesar Reporte
-                            </button>
-                        </form>
-
-                        <script>
-                            document.querySelector('[name="action"]').addEventListener('change', function() {
-                                document.getElementById('days-container').style.display = 
-                                    this.value === 'suspend' ? 'block' : 'none';
-                            });
-                        </script>
-                    @else
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <p class="text-sm text-gray-600"><strong>Revisado por:</strong> {{ $report->reviewedBy->name ?? 'Sistema' }}</p>
-                            <p class="text-sm text-gray-600 mt-2"><strong>Fecha:</strong> {{ $report->reviewed_at?->format('d/m/Y H:i') }}</p>
-                            @if($report->admin_notes)
-                                <p class="text-sm text-gray-600 mt-2"><strong>Notas:</strong></p>
-                                <p class="text-sm text-gray-700 bg-white p-2 rounded mt-1">{{ $report->admin_notes }}</p>
+                            <!-- Actual Content Reported (if it's a message) -->
+                            @if($report->message)
+                                <div class="space-y-3">
+                                    <p class="text-[10px] font-black text-rose-500/70 uppercase tracking-widest px-1">Mensaje en
+                                        Disputa</p>
+                                    <div class="bg-[#05070a] p-6 rounded-[2rem] border border-rose-500/20 shadow-inner">
+                                        <p class="text-lg text-rose-200 font-medium">"{{ $report->message->content }}"</p>
+                                        <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+                                            <p class="text-[10px] text-gray-600 font-bold uppercase">Enviado en conversación
+                                                #{{ $report->message->conversation_id }}</p>
+                                            <p class="text-[10px] text-gray-600 font-bold uppercase">
+                                                {{ $report->message->created_at->format('d/m/Y H:i') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             @endif
                         </div>
+                    </div>
+                </div>
+
+                <!-- Subject Stats Summary -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-[#0c111d] border border-white/5 rounded-3xl p-8 space-y-4 shadow-xl">
+                        <h4 class="text-xs font-black text-gray-500 uppercase tracking-widest">Antecedentes del denunciado
+                        </h4>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p
+                                    class="text-3xl font-outfit font-black {{ $userHistory->count() > 1 ? 'text-rose-500' : 'text-white' }}">
+                                    {{ $userHistory->count() }}</p>
+                                <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest italic">Reportes
+                                    totales</p>
+                            </div>
+                            <div class="text-right">
+                                <p
+                                    class="text-3xl font-outfit font-black {{ $userActions->count() > 0 ? 'text-amber-500' : 'text-white' }}">
+                                    {{ $userActions->count() }}</p>
+                                <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest italic">Sanciones
+                                    previas</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white/2 border border-white/5 rounded-3xl p-8 flex items-center justify-center">
+                        <p class="text-xs text-gray-500 font-medium italic text-center leading-relaxed">"Recuerda revisar
+                            siempre el histórico del usuario antes de aplicar un baneo permanente."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Moderation Sidebar -->
+            <div class="space-y-8">
+                <!-- Verdict Form -->
+                <div
+                    class="bg-[#0c111d] border border-white/5 rounded-[2.5rem] p-8 space-y-8 shadow-2xl relative overflow-hidden">
+                    @if($report->status === 'pending')
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-3xl rounded-full -mr-16 -mt-16">
+                        </div>
+
+                        <div class="relative space-y-6">
+                            <div class="border-b border-white/5 pb-4">
+                                <h4 class="font-outfit font-black text-xl text-white">Veredicto Final</h4>
+                                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Cierre de
+                                    expediente</p>
+                            </div>
+
+                            <form method="POST" action="{{ route('admin.moderation.reports.process', $report) }}"
+                                class="space-y-6">
+                                @csrf
+
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Resolución</label>
+                                    <select name="action"
+                                        class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-xs font-black uppercase tracking-widest focus:border-pink-500/50 focus:ring-0 transition-all text-white focus:bg-[#0c111d]"
+                                        required>
+                                        <option value="">Seleccionar Acción...</option>
+                                        <option value="dismiss">🚫 Desestimar / Sin Faltas</option>
+                                        <option value="warn">⚠️ Emitir Advertencia</option>
+                                        <option value="suspend">⏸️ Suspender Temporalmente</option>
+                                        <option value="ban">💀 Baneo Permanente</option>
+                                    </select>
+                                </div>
+
+                                <div id="days-container" class="space-y-2" style="display: none;">
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Duración
+                                        (Días)</label>
+                                    <input type="number" name="days" min="1" max="365" placeholder="7"
+                                        class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-sm font-bold focus:border-pink-500/50 focus:ring-0 transition-all text-white">
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Notas
+                                        Administrativas</label>
+                                    <textarea name="notes" rows="6"
+                                        class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-sm focus:border-pink-500/50 focus:ring-0 transition-all text-white placeholder:text-gray-700 resize-none"
+                                        placeholder="Justifica tu decisión aquí (será visible para otros admins)..."></textarea>
+                                </div>
+
+                                <button type="submit"
+                                    class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black py-5 rounded-3xl shadow-xl shadow-emerald-500/20 transition-all uppercase tracking-[0.2em] text-xs">
+                                    Ejecutar Sentencia
+                                </button>
+                            </form>
+
+                            <script>
+                                document.querySelector('[name="action"]').addEventListener('change', function () {
+                                    document.getElementById('days-container').style.display =
+                                        this.value === 'suspend' ? 'block' : 'none';
+                                });
+                            </script>
+                        </div>
+                    @else
+                        <!-- Post-Verdict Info -->
+                        <div class="space-y-6">
+                            <div class="flex items-center gap-3 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl">
+                                <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <p class="text-xs font-black text-emerald-500 uppercase tracking-widest">CASO CERRADO:
+                                    {{ strtoupper($report->status) }}</p>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="space-y-1">
+                                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest italic">Moderador
+                                        Responsable</p>
+                                    <p class="text-sm font-bold text-white">{{ $report->reviewedBy->name ?? 'Sistema' }}</p>
+                                </div>
+                                <div class="space-y-1">
+                                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest italic">Fecha de
+                                        Resolución</p>
+                                    <p class="text-sm font-bold text-white">{{ $report->reviewed_at?->format('d/m/Y H:i') }} hs
+                                    </p>
+                                </div>
+                                @if($report->admin_notes)
+                                    <div class="space-y-2 pt-4 border-t border-white/5">
+                                        <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest italic">Dictamen
+                                        </p>
+                                        <p class="text-xs text-gray-400 leading-relaxed italic">"{{ $report->admin_notes }}"</p>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <button disabled
+                                class="w-full py-4 border border-white/5 rounded-2xl text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">
+                                Expediente Archivado
+                            </button>
+                        </div>
                     @endif
+                </div>
+
+                <!-- Historical Context (Small List) -->
+                <div class="bg-[#0c111d] border border-white/5 rounded-[2rem] p-8 space-y-6 shadow-xl">
+                    <h4 class="text-xs font-black text-gray-500 uppercase tracking-widest px-1">Línea de Tiempo del Acusado
+                    </h4>
+                    <div class="space-y-4">
+                        @forelse($userHistory->slice(0, 3) as $hist)
+                            <div class="pb-4 last:pb-0 border-b last:border-0 border-white/5 space-y-1">
+                                <p class="text-xs font-bold text-white">{{ ucfirst(str_replace('_', ' ', $hist->reason)) }}</p>
+                                <div class="flex items-center justify-between text-[10px] font-black text-gray-600 uppercase">
+                                    <span>{{ $hist->created_at->diffForHumans() }}</span>
+                                    <span class="text-rose-500/50">#{{ $hist->id }}</span>
+                                </div>
+                            </div>
+                        @empty
+                            <p class="text-xs text-gray-600 italic">Sin incidentes previos registrados.</p>
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection

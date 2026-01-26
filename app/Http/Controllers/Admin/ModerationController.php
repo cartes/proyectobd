@@ -17,33 +17,6 @@ class ModerationController extends Controller
     ) {
     }
 
-    // Dashboard principal
-    public function dashboard()
-    {
-        $stats = [
-            'pending_reports' => Report::pending()->count(),
-            'total_reports' => Report::count(),
-            'active_bans' => UserAction::bans()->count(),
-            'active_suspensions' => UserAction::suspensions()->count(),
-            'total_users' => User::count(),
-            'blocked_words' => BlockedWord::active()->count(),
-        ];
-
-        $recentReports = Report::with(['reporter', 'reportedUser', 'message'])
-            ->pending()
-            ->latest()
-            ->take(10)
-            ->get();
-
-        $recentActions = UserAction::with(['user', 'initiatedBy'])
-            ->active()
-            ->latest()
-            ->take(10)
-            ->get();
-
-        return view('admin.moderation.dashboard', compact('stats', 'recentReports', 'recentActions'));
-    }
-
     // Listar reportes
     public function reports(Request $request)
     {
@@ -213,17 +186,30 @@ class ModerationController extends Controller
             $query->whereHas('actions', function ($q) {
                 $q->where('action_type', 'ban')->active();
             });
+        } elseif ($request->status === 'pending_verification') {
+            $query->where('is_verified', false);
         }
 
         $users = $query->paginate(20);
 
-        return view('admin.moderation.users', compact('users'));
+        // System-wide counts for the summary header
+        $activeCount = User::where('is_active', true)->count();
+        $bannedCount = User::whereHas('actions', function ($q) {
+            $q->where('action_type', 'ban')->active();
+        })->count();
+
+        return view('admin.moderation.users', compact('users', 'activeCount', 'bannedCount'));
     }
 
     // Ver detalle de usuario
     public function showUser(User $user)
     {
         $user->loadCount(['sentMessages', 'receivedMessages']);
+        $user->load([
+            'photos' => function ($q) {
+                $q->orderBy('order', 'asc');
+            }
+        ]);
 
         $reports = Report::where('reported_user_id', $user->id)
             ->with('reporter')
@@ -272,5 +258,30 @@ class ModerationController extends Controller
 
         return redirect()->back()
             ->with('success', 'Acción ejecutada exitosamente');
+    }
+
+    // Toggle verification status
+    public function toggleVerification(User $user)
+    {
+        $user->update([
+            'is_verified' => !$user->is_verified
+        ]);
+
+        $status = $user->is_verified ? 'verificado' : 'desverificado';
+        return redirect()->back()->with('success', "Usuario {$status} correctamente.");
+    }
+
+    // Change user role (type)
+    public function changeRole(Request $request, User $user)
+    {
+        $request->validate([
+            'user_type' => 'required|in:sugar_daddy,sugar_baby'
+        ]);
+
+        $user->update([
+            'user_type' => $request->user_type
+        ]);
+
+        return redirect()->back()->with('success', 'Tipo de usuario actualizado.');
     }
 }

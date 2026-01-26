@@ -20,6 +20,7 @@ class ProfilePhoto extends Model
         'moderation_status',
         'order',
         'rejection_reason',
+        'potential_nudity',
     ];
 
     protected function casts(): array
@@ -27,6 +28,7 @@ class ProfilePhoto extends Model
         return [
             'is_primary' => 'boolean',
             'is_verified' => 'boolean',
+            'potential_nudity' => 'boolean',
         ];
     }
 

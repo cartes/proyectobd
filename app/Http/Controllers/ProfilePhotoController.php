@@ -30,6 +30,7 @@ class ProfilePhotoController extends Controller
                 'photo_path' => $path,
                 'order' => $user->photos()->count(),
                 'moderation_status' => 'approved', // Auto-aprobar por ahora
+                'potential_nudity' => $request->boolean('potential_nudity', false),
             ]);
 
             // Si es la primera foto, hacerla principal automáticamente

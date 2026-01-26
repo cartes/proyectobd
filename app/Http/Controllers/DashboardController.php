@@ -13,13 +13,9 @@ class DashboardController extends Controller
         $user = auth()->user();
         $activeSubscription = $user->activeSubscription()->first();
 
-        // Si es admin, mostrar dashboard principal del admin
+        // Si es admin, redirigir al panel de administración oficial
         if ($user->isAdmin()) {
-            return view('dashboard', [
-                'stats' => $this->getAdminStats(),
-                'recentActivity' => $this->getAdminActivity(),
-                'dashboardData' => null,
-            ]);
+            return redirect()->route('admin.dashboard');
         }
 
         // Si es Sugar Daddy
@@ -156,33 +152,5 @@ class DashboardController extends Controller
         $total = count($fields);
 
         return (int) (($completed / $total) * 100);
-    }
-
-    /**
-     * Admin stats
-     */
-    private function getAdminStats()
-    {
-        return [
-            'total_users' => User::count(),
-            'premium_active' => User::where('is_premium', true)->count(),
-            'pending_reports' => \App\Models\Report::pending()->count(),
-            'monthly_revenue' => User::where('is_premium', true)->count() * 29.99,
-        ];
-    }
-
-    /**
-     * Admin activity
-     */
-    private function getAdminActivity()
-    {
-        return [
-            'new_users' => User::latest()->take(3)->get(),
-            'pending_reports' => \App\Models\Report::pending()
-                ->with('reporter', 'reportedUser')
-                ->latest()
-                ->take(3)
-                ->get(),
-        ];
     }
 }

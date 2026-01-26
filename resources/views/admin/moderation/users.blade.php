@@ -1,131 +1,196 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Gestión de Usuarios')
 
 @section('content')
-    <div class="min-h-screen bg-gradient-to-br from-red-50 via-purple-50 to-pink-50 py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-            <!-- Header -->
-            <div class="mb-8">
-                <h1 class="text-4xl font-bold text-red-600" style="font-family: 'Playfair Display', serif;">
-                    👥 Gestión de Usuarios
-                </h1>
-                <p class="text-gray-600 mt-2">Total de usuarios: {{ $users->total() }}</p>
+    <div class="space-y-8">
+        <!-- Header Summary -->
+        <div class="flex items-center justify-between bg-[#0c111d] border border-white/5 p-8 rounded-3xl">
+            <div>
+                <h2 class="text-3xl font-outfit font-black">Base de Usuarios</h2>
+                <p class="text-gray-500 mt-1">Total registrados: <span
+                        class="text-white font-bold">{{ $users->total() }}</span></p>
             </div>
-
-            <!-- Filtros -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
-                <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Buscar</label>
-                        <input type="text" name="search" placeholder="Nombre o email..." value="{{ request('search') }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
-                        <select name="user_type"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
-                            <option value="">Todos</option>
-                            <option value="sugar_daddy" {{ request('user_type') === 'sugar_daddy' ? 'selected' : '' }}>Sugar
-                                Daddy</option>
-                            <option value="sugar_baby" {{ request('user_type') === 'sugar_baby' ? 'selected' : '' }}>Sugar
-                                Baby</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Estado</label>
-                        <select name="status"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
-                            <option value="">Todos</option>
-                            <option value="suspended" {{ request('status') === 'suspended' ? 'selected' : '' }}>Suspendidos
-                            </option>
-                            <option value="banned" {{ request('status') === 'banned' ? 'selected' : '' }}>Baneados</option>
-                        </select>
-                    </div>
-
-                    <div class="flex items-end">
-                        <button type="submit"
-                            class="w-full px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all">
-                            Filtrar
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Tabla de Usuarios -->
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Usuario</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Tipo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Mensajes</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Reportes</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Estado</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        @forelse($users as $user)
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center mr-4">
-                                        <x-user-avatar :user="$user" size="md" class="mr-3" />
-                                        <div>
-                                            <div class="font-medium text-gray-900">{{ $user->name }}</div>
-                                            <div class="text-sm text-gray-500">{{ $user->email }}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="px-3 py-1 text-xs font-semibold rounded-full 
-                                    {{ $user->user_type === 'sugar_daddy' ? 'bg-purple-100 text-purple-800' : 'bg-pink-100 text-pink-800' }}">
-                                        {{ $user->user_type === 'sugar_daddy' ? '💎 Daddy' : '👶 Baby' }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-600">{{ $user->sent_messages_count }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">{{ $user->reports()->count() }}</td>
-                                <td class="px-6 py-4">
-                                    @if ($user->isBanned())
-                                        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                                            🚫 Baneado
-                                        </span>
-                                    @elseif($user->isSuspended())
-                                        <span
-                                            class="px-3 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">
-                                            ⏸️ Suspendido
-                                        </span>
-                                    @else
-                                        <span
-                                            class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                                            ✅ Activo
-                                        </span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4">
-                                    <a href="{{ route('admin.moderation.users.show', $user) }}"
-                                        class="text-red-600 hover:text-red-800 font-medium">
-                                        Ver →
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="px-6 py-8 text-center text-gray-500">
-                                    No hay usuarios
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-
-                <!-- Paginación -->
-                <div class="px-6 py-4 border-t border-gray-200">
-                    {{ $users->links() }}
+            <div class="flex gap-4">
+                <!-- Stats -->
+                <div class="text-right">
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">Activos</p>
+                    <p class="text-xl font-outfit font-bold text-emerald-500">
+                        {{ number_format($activeCount) }}
+                    </p>
+                </div>
+                <div class="w-px h-10 bg-white/10"></div>
+                <div class="text-right">
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">Baneados</p>
+                    <p class="text-xl font-outfit font-bold text-rose-500">{{ number_format($bannedCount) }}</p>
                 </div>
             </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-[#0c111d] border border-white/5 p-6 rounded-3xl">
+            <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Búsqueda</label>
+                    <div class="relative">
+                        <input type="text" name="search" placeholder="Nombre o email..." value="{{ request('search') }}"
+                            class="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-10 text-sm focus:border-pink-500/50 focus:ring-0 transition-all">
+                        <svg class="w-4 h-4 absolute left-4 top-3.5 text-gray-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Tipo de Usuario</label>
+                    <select name="user_type"
+                        class="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-4 text-sm focus:border-pink-500/50 focus:ring-0 appearance-none transition-all">
+                        <option value="">Cualquiera</option>
+                        <option value="sugar_daddy" {{ request('user_type') === 'sugar_daddy' ? 'selected' : '' }}>Sugar Daddy
+                        </option>
+                        <option value="sugar_baby" {{ request('user_type') === 'sugar_baby' ? 'selected' : '' }}>Sugar Baby
+                        </option>
+                    </select>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Estado Cuenta</label>
+                    <select name="status"
+                        class="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-4 text-sm focus:border-pink-500/50 focus:ring-0 appearance-none transition-all">
+                        <option value="">Todos</option>
+                        <option value="suspended" {{ request('status') === 'suspended' ? 'selected' : '' }}>Suspendidos
+                        </option>
+                        <option value="banned" {{ request('status') === 'banned' ? 'selected' : '' }}>Baneados</option>
+                    </select>
+                </div>
+
+                <div class="flex items-end">
+                    <button type="submit"
+                        class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 rounded-2xl shadow-lg shadow-pink-500/20 transition-all">
+                        Aplicar Filtros
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Users Table -->
+        <div class="bg-[#0c111d] border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="text-xs font-bold text-gray-500 uppercase tracking-widest border-b border-white/5">
+                        <th class="px-8 py-5">Perfil</th>
+                        <th class="px-8 py-5">Verificación</th>
+                        <th class="px-8 py-5">Nivel</th>
+                        <th class="px-8 py-5">Actividad</th>
+                        <th class="px-8 py-5">Estado</th>
+                        <th class="px-8 py-5 text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/2">
+                    @forelse($users as $user)
+                        <tr class="hover:bg-white/[0.02] transition-colors group">
+                            <td class="px-8 py-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="relative">
+                                        <div
+                                            class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500/20 to-purple-500/20 border border-white/10 flex items-center justify-center text-pink-500 font-black text-lg">
+                                            {{ substr($user->name, 0, 1) }}
+                                        </div>
+                                        @if($user->is_premium)
+                                            <div
+                                                class="absolute -top-1 -right-1 w-5 h-5 bg-amber-500 rounded-lg flex items-center justify-center border-2 border-[#0c111d]">
+                                                <span class="text-[10px] text-white">👑</span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-white group-hover:text-pink-500 transition-colors">
+                                            {{ $user->name }}
+                                        </p>
+                                        <p class="text-xs text-gray-500">{{ $user->email }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                @if($user->is_verified)
+                                    <span class="flex items-center gap-1.5 text-xs text-blue-400 font-bold">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.64.304 1.24.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        Verificado
+                                    </span>
+                                @else
+                                    <span class="text-xs text-gray-500">Pendiente</span>
+                                @endif
+                            </td>
+                            <td class="px-8 py-6">
+                                <span
+                                    class="inline-flex items-center px-3 py-1 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap {{ $user->isSugarDaddy() ? 'text-purple-400' : 'text-pink-400' }}">
+                                    {{ $user->isSugarDaddy() ? 'Sugar Daddy' : 'Sugar Baby' }}
+                                </span>
+                            </td>
+                            <td class="px-8 py-6 text-xs text-gray-400">
+                                <div class="flex items-center gap-2">
+                                    <span title="Mensajes">{{ $user->sentMessages->count() }} ✉️</span>
+                                    <span class="text-gray-700">|</span>
+                                    <span title="Creación">{{ $user->created_at->format('d/m/Y') }}</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                @if ($user->isBanned())
+                                    <div class="flex items-center gap-2 text-rose-500">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></div>
+                                        <span class="text-xs font-bold uppercase">Baneado</span>
+                                    </div>
+                                @elseif($user->isSuspended())
+                                    <div class="flex items-center gap-2 text-amber-500">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                                        <span class="text-xs font-bold uppercase">Suspendido</span>
+                                    </div>
+                                @else
+                                    <div class="flex items-center gap-2 text-emerald-500">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                        <span class="text-xs font-bold uppercase">Activo</span>
+                                    </div>
+                                @endif
+                            </td>
+                            <td class="px-8 py-6 text-right">
+                                <a href="{{ route('admin.moderation.users.show', $user) }}"
+                                    class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-sm font-bold transition-all">
+                                    Detalles
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-8 py-20 text-center">
+                                <div
+                                    class="inline-flex items-center justify-center w-20 h-20 bg-white/5 rounded-3xl mb-4 text-gray-600">
+                                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                </div>
+                                <p class="text-gray-500 font-medium">No se encontraron usuarios con esos filtros.</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+
+            @if($users->hasPages())
+                <div class="px-8 py-6 border-t border-white/5 bg-white/[0.01]">
+                    {{ $users->links() }}
+                </div>
+            @endif
         </div>
     </div>
 @endsection
