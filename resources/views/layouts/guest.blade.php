@@ -10,8 +10,7 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.bunny.net/css?family=playfair-display:400|inter:400,500,600,700&display=swap"
+    <link href="https://fonts.bunny.net/css?family=outfit:400,500,600,700,800,900|inter:400,500,600,700&display=swap"
         rel="stylesheet" />
 
     <!-- Scripts -->
@@ -38,10 +37,19 @@
             <!-- Logo/Brand -->
             <div class="flex justify-center mb-6">
                 <div class="text-center">
-                    <h1 class="text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-purple-800 bg-clip-text text-transparent px-10"
-                        style="font-family: 'Playfair Display', cursive; font-style: italic; line-height: 4rem; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                        Big-dad
-                    </h1>
+                    <div class="flex items-center justify-center space-x-3 mb-2">
+                        <div
+                            class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
+                            </svg>
+                        </div>
+                        <h1 class="text-4xl font-black bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent"
+                            style="font-family: 'Outfit', sans-serif;">
+                            Big-Dad
+                        </h1>
+                    </div>
                     <p class="text-sm text-gray-600 mt-1 font-medium">Conexiones Premium</p>
                 </div>
             </div>

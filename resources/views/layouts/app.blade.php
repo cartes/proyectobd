@@ -9,8 +9,8 @@
     <title>{{ config('app.name', 'Big-dad') }} - Dashboard</title>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=playfair-display:400|inter:400,500,600,700&display=swap"
+    <link
+        href="https://fonts.bunny.net/css?family=playfair-display:400,700,900|inter:400,500,600,700,800,900|outfit:400,500,600,700,800,900&display=swap"
         rel="stylesheet" />
 
     <!-- Scripts -->
@@ -29,11 +29,20 @@
             :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'">
 
             <!-- Logo -->
-            <div class="flex items-center justify-center h-16 px-4 border-b border-gray-200">
-                <h1 class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
-                    style="font-family: 'Playfair Display', cursive;">
-                    Big-dad
-                </h1>
+            <div class="flex items-center px-6 h-16 border-b border-gray-200">
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
+                        </svg>
+                    </div>
+                    <div class="text-2xl font-black bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent"
+                        style="font-family: 'Outfit', sans-serif;">
+                        Big-Dad
+                    </div>
+                </a>
             </div>
 
             <!-- User Info -->

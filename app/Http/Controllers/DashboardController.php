@@ -44,15 +44,26 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        // Vistas de perfil (contar mediante una tabla intermedia si existe)
-        $profileViews = 127; // Placeholder - se implementará con tabla de analytics
+        // Vistas de perfil (totales)
+        $profileViews = $user->profileViews()->count();
+
+        // Crecimiento vistas (esta semana vs anterior)
+        $viewsThisWeek = $user->profileViews()->where('created_at', '>=', now()->startOfWeek())->count();
+        $viewsLastWeek = $user->profileViews()
+            ->where('created_at', '>=', now()->subWeek()->startOfWeek())
+            ->where('created_at', '<', now()->startOfWeek())
+            ->count();
+
+        $viewsGrowth = $viewsLastWeek > 0
+            ? round((($viewsThisWeek - $viewsLastWeek) / $viewsLastWeek) * 100)
+            : ($viewsThisWeek > 0 ? 100 : 0);
 
         // Nuevos matches en los últimos 7 días
         $newMatches = $user->matches()
-            ->where('likes.created_at', '>=', now()->subDays(7))  // Usa 'likes' no 'matches'
+            ->where('likes.created_at', '>=', now()->subDays(7))
             ->count();
 
-        // Mensajes totales
+        // Mensajes
         $messages = Message::where(function ($q) use ($user) {
             $q->where('sender_id', $user->id)
                 ->orWhere('receiver_id', $user->id);
@@ -61,11 +72,11 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        $unreadMessages = $messages->where('receiver_id', $user->id)
+        $unreadMessages = Message::where('receiver_id', $user->id)
             ->where('is_read', false)
             ->count();
 
-        // Sugar Babies sugeridas (últimas que ha visto o no ha interactuado)
+        // Sugar Babies sugeridas
         $suggestedBabies = User::where('user_type', 'sugar_baby')
             ->where('is_active', true)
             ->whereNotIn('id', function ($query) use ($user) {
@@ -80,8 +91,9 @@ class DashboardController extends Controller
         return [
             'type' => 'sugar_daddy',
             'profileViews' => $profileViews,
+            'viewsGrowth' => $viewsGrowth,
             'newMatches' => $newMatches,
-            'messageCount' => $messages->count(),
+            'messageCount' => Message::where('sender_id', $user->id)->orWhere('receiver_id', $user->id)->count(),
             'unreadCount' => $unreadMessages,
             'suggestedBabies' => $suggestedBabies,
             'recentMessages' => $messages,
@@ -98,12 +110,23 @@ class DashboardController extends Controller
         // Perfil completado (%)
         $profileCompletion = $this->calculateProfileCompletion($user);
 
-        // Vistas hoy
-        $todayViews = 24; // Placeholder - se implementará con tabla de analytics
+        // Vistas de perfil (totales)
+        $profileViews = $user->profileViews()->count();
+
+        // Crecimiento vistas (esta semana vs anterior)
+        $viewsThisWeek = $user->profileViews()->where('created_at', '>=', now()->startOfWeek())->count();
+        $viewsLastWeek = $user->profileViews()
+            ->where('created_at', '>=', now()->subWeek()->startOfWeek())
+            ->where('created_at', '<', now()->startOfWeek())
+            ->count();
+
+        $viewsGrowth = $viewsLastWeek > 0
+            ? round((($viewsThisWeek - $viewsLastWeek) / $viewsLastWeek) * 100)
+            : ($viewsThisWeek > 0 ? 100 : 0);
 
         // Likes recibidos esta semana
         $newLikes = $user->likedBy()
-            ->where('likes.created_at', '>=', now()->subDays(7))  // ← Especifica la tabla
+            ->where('likes.created_at', '>=', now()->subDays(7))
             ->count();
 
         // Mensajes recibidos
@@ -112,9 +135,11 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        $unreadMessages = $messages->where('is_read', false)->count();
+        $unreadMessages = Message::where('receiver_id', $user->id)
+            ->where('is_read', false)
+            ->count();
 
-        // Sugar Daddies destacados (premium)
+        // Sugar Daddies destacados
         $featuredDaddies = User::where('user_type', 'sugar_daddy')
             ->where('is_premium', true)
             ->where('is_active', true)
@@ -125,9 +150,10 @@ class DashboardController extends Controller
         return [
             'type' => 'sugar_baby',
             'profileCompletion' => $profileCompletion,
-            'todayViews' => $todayViews,
+            'profileViews' => $profileViews,
+            'viewsGrowth' => $viewsGrowth,
             'newLikes' => $newLikes,
-            'messageCount' => $messages->count(),
+            'messageCount' => Message::where('receiver_id', $user->id)->count(),
             'unreadCount' => $unreadMessages,
             'featuredDaddies' => $featuredDaddies,
             'recentMessages' => $messages,

@@ -35,7 +35,7 @@
         --theme-text: #F9FAFB;
         --theme-gradient: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
         --theme-gradient-deep: linear-gradient(135deg, #1E1B4B 0%, #0B0E14 100%);
-        --theme-font-heading: 'Inter', sans-serif;
+        --theme-font-heading: 'Outfit', sans-serif;
         --theme-button-shadow: rgba(79, 70, 229, 0.4);
     }
 
@@ -102,4 +102,21 @@
 .theme-sd .border-gray-200,
 .theme-sd .border-gray-100 {
     border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Custom animations */
+@keyframes pulse-slow {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.85;
+    }
+}
+
+.animate-pulse-slow {
+    animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

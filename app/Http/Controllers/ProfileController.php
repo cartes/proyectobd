@@ -24,6 +24,14 @@ class ProfileController extends Controller
             abort(403, 'No tienes permiso para ver este perfil.');
         }
 
+        // Registrar visita si no es el mismo usuario
+        if ($authUser && $user->id !== $authUser->id) {
+            \App\Models\ProfileView::create([
+                'viewer_id' => $authUser->id,
+                'viewed_id' => $user->id,
+            ]);
+        }
+
         $user->load('profileDetail');
 
         if (!$user->profileDetail) {

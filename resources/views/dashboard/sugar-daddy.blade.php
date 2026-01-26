@@ -6,6 +6,7 @@
     $unreadCount = $data['unreadCount'] ?? 0;
     $suggestedBabies = $data['suggestedBabies'] ?? [];
     $recentMessages = $data['recentMessages'] ?? [];
+    $viewsGrowth = $data['viewsGrowth'] ?? 0;
 @endphp
 
 <div class="py-8 min-h-screen theme-sd-content"
@@ -50,13 +51,13 @@
                         <p class="text-xs font-black text-indigo-400 uppercase tracking-widest mb-1">Vistas de Perfil
                         </p>
                         <p class="text-3xl font-black text-white">{{ $profileViews }}</p>
-                        <p class="text-xs font-bold text-emerald-400 mt-2 flex items-center">
+                        <p class="text-xs font-bold {{ $viewsGrowth >= 0 ? 'text-emerald-400' : 'text-amber-400' }} mt-2 flex items-center">
                             <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
-                                    d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
+                                    d="{{ $viewsGrowth >= 0 ? 'M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z' : 'M12 13a1 1 0 100 2h5a1 1 0 001-1V9a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 13.586 4.414 10H7a1 1 0 100-2H2a1 1 0 00-1 1v5a1 1 0 102 0v-2.586l4.293 4.293a1 1 0 001.414 0L11 9.414 14.586 13H12z' }}"
                                     clip-rule="evenodd" />
                             </svg>
-                            +23% esta semana
+                            {{ $viewsGrowth >= 0 ? '+' : '' }}{{ $viewsGrowth }}% esta semana
                         </p>
                     </div>
                     <div

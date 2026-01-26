@@ -65,7 +65,7 @@ class DiscoveryController extends Controller
         return view('discover.index', compact('users', 'cities', 'interestsOptions', 'targetUserType'));
     }
 
-    public function like(User $user)
+    public function like(User $user, \App\Services\NotificationService $notificationService)
     {
         $currentUser = Auth::user();
 
@@ -81,6 +81,9 @@ class DiscoveryController extends Controller
 
         // Agregar like
         $currentUser->likes()->attach($user->id);
+
+        // Notificar al usuario (con lógica de prioridad/engagement)
+        $notificationService->notifyNewLike($user, $currentUser);
 
         // Verificar si hay match mutuo
         if ($currentUser->hasMatchWith($user)) {

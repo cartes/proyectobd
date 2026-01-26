@@ -125,58 +125,58 @@
 
                 <!-- Photos Gallery -->
                 <div class="bg-[#0c111d] border border-white/5 rounded-3xl overflow-hidden" x-data="{ 
-                                                                    viewType: 'grid', 
-                                                                    isProcessing: null,
-                                                                    photoStatuses: {
-                                                                        @foreach($user->photos as $p)
-                                                                            {{ $p->id }}: '{{ $p->moderation_status }}',
-                                                                        @endforeach
-                                                                    },
-                                                                    async moderatePhoto(photoId, action) {
-                                                                        if (this.isProcessing) return;
+                                                                        viewType: 'grid', 
+                                                                        isProcessing: null,
+                                                                        photoStatuses: {
+                                                                            @foreach($user->photos as $p)
+                                                                                {{ $p->id }}: '{{ $p->moderation_status }}',
+                                                                            @endforeach
+                                                                        },
+                                                                        async moderatePhoto(photoId, action) {
+                                                                            if (this.isProcessing) return;
 
-                                                                        let reason = '';
-                                                                        if (action === 'reject') {
-                                                                            reason = prompt('Indica el motivo del rechazo:');
-                                                                            if (reason === null) return;
-                                                                            if (reason.trim() === '') {
-                                                                                alert('El motivo de rechazo es obligatorio para poder rechazar la imagen.');
-                                                                                return;
+                                                                            let reason = '';
+                                                                            if (action === 'reject') {
+                                                                                reason = prompt('Indica el motivo del rechazo:');
+                                                                                if (reason === null) return;
+                                                                                if (reason.trim() === '') {
+                                                                                    alert('El motivo de rechazo es obligatorio para poder rechazar la imagen.');
+                                                                                    return;
+                                                                                }
+                                                                            }
+
+                                                                            this.isProcessing = photoId;
+
+                                                                            try {
+                                                                                const response = await fetch(`{{ url('/admin/moderation/photos') }}/${photoId}/${action}`, {
+                                                                                    method: 'POST',
+                                                                                    headers: {
+                                                                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                                                                        'Content-Type': 'application/json',
+                                                                                        'Accept': 'application/json'
+                                                                                    },
+                                                                                    body: JSON.stringify({ reason: reason })
+                                                                                });
+
+                                                                                const data = await response.json();
+
+                                                                                if (!response.ok) {
+                                                                                    throw new Error(data.message || 'Error al procesar la solicitud');
+                                                                                }
+
+                                                                                if (data.success) {
+                                                                                    this.photoStatuses[photoId] = data.status;
+
+                                                                                    // La UI se actualizará automáticamente vía Alpine
+                                                                                }
+                                                                            } catch (e) {
+                                                                                console.error('Error in moderation:', e);
+                                                                                alert('Ocurrió un problema: ' + e.message);
+                                                                            } finally {
+                                                                                this.isProcessing = null;
                                                                             }
                                                                         }
-
-                                                                        this.isProcessing = photoId;
-
-                                                                        try {
-                                                                            const response = await fetch(`{{ url('/admin/moderation/photos') }}/${photoId}/${action}`, {
-                                                                                method: 'POST',
-                                                                                headers: {
-                                                                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                                                                    'Content-Type': 'application/json',
-                                                                                    'Accept': 'application/json'
-                                                                                },
-                                                                                body: JSON.stringify({ reason: reason })
-                                                                            });
-
-                                                                            const data = await response.json();
-
-                                                                            if (!response.ok) {
-                                                                                throw new Error(data.message || 'Error al procesar la solicitud');
-                                                                            }
-
-                                                                            if (data.success) {
-                                                                                this.photoStatuses[photoId] = data.status;
-
-                                                                                // La UI se actualizará automáticamente vía Alpine
-                                                                            }
-                                                                        } catch (e) {
-                                                                            console.error('Error in moderation:', e);
-                                                                            alert('Ocurrió un problema: ' + e.message);
-                                                                        } finally {
-                                                                            this.isProcessing = null;
-                                                                        }
-                                                                    }
-                                                                 }">
+                                                                     }">
                     <div class="px-8 py-6 border-b border-white/5 flex items-center justify-between">
                         <div>
                             <h4 class="font-outfit font-bold text-lg">Galería de Fotos</h4>
@@ -258,10 +258,10 @@
                                         <span id="status-badge-{{ $photo->id }}" x-text="photoStatuses[{{ $photo->id }}]"
                                             class="px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest"
                                             :class="{
-                                                                                        'bg-emerald-500/20 text-emerald-500': photoStatuses[{{ $photo->id }}] === 'approved',
-                                                                                        'bg-amber-500/20 text-amber-500': photoStatuses[{{ $photo->id }}] === 'pending',
-                                                                                        'bg-rose-500/20 text-rose-500': photoStatuses[{{ $photo->id }}] === 'rejected'
-                                                                                    }">
+                                                                                                'bg-emerald-500/20 text-emerald-500': photoStatuses[{{ $photo->id }}] === 'approved',
+                                                                                                'bg-amber-500/20 text-amber-500': photoStatuses[{{ $photo->id }}] === 'pending',
+                                                                                                'bg-rose-500/20 text-rose-500': photoStatuses[{{ $photo->id }}] === 'rejected'
+                                                                                            }">
                                         </span>
                                     </div>
 
@@ -319,10 +319,10 @@
                                             <span x-text="photoStatuses[{{ $photo->id }}]"
                                                 class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
                                                 :class="{
-                                                                                                    'bg-emerald-500/20 text-emerald-500': photoStatuses[{{ $photo->id }}] === 'approved',
-                                                                                                    'bg-amber-500/20 text-amber-500': photoStatuses[{{ $photo->id }}] === 'pending',
-                                                                                                    'bg-rose-500/20 text-rose-500': photoStatuses[{{ $photo->id }}] === 'rejected'
-                                                                                                }"
+                                                                                                            'bg-emerald-500/20 text-emerald-500': photoStatuses[{{ $photo->id }}] === 'approved',
+                                                                                                            'bg-amber-500/20 text-amber-500': photoStatuses[{{ $photo->id }}] === 'pending',
+                                                                                                            'bg-rose-500/20 text-rose-500': photoStatuses[{{ $photo->id }}] === 'rejected'
+                                                                                                        }"
                                                 id="list-status-badge-{{ $photo->id }}">
                                             </span>
                                             @if($photo->is_primary)
@@ -370,6 +370,57 @@
 
             <!-- Sidebar Actions -->
             <div class="space-y-8">
+                <div class="bg-[#0c111d] border border-white/5 rounded-3xl p-8 space-y-6">
+                    <h4 class="font-outfit font-bold text-lg border-b border-white/5 pb-4">Gestión Premium</h4>
+
+                    <form action="{{ route('admin.moderation.users.toggle-premium', $user) }}" method="POST"
+                        class="space-y-4">
+                        @csrf
+                        <input type="hidden" name="is_premium" value="{{ $user->is_premium ? 0 : 1 }}">
+
+                        <div class="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl">
+                            <div>
+                                <p class="text-sm font-bold {{ $user->is_premium ? 'text-amber-500' : 'text-gray-400' }}">
+                                    Estatus Premium
+                                </p>
+                                <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-0.5 font-bold">
+                                    {{ $user->is_premium ? 'Activado' : 'Desactivado' }}
+                                </p>
+                            </div>
+                            <div
+                                class="w-10 h-10 rounded-xl flex items-center justify-center {{ $user->is_premium ? 'bg-amber-500/10 text-amber-500' : 'bg-gray-500/10 text-gray-500' }}">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        @if(!$user->is_premium)
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Válido
+                                    hasta (Opcional)</label>
+                                <input type="date" name="premium_until"
+                                    class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:border-amber-500/50 focus:ring-0 transition-all text-white">
+                                <p class="text-[10px] text-gray-500 italic">Por defecto: 30 días</p>
+                            </div>
+                        @endif
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Razón del
+                                Cambio</label>
+                            <textarea name="reason" rows="2"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-sm focus:border-amber-500/50 focus:ring-0 transition-all text-white"
+                                placeholder="Ej: Recompensa por actividad..." required></textarea>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-lg {{ $user->is_premium ? 'bg-gray-700 hover:bg-gray-800 text-white' : 'bg-amber-500 hover:bg-amber-600 text-white shadow-amber-500/20' }}">
+                            {{ $user->is_premium ? 'Revocar Premium' : 'Activar Premium Gratis' }}
+                        </button>
+                    </form>
+                </div>
+
                 <!-- Administrative Quick Actions -->
                 <div class="bg-[#0c111d] border border-white/5 rounded-3xl p-8 space-y-6">
                     <h4 class="font-outfit font-bold text-lg border-b border-white/5 pb-4">Configuración de Cuenta</h4>

@@ -1,12 +1,13 @@
 @php
     $user = Auth::user();
     $profileCompletion = $data['profileCompletion'] ?? 85;
-    $todayViews = $data['todayViews'] ?? 0;
+    $profileViews = $data['profileViews'] ?? 0;
     $newLikes = $data['newLikes'] ?? 0;
     $messageCount = $data['messageCount'] ?? 0;
     $unreadCount = $data['unreadCount'] ?? 0;
     $featuredDaddies = $data['featuredDaddies'] ?? [];
     $recentMessages = $data['recentMessages'] ?? [];
+    $viewsGrowth = $data['viewsGrowth'] ?? 0;
 @endphp
 
 <div class="py-8 min-h-screen"
@@ -68,9 +69,11 @@
             <div class="glass-card rounded-3xl p-6 transition-all hover:translate-y-[-4px]">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-bold text-gray-500 uppercase tracking-widest">Vistas Hoy</p>
-                        <p class="text-3xl font-black text-gray-900 mt-1">{{ $todayViews }}</p>
-                        <p class="text-xs font-bold text-emerald-500 mt-1">▲ +12 vs ayer</p>
+                        <p class="text-sm font-bold text-gray-500 uppercase tracking-widest">Vistas Totales</p>
+                        <p class="text-3xl font-black text-gray-900 mt-1">{{ $profileViews }}</p>
+                        <p class="text-xs font-bold {{ $viewsGrowth >= 0 ? 'text-emerald-500' : 'text-rose-500' }} mt-1">
+                            {{ $viewsGrowth >= 0 ? '▲' : '▼' }} {{ $viewsGrowth >= 0 ? '+' : '' }}{{ $viewsGrowth }}% esta semana
+                        </p>
                     </div>
                     <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center shadow-inner">
                         <svg class="w-7 h-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

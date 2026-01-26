@@ -36,12 +36,24 @@
 
             {{-- Logo / Branding Premium --}}
             <div class="p-8 border-b border-white/5">
-                <h1 class="text-3xl font-black uppercase tracking-tighter text-theme-title">
-                    Big-Dad
-                </h1>
-                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mt-2">
-                    @if ($user->user_type === 'sugar_daddy') Sugar Daddy @else Sugar Baby @endif
-                </p>
+                <div class="flex items-center space-x-3">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h1
+                            class="text-2xl font-black bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">
+                            Big-Dad
+                        </h1>
+                        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mt-0.5">
+                            @if ($user->user_type === 'sugar_daddy') Sugar Daddy @else Sugar Baby @endif
+                        </p>
+                    </div>
+                </div>
             </div>
 
             {{-- Perfil User Premium --}}
@@ -66,17 +78,38 @@
 
             {{-- Navigation Links --}}
             <nav class="flex-1 px-6 space-y-2 overflow-y-auto">
-                {{-- Explorar --}}
-                <a href="{{ route('discover.index') }}" class="group flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all
-                          {{ request()->routeIs('discover.index')
-    ? 'bg-white/10 text-white shadow-xl border border-white/20'
-    : 'text-gray-500 hover:bg-white/5 hover:text-white' }}">
-                    <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                {{-- Descubrir - DESTACADO --}}
+                <a href="{{ route('discover.index') }}"
+                    class="group relative flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all overflow-hidden
+                    {{ request()->routeIs('discover.index')
+    ? ($user->user_type === 'sugar_daddy'
+        ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-xl shadow-pink-500/30 scale-105'
+        : 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xl shadow-purple-500/30 scale-105')
+    : ($user->user_type === 'sugar_daddy'
+        ? 'bg-gradient-to-r from-pink-500/10 to-rose-500/10 text-pink-400 hover:from-pink-500/20 hover:to-rose-500/20 hover:scale-105 hover:shadow-lg hover:shadow-pink-500/20 border border-pink-500/20'
+        : 'bg-gradient-to-r from-purple-500/10 to-indigo-500/10 text-purple-400 hover:from-purple-500/20 hover:to-indigo-500/20 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20 border border-purple-500/20') }}">
+
+                    {{-- Animated background --}}
+                    <div
+                        class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000">
+                    </div>
+
+                    <svg class="w-6 h-6 transition-transform group-hover:scale-110 group-hover:rotate-12 relative z-10"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z">
+                        </path>
                     </svg>
-                    <span>Explorar</span>
+                    <span class="relative z-10">
+                        @if($user->user_type === 'sugar_daddy')
+                            Descubrir Babies
+                        @else
+                            Descubrir Daddies
+                        @endif
+                    </span>
+                    <span class="ml-auto text-xl relative z-10">
+                        @if($user->user_type === 'sugar_daddy') 💎 @else 👑 @endif
+                    </span>
                 </a>
 
                 {{-- Mis Favoritos --}}
@@ -172,14 +205,19 @@
 
                     <a href="{{ route('discover.index') }}"
                         class="{{ $navItemClass }} {{ request()->routeIs('discover.index') ? $activeClass : $inactiveClass }}">
-                        <div
-                            class="p-2 rounded-xl {{ request()->routeIs('discover.index') ? 'bg-white/10 shadow-lg' : '' }}">
+                        <div class="p-2 rounded-xl {{ request()->routeIs('discover.index')
+    ? ($user->user_type === 'sugar_daddy'
+        ? 'bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg shadow-pink-500/30'
+        : 'bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg shadow-purple-500/30')
+    : '' }}">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
                             </svg>
                         </div>
-                        <span class="text-[10px] font-black uppercase tracking-tighter">Explorar</span>
+                        <span class="text-[10px] font-black uppercase tracking-tighter">
+                            @if($user->user_type === 'sugar_daddy') 💎 Babies @else 👑 Daddies @endif
+                        </span>
                     </a>
 
                     <a href="{{ route('discover.favorites') }}"

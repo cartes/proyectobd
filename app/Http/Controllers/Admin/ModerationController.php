@@ -278,10 +278,58 @@ class ModerationController extends Controller
             'user_type' => 'required|in:sugar_daddy,sugar_baby'
         ]);
 
+        $oldType = $user->user_type;
         $user->update([
             'user_type' => $request->user_type
         ]);
 
+        \App\Models\AdminAuditLog::create([
+            'admin_id' => auth()->id(),
+            'action_type' => 'change_role',
+            'auditable_id' => $user->id,
+            'auditable_type' => User::class,
+            'old_values' => ['user_type' => $oldType],
+            'new_values' => ['user_type' => $user->user_type],
+            'ip_address' => $request->ip(),
+        ]);
+
         return redirect()->back()->with('success', 'Tipo de usuario actualizado.');
+    }
+
+    // Toggle manual premium status
+    public function togglePremium(Request $request, User $user)
+    {
+        $request->validate([
+            'is_premium' => 'required|boolean',
+            'premium_until' => 'nullable|date|after:now',
+            'reason' => 'required|string|max:500'
+        ]);
+
+        $oldValues = [
+            'is_premium' => $user->is_premium,
+            'premium_until' => $user->premium_until,
+        ];
+
+        $user->update([
+            'is_premium' => $request->is_premium,
+            'premium_until' => $request->is_premium ? ($request->premium_until ?? now()->addMonth()) : null,
+        ]);
+
+        \App\Models\AdminAuditLog::create([
+            'admin_id' => auth()->id(),
+            'action_type' => 'toggle_premium',
+            'auditable_id' => $user->id,
+            'auditable_type' => User::class,
+            'old_values' => $oldValues,
+            'new_values' => [
+                'is_premium' => $user->is_premium,
+                'premium_until' => $user->premium_until,
+            ],
+            'reason' => $request->reason,
+            'ip_address' => $request->ip(),
+        ]);
+
+        $status = $user->is_premium ? 'activada' : 'desactivada';
+        return redirect()->back()->with('success', "Suscripción Premium {$status} exitosamente.");
     }
 }

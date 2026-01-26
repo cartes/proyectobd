@@ -10,7 +10,7 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=playfair-display:400|inter:400,500,600,700&display=swap"
+    <link href="https://fonts.bunny.net/css?family=outfit:400,500,600,700,800,900|inter:400,500,600,700&display=swap"
         rel="stylesheet" />
 
     <!-- Scripts -->
@@ -25,10 +25,19 @@
 
             <!-- Logo -->
             <div class="flex items-center justify-center h-16 px-4 border-b border-gray-200">
-                <h1 class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"
-                    style="font-family: 'Playfair Display', cursive;">
-                    Big-dad
-                </h1>
+                <div class="flex items-center space-x-3">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl font-black bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent"
+                        style="font-family: 'Outfit', sans-serif;">
+                        Big-Dad
+                    </h1>
+                </div>
             </div>
 
             <!-- User Info -->
@@ -87,7 +96,8 @@
         <!-- Main Content -->
         <div class="md:pl-64">
             <!-- Top Bar -->
-            <div class="sticky top-0 z-30 flex h-16 items-center gap-x-4 border-b border-purple-500/20 bg-purple-950/50 px-6 backdrop-blur-sm">
+            <div
+                class="sticky top-0 z-30 flex h-16 items-center gap-x-4 border-b border-purple-500/20 bg-purple-950/50 px-6 backdrop-blur-sm">
                 <div class="flex-1">
                     <h1 class="text-xl font-semibold text-white">@yield('page-title', 'Planes Premium')</h1>
                 </div>

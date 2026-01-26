@@ -54,15 +54,48 @@
         @endif
     </a>
 
-    <!-- Discover -->
+    <!-- Discover Babies - DESTACADO CON BADGE -->
     <a href="{{ route('discover.index') }}"
-        class="group flex items-center px-4 py-3 text-sm font-bold rounded-2xl transition-all duration-300 {{ request()->routeIs('discover.index') ? 'bg-indigo-500/10 text-indigo-400 shadow-lg border border-indigo-500/20' : 'text-gray-400 hover:bg-white/5 hover:text-white' }}">
-        <svg class="mr-3 h-5 w-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor"
-            viewBox="0 0 24 24">
+        class="group relative flex items-center px-4 py-4 text-sm font-black rounded-2xl transition-all duration-300 overflow-visible animate-pulse-slow
+        {{ request()->routeIs('discover.index')
+    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-xl shadow-pink-500/30 scale-105'
+    : 'bg-gradient-to-r from-pink-500/10 to-rose-500/10 text-pink-400 hover:from-pink-500/20 hover:to-rose-500/20 hover:scale-105 hover:shadow-lg hover:shadow-pink-500/20 border border-pink-500/20' }}">
+
+        <!-- Animated background -->
+        <div
+            class="absolute inset-0 bg-gradient-to-r from-pink-400/0 via-white/10 to-pink-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000">
+        </div>
+
+        <!-- Pulsing badge - VISIBLE -->
+        <div class="absolute -top-2 -right-2 z-50">
+            <span class="relative flex h-4 w-4">
+                <span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-4 w-4 bg-pink-500 border-2 border-white"></span>
+            </span>
+        </div>
+
+        <svg class="mr-3 h-6 w-6 transition-transform group-hover:scale-110 group-hover:rotate-12 relative z-10"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z">
+            </path>
         </svg>
-        Descubrir Profiles
+        <div class="flex flex-col relative z-10">
+            <span>Descubrir Babies</span>
+            @php
+                // Contar solo perfiles públicos y activos, excluyendo al usuario actual
+                $availableCount = \App\Models\User::where('user_type', 'sugar_baby')
+                    ->where('is_active', true)
+                    ->where('id', '!=', auth()->id())
+                    ->whereHas('profileDetail', function($q) {
+                        $q->where('is_private', false);
+                    })
+                    ->count();
+            @endphp
+            <span class="text-[9px] font-bold opacity-80">{{ $availableCount }} disponibles ahora</span>
+        </div>
+        <span class="ml-auto text-xl relative z-10">💎</span>
     </a>
 
     <!-- Mensajes -->

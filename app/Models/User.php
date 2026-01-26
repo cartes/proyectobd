@@ -35,7 +35,6 @@ class User extends Authenticatable
         'is_premium',
         'is_verified',
         'is_active',
-
         'premium_until',
         'premium_plan_type',
         'super_likes_remaining',
@@ -46,6 +45,9 @@ class User extends Authenticatable
         'primary_payment_method_id',
         'auto_renew',
         'payment_preferences',
+        'last_login_at',
+        'last_email_interaction_at',
+        'engagement_score',
     ];
 
     /**
@@ -69,6 +71,8 @@ class User extends Authenticatable
             'is_active' => 'boolean',
 
             'premium_until' => 'datetime',
+            'last_login_at' => 'datetime',
+            'last_email_interaction_at' => 'datetime',
             'boost_until' => 'datetime',
             'profile_boost_active' => 'boolean',
             'auto_renew' => 'boolean',
@@ -157,6 +161,11 @@ class User extends Authenticatable
     public function reportsSubmitted()
     {
         return $this->hasMany(Report::class, 'reporter_id');
+    }
+    // ==================== RELACIONES ANALYTICS ====================
+    public function profileViews(): HasMany
+    {
+        return $this->hasMany(ProfileView::class, 'viewed_id');
     }
 
     // ==================== RELACIONES MENSAJERÍA ====================
