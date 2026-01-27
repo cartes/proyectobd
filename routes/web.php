@@ -9,6 +9,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Admin\ModerationController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SitemapController;
 
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PurchaseController;
@@ -18,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// SEO Sitemap
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
