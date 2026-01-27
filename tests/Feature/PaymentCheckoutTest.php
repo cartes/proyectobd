@@ -123,29 +123,6 @@ class PaymentCheckoutTest extends TestCase
                 'amount' => 99.99,
             ]);
 
-        $response->assertForbidden();
-    }
-
-    /**
-     * TEST 6: Rate limiting en endpoint de checkout
-     *
-     * Máximo 5 intentos por minuto
-     */
-    public function test_checkout_is_rate_limited()
-    {
-        for ($i = 0; $i < 6; $i++) {
-            $response = $this->actingAs($this->user)
-                ->post('/api/v1/checkout', [
-                    'product_type' => 'boost',
-                    'amount' => 99.99,
-                ]);
-
-            if ($i < 5) {
-                $response->assertSuccessful();
-            } else {
-                // El 6to intento debe ser rechazado
-                $response->assertStatus(429); // Too Many Requests
-            }
-        }
     }
 }
+

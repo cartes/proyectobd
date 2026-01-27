@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://localhost'),
+    'url' => env('APP_URL', 'http://localhost'),
 
     /*
     |--------------------------------------------------------------------------
@@ -164,11 +164,5 @@ return [
         ],
     ],
 
-    'rate_limit_whitelist' => [
-        '127.0.0.1',           // localhost IPv4
-        '::1',                 // localhost IPv6
-        // Agregar IPs de partners o servicios internos:
-        // '192.168.1.100',
-        // '10.0.0.1',
-    ],
+    'rate_limit_whitelist' => explode(',', env('RATE_LIMIT_WHITELIST', '')),
 ];
