@@ -123,4 +123,45 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Rate Limiting
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the rate limiters for your application. Each of
+    | these limiters define two things: a "max" limit that limits the amount
+    | of requests that can be made within a given amount of time and the
+    | "decay" duration which determines how long the request may be cached.
+    |
+    */
+
+    'rate_limits' => [
+        // Payment endpoints - CRÍTICO
+        'payment' => [
+            'checkout' => '5,1',           // 5 requests por minuto
+            'webhook' => '10,1',            // 10 requests por minuto
+            'refund' => '3,1',              // 3 requests por minuto
+        ],
+
+        // Matching endpoints - ALTO
+        'match' => [
+            'like' => '30,1',                // 30 requests por minuto
+            'dislike' => '30,1',             // 30 requests por minuto
+        ],
+
+        // Chat endpoints - ALTO
+        'chat' => [
+            'message' => '60,1',              // 60 requests por minuto
+        ],
+
+        // Auth endpoints - MEDIO
+        'login' => '5,1',                      // 5 attempts por minuto
+        'register' => '3,60',                  // 3 attempts por hora
+
+        // API endpoints - BAJO
+        'api' => [
+            'default' => '100,1',              // 100 requests por minuto
+        ],
+    ]
 ];
