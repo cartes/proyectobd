@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Conversation;
 use App\Models\Message;
-use App\Models\Report;
 use App\Services\ModerationService;
 use Illuminate\Http\Request;
 
@@ -33,7 +32,7 @@ class ReportController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Reporte enviado exitosamente'
+            'message' => 'Reporte enviado exitosamente',
         ]);
     }
 
@@ -45,8 +44,8 @@ class ReportController extends Controller
             'description' => 'nullable|string|max:500',
         ]);
 
-        $reportedUserId = $conversation->user_one_id === auth()->id() 
-            ? $conversation->user_two_id 
+        $reportedUserId = $conversation->user_one_id === auth()->id()
+            ? $conversation->user_two_id
             : $conversation->user_one_id;
 
         $report = $this->moderationService->createReport(
@@ -60,7 +59,7 @@ class ReportController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Conversación reportada'
+            'message' => 'Conversación reportada',
         ]);
     }
 
@@ -84,7 +83,7 @@ class ReportController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Usuario reportado'
+            'message' => 'Usuario reportado',
         ]);
     }
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('is_blocked')->default(false);
             $table->foreignId('blocked_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
-            
+
             // Evitar conversaciones duplicadas
             $table->unique(['user_one_id', 'user_two_id']);
             $table->index('last_message_at');

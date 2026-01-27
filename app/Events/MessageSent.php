@@ -13,14 +13,12 @@ class MessageSent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public Message $message)
-    {
-    }
+    public function __construct(public Message $message) {}
 
     public function broadcastOn(): array
     {
         return [
-            new Channel('conversation.' . $this->message->conversation_id),
+            new Channel('conversation.'.$this->message->conversation_id),
         ];
     }
 

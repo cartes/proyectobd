@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Response;
-
 class SitemapController extends Controller
 {
     public function index()
@@ -30,10 +28,10 @@ class SitemapController extends Controller
 
         foreach ($urls as $url) {
             $xml .= '<url>';
-            $xml .= '<loc>' . htmlspecialchars($url['loc']) . '</loc>';
-            $xml .= '<lastmod>' . date('Y-m-d') . '</lastmod>';
-            $xml .= '<changefreq>' . $url['changefreq'] . '</changefreq>';
-            $xml .= '<priority>' . $url['priority'] . '</priority>';
+            $xml .= '<loc>'.htmlspecialchars($url['loc']).'</loc>';
+            $xml .= '<lastmod>'.date('Y-m-d').'</lastmod>';
+            $xml .= '<changefreq>'.$url['changefreq'].'</changefreq>';
+            $xml .= '<priority>'.$url['priority'].'</priority>';
             $xml .= '</url>';
         }
 

@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Subscription;
 use App\Models\Purchase;
-use App\Models\Transaction;
+use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
+use App\Models\Transaction;
+use App\Models\User;
 use App\Services\MercadoPagoService;
 use App\Services\SubscriptionService;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
 {
     protected MercadoPagoService $mpService;
+
     protected SubscriptionService $subscriptionService;
 
     public function __construct(MercadoPagoService $mpService, SubscriptionService $subscriptionService)
@@ -26,7 +27,7 @@ class WebhookController extends Controller
     /**
      * Webhook de Mercado Pago
      * POST /webhook/mercadopago
-     * 
+     *
      * Mercado Pago envía notificaciones a este endpoint cuando:
      * - Se aprueba un pago
      * - Se rechaza un pago
@@ -40,12 +41,13 @@ class WebhookController extends Controller
             $xRequestId = $request->header('x-request-id');
             $webhookSecret = config('services.mercadopago.webhook_secret');
 
-            if (!$xSignature || !$xRequestId || !$webhookSecret) {
+            if (! $xSignature || ! $xRequestId || ! $webhookSecret) {
                 Log::warning('Mercado Pago webhook missing signature header or secret not configured', [
-                    'has_signature' => !empty($xSignature),
-                    'has_request_id' => !empty($xRequestId),
-                    'has_secret' => !empty($webhookSecret),
+                    'has_signature' => ! empty($xSignature),
+                    'has_request_id' => ! empty($xRequestId),
+                    'has_secret' => ! empty($webhookSecret),
                 ]);
+
                 return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
             }
 
@@ -57,15 +59,18 @@ class WebhookController extends Controller
             foreach ($parts as $part) {
                 $kv = explode('=', $part);
                 if (count($kv) === 2) {
-                    if (trim($kv[0]) === 'ts')
+                    if (trim($kv[0]) === 'ts') {
                         $ts = trim($kv[1]);
-                    if (trim($kv[0]) === 'v1')
+                    }
+                    if (trim($kv[0]) === 'v1') {
                         $v1 = trim($kv[1]);
+                    }
                 }
             }
 
-            if (!$ts || !$v1) {
+            if (! $ts || ! $v1) {
                 Log::warning('Invalid x-signature format', ['signature' => $xSignature]);
+
                 return response()->json(['status' => 'error', 'message' => 'Invalid signature format'], 401);
             }
 
@@ -77,12 +82,13 @@ class WebhookController extends Controller
                 $manifest = "id:{$resourceId};ts:{$ts};";
                 $sha256 = hash_hmac('sha256', $manifest, $webhookSecret);
 
-                if (!hash_equals($sha256, $v1)) {
+                if (! hash_equals($sha256, $v1)) {
                     Log::error('Mercado Pago webhook signature mismatch!', [
                         'expected' => $sha256,
                         'received' => $v1,
-                        'manifest' => $manifest
+                        'manifest' => $manifest,
                     ]);
+
                     return response()->json(['status' => 'error', 'message' => 'Invalid signature'], 401);
                 }
             }
@@ -98,30 +104,34 @@ class WebhookController extends Controller
             // Procesar según el tipo de evento
             if ($type === 'subscription_preapproval') {
                 $status = $this->mpService->handleSubscriptionWebhook($data['id']);
+
                 return response()->json(['status' => $status ? 'success' : 'failed'], 200);
             }
 
             // Solo procesar webhooks de pagos a partir de aquí
             if ($type !== 'payment') {
                 Log::info('Webhook type not payment or subscription, ignoring', ['type' => $type]);
+
                 return response()->json(['status' => 'ignored'], 200);
             }
 
             $paymentId = $data['id'] ?? null;
 
-            if (!$paymentId) {
+            if (! $paymentId) {
                 Log::warning('Payment webhook without payment_id');
+
                 return response()->json(['status' => 'error', 'message' => 'No payment_id'], 400);
             }
 
             // Obtener detalles del pago desde Mercado Pago
             $paymentInfo = $this->mpService->getPaymentInfo($paymentId);
 
-            if (!$paymentInfo['success']) {
+            if (! $paymentInfo['success']) {
                 Log::error('Failed to get payment info', [
                     'payment_id' => $paymentId,
                     'error' => $paymentInfo['error'] ?? 'Unknown error',
                 ]);
+
                 return response()->json(['status' => 'error', 'message' => 'Failed to get payment info'], 400);
             }
 
@@ -149,6 +159,7 @@ class WebhookController extends Controller
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
+
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
@@ -162,10 +173,11 @@ class WebhookController extends Controller
         $paymentId = $payment['id'];
         $amount = $payment['transaction_amount'];
 
-        if (!$externalReference) {
+        if (! $externalReference) {
             Log::warning('Approved payment without external_reference', [
                 'payment_id' => $paymentId,
             ]);
+
             return;
         }
 
@@ -196,10 +208,11 @@ class WebhookController extends Controller
         // Parsear external_reference: USER_<user_id>_PLAN_<plan_id>_<timestamp>
         preg_match('/USER_(\d+)_PLAN_(\d+)/', $externalReference, $matches);
 
-        if (!isset($matches[1]) || !isset($matches[2])) {
+        if (! isset($matches[1]) || ! isset($matches[2])) {
             Log::warning('Could not parse subscription external_reference', [
                 'external_reference' => $externalReference,
             ]);
+
             return;
         }
 
@@ -209,11 +222,12 @@ class WebhookController extends Controller
         $user = User::find($userId);
         $plan = SubscriptionPlan::find($planId);
 
-        if (!$user || !$plan) {
+        if (! $user || ! $plan) {
             Log::error('User or Plan not found for subscription webhook', [
                 'user_id' => $userId,
                 'plan_id' => $planId,
             ]);
+
             return;
         }
 
@@ -245,12 +259,13 @@ class WebhookController extends Controller
             ->where('status', 'pending')
             ->first();
 
-        if (!$purchase) {
+        if (! $purchase) {
             // Intentar buscar por external_reference en metadata
             Log::warning('Purchase not found by preference_id, searching by external_reference', [
                 'external_reference' => $externalReference,
                 'payment_id' => $paymentId,
             ]);
+
             return;
         }
 
@@ -283,7 +298,7 @@ class WebhookController extends Controller
             'purchase_id' => $purchase->id,
             'user_id' => $user->id,
             'product_type' => $productType,
-            'quantity' => $quantity
+            'quantity' => $quantity,
         ]);
 
         $applied = false;
@@ -311,14 +326,14 @@ class WebhookController extends Controller
                 $applied = true; // El regalo se maneja vía notificaciones/modelo específico
                 Log::info('Gift purchase processed', [
                     'purchase_id' => $purchase->id,
-                    'recipient_id' => $purchase->recipient_id ?? $purchase->metadata['recipient_id'] ?? null
+                    'recipient_id' => $purchase->recipient_id ?? $purchase->metadata['recipient_id'] ?? null,
                 ]);
                 break;
 
             default:
                 Log::warning('Unknown product type in webhook', [
                     'product_type' => $productType,
-                    'purchase_id' => $purchase->id
+                    'purchase_id' => $purchase->id,
                 ]);
                 break;
         }
@@ -326,12 +341,12 @@ class WebhookController extends Controller
         if ($applied) {
             Log::info('✅ Benefits applied successfully', [
                 'purchase_id' => $purchase->id,
-                'user_id' => $user->id
+                'user_id' => $user->id,
             ]);
         } else {
             Log::error('❌ Failed to apply benefits', [
                 'purchase_id' => $purchase->id,
-                'user_id' => $user->id
+                'user_id' => $user->id,
             ]);
         }
 

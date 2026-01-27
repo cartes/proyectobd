@@ -18,18 +18,18 @@ class BlockedWordSeeder extends Seeder
             ['word' => 'coño', 'severity' => 'high'],
             ['word' => 'verga', 'severity' => 'high'],
             ['word' => 'pendejo', 'severity' => 'high'],
-            
+
             // Español - Media severidad
             ['word' => 'tonto', 'severity' => 'medium'],
             ['word' => 'idiota', 'severity' => 'medium'],
             ['word' => 'basura', 'severity' => 'medium'],
-            
+
             // English - High severity
             ['word' => 'fuck', 'severity' => 'high'],
             ['word' => 'shit', 'severity' => 'high'],
             ['word' => 'bitch', 'severity' => 'high'],
             ['word' => 'asshole', 'severity' => 'high'],
-            
+
             // English - Medium severity
             ['word' => 'damn', 'severity' => 'medium'],
             ['word' => 'hell', 'severity' => 'medium'],

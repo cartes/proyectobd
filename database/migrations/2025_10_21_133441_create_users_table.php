@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            
+
             // Campos específicos para Big-dad
             $table->enum('user_type', ['sugar_daddy', 'sugar_baby'])->default('sugar_baby');
             $table->enum('gender', ['male', 'female', 'other'])->nullable();
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->boolean('is_premium')->default(false);
             $table->boolean('is_verified')->default(false);
             $table->boolean('is_active')->default(true);
-            
+
             $table->rememberToken();
             $table->timestamps();
         });

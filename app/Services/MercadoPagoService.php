@@ -2,22 +2,26 @@
 
 namespace App\Services;
 
+use App\Models\PaymentAuditLog;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\Transaction;
 use App\Models\User;
-use App\Models\PaymentAuditLog;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
 use Exception;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class MercadoPagoService
 {
     protected ?string $accessToken = null;
+
     protected ?string $publicKey = null;
+
     protected ?string $env = null;
+
     protected ?string $currency = null;
+
     protected ?string $apiUrl = null;
 
     public function __construct()
@@ -45,6 +49,7 @@ class MercadoPagoService
         if (is_object($obj) || is_array($obj)) {
             return json_decode(json_encode($obj), true);
         }
+
         return $obj;
     }
 
@@ -66,6 +71,7 @@ class MercadoPagoService
                 return $arr['body'][$key];
             }
         }
+
         return null;
     }
 
@@ -118,6 +124,7 @@ class MercadoPagoService
                     'http_code' => $response->status(),
                     'response' => $response->body(),
                 ]);
+
                 return ['success' => false, 'error' => 'Failed to create preference'];
             }
 
@@ -134,6 +141,7 @@ class MercadoPagoService
             Log::error('Error creating payment preference', [
                 'error' => $e->getMessage(),
             ]);
+
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }
@@ -152,7 +160,7 @@ class MercadoPagoService
         $payload = [
             'items' => [
                 [
-                    'title' => $plan->name . ' - Suscripción Big-Dad',
+                    'title' => $plan->name.' - Suscripción Big-Dad',
                     'quantity' => 1,
                     'unit_price' => (float) $plan->amount,
                 ],
@@ -163,7 +171,7 @@ class MercadoPagoService
                 'pending' => route('subscription.pending'),
             ],
             'auto_return' => 'approved',
-            'external_reference' => 'USER_' . $user->id . '_PLAN_' . $plan->id . '_' . time(),
+            'external_reference' => 'USER_'.$user->id.'_PLAN_'.$plan->id.'_'.time(),
             'notification_url' => route('webhook.mercadopago'),
         ];
 
@@ -214,7 +222,7 @@ class MercadoPagoService
      */
     public function getPaymentInfo($paymentId)
     {
-        $url = 'https://api.mercadopago.com/v1/payments/' . $paymentId;
+        $url = 'https://api.mercadopago.com/v1/payments/'.$paymentId;
 
         $response = Http::withToken($this->accessToken)
             ->get($url);
@@ -222,7 +230,7 @@ class MercadoPagoService
         $data = $response->json();
 
         if ($response->failed()) {
-            throw new Exception("Error al obtener información del pago: " . ($data['message'] ?? 'Error desconocido'));
+            throw new Exception('Error al obtener información del pago: '.($data['message'] ?? 'Error desconocido'));
         }
 
         return [
@@ -250,17 +258,19 @@ class MercadoPagoService
                     'http_code' => $response->status(),
                     'response' => $response->body(),
                 ]);
+
                 return ['success' => false, 'error' => 'Failed to get preapproval info'];
             }
 
             return [
                 'success' => true,
-                'data' => $response->json()
+                'data' => $response->json(),
             ];
         } catch (Exception $e) {
             Log::error('Error getting preapproval info', [
                 'error' => $e->getMessage(),
             ]);
+
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }
@@ -271,7 +281,7 @@ class MercadoPagoService
     public function cancelPreApproval(string $preApprovalId): array
     {
         try {
-            $url = $this->apiUrl . "/preapproval/{$preApprovalId}";
+            $url = $this->apiUrl."/preapproval/{$preApprovalId}";
 
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
@@ -279,7 +289,7 @@ class MercadoPagoService
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['status' => 'cancelled']));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Authorization: Bearer ' . $this->accessToken,
+                'Authorization: Bearer '.$this->accessToken,
                 'Content-Type: application/json',
             ]);
 
@@ -384,8 +394,9 @@ class MercadoPagoService
     public function validateSignature(string $xSignature, string $xRequestId, ?string $resourceId, array $payload): bool
     {
         $webhookSecret = config('services.mercadopago.webhook_secret');
-        if (!$webhookSecret) {
+        if (! $webhookSecret) {
             Log::warning('MP Webhook Secret not configured');
+
             return false;
         }
 
@@ -397,15 +408,18 @@ class MercadoPagoService
         foreach ($parts as $part) {
             $kv = explode('=', $part);
             if (count($kv) === 2) {
-                if (trim($kv[0]) === 'ts')
+                if (trim($kv[0]) === 'ts') {
                     $ts = trim($kv[1]);
-                if (trim($kv[0]) === 'v1')
+                }
+                if (trim($kv[0]) === 'v1') {
                     $v1 = trim($kv[1]);
+                }
             }
         }
 
-        if (!$ts || !$v1) {
+        if (! $ts || ! $v1) {
             Log::warning('Invalid x-signature format', ['signature' => $xSignature]);
+
             return false;
         }
 
@@ -470,8 +484,9 @@ class MercadoPagoService
     {
         $paymentInfo = $this->getPaymentInfo($paymentId);
 
-        if (!$paymentInfo['success']) {
+        if (! $paymentInfo['success']) {
             Log::error('Failed to get payment info from MP', ['payment_id' => $paymentId]);
+
             return false;
         }
 
@@ -489,15 +504,16 @@ class MercadoPagoService
 
         $transaction = Transaction::where('mp_payment_id', $paymentId)->first();
 
-        if (!$transaction) {
+        if (! $transaction) {
             $userId = $metadata['user_id'] ?? $this->extractUserIdFromReference($externalReference);
             $productType = $metadata['product_type'] ?? $this->extractProductTypeFromReference($externalReference);
 
-            if (!$userId) {
+            if (! $userId) {
                 Log::warning('Could not identify user from webhook', [
                     'payment_id' => $paymentId,
                     'external_reference' => $externalReference,
                 ]);
+
                 return false;
             }
 
@@ -521,6 +537,7 @@ class MercadoPagoService
                     'expected' => $transaction->amount,
                     'received' => $receivedAmount,
                 ]);
+
                 return false;
             }
             $transaction->update(['status' => $status]);
@@ -528,6 +545,7 @@ class MercadoPagoService
 
         if ($status === 'approved') {
             $transaction->update(['approved_at' => now()]);
+
             return $this->fulfillPayment($transaction);
         }
 
@@ -575,6 +593,7 @@ class MercadoPagoService
                 'transaction_id' => $transaction->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -604,7 +623,7 @@ class MercadoPagoService
      */
     public function grantVerification(User $user): bool
     {
-        if (!\Schema::hasColumn('users', 'verified_at')) {
+        if (! \Schema::hasColumn('users', 'verified_at')) {
             // Por si no existe esa columna aún
             return $user->update(['is_verified' => true]);
         }
@@ -624,6 +643,7 @@ class MercadoPagoService
             'user_id' => $user->id,
             'product_type' => $productType,
         ]);
+
         return false;
     }
 
@@ -634,7 +654,7 @@ class MercadoPagoService
     {
         $info = $this->getPreApprovalInfo($preapprovalId);
 
-        if (!$info['success']) {
+        if (! $info['success']) {
             return false;
         }
 
@@ -643,10 +663,11 @@ class MercadoPagoService
 
         $subscription = Subscription::where('mp_preapproval_id', $preapprovalId)->first();
 
-        if (!$subscription) {
+        if (! $subscription) {
             Log::warning('Subscription not found for preapproval', [
                 'preapproval_id' => $preapprovalId,
             ]);
+
             return false;
         }
 
@@ -683,6 +704,7 @@ class MercadoPagoService
             'type' => $type,
             'payload' => $payload,
         ]);
+
         return true;
     }
 
@@ -694,7 +716,7 @@ class MercadoPagoService
      */
     protected function extractUserIdFromReference(?string $reference): ?int
     {
-        if (!$reference) {
+        if (! $reference) {
             return null;
         }
 
@@ -718,11 +740,12 @@ class MercadoPagoService
      */
     protected function extractProductTypeFromReference(?string $reference): ?string
     {
-        if (!$reference) {
+        if (! $reference) {
             return null;
         }
 
         $parts = explode('_', $reference);
+
         return $parts[0] ?? null;
     }
 
@@ -749,6 +772,7 @@ class MercadoPagoService
                     'http_code' => $response->status(),
                     'response' => $response->body(),
                 ]);
+
                 return ['success' => false, 'error' => 'Refund failed'];
             }
 
@@ -771,6 +795,7 @@ class MercadoPagoService
                 'payment_id' => $mpPaymentId,
                 'error' => $e->getMessage(),
             ]);
+
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }

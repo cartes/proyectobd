@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Purchase;
-use App\Models\Transaction;
 use App\Services\MercadoPagoService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -79,7 +78,7 @@ class PurchaseController extends Controller
             $user = Auth::user();
 
             // Validar que el producto existe
-            if (!isset($this->productPrices[$productType])) {
+            if (! isset($this->productPrices[$productType])) {
                 return response()->json([
                     'success' => false,
                     'error' => 'Producto no válido',
@@ -111,7 +110,7 @@ class PurchaseController extends Controller
                     'recipient_id' => $recipientId,
                     'days' => ($productType === 'boost' ? 7 : null),
                     'likes_count' => ($productType === 'super_likes' ? $quantity * 5 : null),
-                ]
+                ],
             ]);
 
             // Integrar con Mercado Pago
@@ -126,7 +125,7 @@ class PurchaseController extends Controller
                 ]
             );
 
-            if (!$mpResponse['success']) {
+            if (! $mpResponse['success']) {
                 Log::error('Failed to create MP preference for purchase', [
                     'purchase_id' => $purchase->id,
                     'error' => $mpResponse['error'] ?? 'Unknown error',
@@ -136,7 +135,7 @@ class PurchaseController extends Controller
 
                 return response()->json([
                     'success' => false,
-                    'error' => 'Error al integrar con Mercado Pago: ' . ($mpResponse['error'] ?? 'Error desconocido')
+                    'error' => 'Error al integrar con Mercado Pago: '.($mpResponse['error'] ?? 'Error desconocido'),
                 ], 400);
             }
 
@@ -178,10 +177,11 @@ class PurchaseController extends Controller
         $user = Auth::user();
         $paymentId = $request->query('payment_id');
 
-        if (!$paymentId) {
+        if (! $paymentId) {
             Log::warning('Purchase returnSuccess called without payment_id', [
                 'user_id' => $user->id,
             ]);
+
             return redirect()->route('dashboard')->with('error', 'No se recibió información del pago');
         }
 
@@ -202,7 +202,7 @@ class PurchaseController extends Controller
 
         Log::warning('Purchase payment failed', [
             'user_id' => $user->id,
-            'query_params' => $request->query()
+            'query_params' => $request->query(),
         ]);
 
         return redirect()->route('discover.index')
@@ -241,10 +241,10 @@ class PurchaseController extends Controller
 
             $user = Auth::guard('sanctum')->user();
 
-            if (!$user) {
+            if (! $user) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No autorizado'
+                    'message' => 'No autorizado',
                 ], 401);
             }
 
@@ -253,7 +253,7 @@ class PurchaseController extends Controller
             $recipientId = $validated['recipient_id'] ?? null;
 
             // Validar que el producto existe
-            if (!isset($this->productPrices[$productType])) {
+            if (! isset($this->productPrices[$productType])) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Producto no válido',
@@ -286,11 +286,12 @@ class PurchaseController extends Controller
                 ]
             );
 
-            if (!$mpResponse['success']) {
+            if (! $mpResponse['success']) {
                 $purchase->delete();
+
                 return response()->json([
                     'success' => false,
-                    'message' => 'Error al integrar con Mercado Pago'
+                    'message' => 'Error al integrar con Mercado Pago',
                 ], 400);
             }
 
@@ -307,9 +308,10 @@ class PurchaseController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Error in apiStore', ['error' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error al crear la compra'
+                'message' => 'Error al crear la compra',
             ], 500);
         }
     }
@@ -323,10 +325,10 @@ class PurchaseController extends Controller
         try {
             $user = Auth::guard('sanctum')->user();
 
-            if (!$user) {
+            if (! $user) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No autorizado'
+                    'message' => 'No autorizado',
                 ], 401);
             }
 
@@ -342,14 +344,15 @@ class PurchaseController extends Controller
                     'current_page' => $purchases->currentPage(),
                     'last_page' => $purchases->lastPage(),
                     'per_page' => $purchases->perPage(),
-                ]
+                ],
             ]);
 
         } catch (\Exception $e) {
             Log::error('Error in apiIndex', ['error' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error al obtener compras'
+                'message' => 'Error al obtener compras',
             ], 500);
         }
     }
@@ -363,26 +366,26 @@ class PurchaseController extends Controller
         try {
             $user = Auth::guard('sanctum')->user();
 
-            if (!$user) {
+            if (! $user) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No autorizado'
+                    'message' => 'No autorizado',
                 ], 401);
             }
 
             $purchase = Purchase::find($id);
 
-            if (!$purchase) {
+            if (! $purchase) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Compra no encontrada'
+                    'message' => 'Compra no encontrada',
                 ], 404);
             }
 
             if ($purchase->user_id !== $user->id) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No autorizado'
+                    'message' => 'No autorizado',
                 ], 403);
             }
 
@@ -393,9 +396,10 @@ class PurchaseController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Error in apiShow', ['error' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error al obtener la compra'
+                'message' => 'Error al obtener la compra',
             ], 500);
         }
     }

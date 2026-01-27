@@ -43,6 +43,7 @@ class SendWeeklyStatsReport extends Command
         }
 
         $this->info("Weekly stats sent to {$sentCount} users.");
+
         return Command::SUCCESS;
     }
 

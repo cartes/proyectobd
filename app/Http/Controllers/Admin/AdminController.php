@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\Report;
-use App\Models\Transaction;
 use App\Models\Subscription;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Transaction;
+use App\Models\User;
 
 class AdminController extends Controller
 {

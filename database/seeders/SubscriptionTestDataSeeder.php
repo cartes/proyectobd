@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
@@ -19,6 +18,7 @@ class SubscriptionTestDataSeeder extends Seeder
 
         if ($users->isEmpty()) {
             $this->command->warn('No hay usuarios de prueba. Ejecuta primero: php artisan db:seed');
+
             return;
         }
 

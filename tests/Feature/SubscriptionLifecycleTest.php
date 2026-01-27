@@ -14,6 +14,7 @@ class SubscriptionLifecycleTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected SubscriptionPlan $plan;
 
     protected function setUp(): void

@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Models\ProfileDetail;
 use App\Models\ProfilePhoto;
-use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class DiscoveryTestSeeder extends Seeder
 {
@@ -38,7 +38,7 @@ class DiscoveryTestSeeder extends Seeder
         // Crear 10 Sugar Babies
         for ($i = 1; $i <= 10; $i++) {
             $baby = User::create([
-                'name' => fake()->firstName() . ' ' . fake()->lastName(),
+                'name' => fake()->firstName().' '.fake()->lastName(),
                 'email' => "baby{$i}@test.com",
                 'password' => bcrypt('password'),
                 'user_type' => 'sugar_baby',
@@ -62,7 +62,7 @@ class DiscoveryTestSeeder extends Seeder
 
             // Crear carpeta para este usuario
             $userFolder = "profiles/{$baby->id}";
-            if (!Storage::exists("public/{$userFolder}")) {
+            if (! Storage::exists("public/{$userFolder}")) {
                 Storage::makeDirectory("public/{$userFolder}");
             }
 
@@ -73,14 +73,14 @@ class DiscoveryTestSeeder extends Seeder
                     $photoNumber = $j + 1;
 
                     // Descargar imagen de Unsplash (mujeres)
-                    $imageUrl = "https://source.unsplash.com/random/800x1000/?woman,portrait&sig=" . uniqid();
+                    $imageUrl = 'https://source.unsplash.com/random/800x1000/?woman,portrait&sig='.uniqid();
                     $imageContent = Http::timeout(10)->get($imageUrl)->body();
 
                     // Generar nombre único con timestamp
-                    $filename = "{$userFolder}/" . time() . '_' . uniqid() . '.jpg';
+                    $filename = "{$userFolder}/".time().'_'.uniqid().'.jpg';
 
                     // Guardar en storage/app/public/profiles/{user_id}
-                    Storage::put('public/' . $filename, $imageContent);
+                    Storage::put('public/'.$filename, $imageContent);
 
                     ProfilePhoto::create([
                         'user_id' => $baby->id,
@@ -105,7 +105,7 @@ class DiscoveryTestSeeder extends Seeder
         // Crear 10 Sugar Daddies
         for ($i = 1; $i <= 10; $i++) {
             $daddy = User::create([
-                'name' => fake()->firstName() . ' ' . fake()->lastName(),
+                'name' => fake()->firstName().' '.fake()->lastName(),
                 'email' => "daddy{$i}@test.com",
                 'password' => bcrypt('password'),
                 'user_type' => 'sugar_daddy',
@@ -129,7 +129,7 @@ class DiscoveryTestSeeder extends Seeder
 
             // Crear carpeta para este usuario
             $userFolder = "profiles/{$daddy->id}";
-            if (!Storage::exists("public/{$userFolder}")) {
+            if (! Storage::exists("public/{$userFolder}")) {
                 Storage::makeDirectory("public/{$userFolder}");
             }
 
@@ -139,10 +139,10 @@ class DiscoveryTestSeeder extends Seeder
                 try {
                     $photoNumber = $j + 1;
 
-                    $imageUrl = "https://picsum.photos/800/1000?random=" . uniqid();
+                    $imageUrl = 'https://picsum.photos/800/1000?random='.uniqid();
                     $imageContent = Http::timeout(10)->get($imageUrl)->body();
-                    $filename = "{$userFolder}/" . time() . '_' . uniqid() . '.jpg';
-                    Storage::put('public/' . $filename, $imageContent);
+                    $filename = "{$userFolder}/".time().'_'.uniqid().'.jpg';
+                    Storage::put('public/'.$filename, $imageContent);
 
                     ProfilePhoto::create([
                         'user_id' => $daddy->id,
@@ -165,9 +165,9 @@ class DiscoveryTestSeeder extends Seeder
         $totalUsers = User::where('email', 'LIKE', '%@test.com')->count();
         $totalPhotos = ProfilePhoto::count();
 
-        $this->command->info("✅ Seeder completado!");
+        $this->command->info('✅ Seeder completado!');
         $this->command->info("📊 {$totalUsers} usuarios creados");
         $this->command->info("🖼️  {$totalPhotos} fotos descargadas");
-        $this->command->info("📂 Fotos guardadas en storage/app/public/profiles/{user_id}/");
+        $this->command->info('📂 Fotos guardadas en storage/app/public/profiles/{user_id}/');
     }
 }

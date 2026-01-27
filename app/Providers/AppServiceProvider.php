@@ -2,9 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
-
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(\App\Services\MercadoPagoService::class, function ($app) {
-            return new \App\Services\MercadoPagoService();
+            return new \App\Services\MercadoPagoService;
         });
 
         $this->app->singleton(\App\Services\SubscriptionService::class, function ($app) {

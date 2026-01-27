@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Subscription extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'user_id',
         'plan_id',

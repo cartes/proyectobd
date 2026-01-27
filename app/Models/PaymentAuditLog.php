@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class PaymentAuditLog extends Model
 {
     use HasFactory;
+
     protected $table = 'payment_audit_logs';
 
     protected $fillable = [

@@ -1,8 +1,7 @@
 <?php
 
-use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PurchaseController;
-use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\SubscriptionController;
 
 // Autenticadas
 Route::middleware('auth')->group(function () {
@@ -24,4 +23,3 @@ Route::middleware('auth')->group(function () {
 
 // PÚBLICAS (webhook se maneja en routes/web.php)
 // Las rutas de webhook están en web.php para evitar duplicación
-

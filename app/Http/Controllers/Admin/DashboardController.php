@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\Report;
-use App\Models\UserAction;
 use App\Models\Message;
 use App\Models\ProfilePhoto;
-use Illuminate\Http\Request;
+use App\Models\Report;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -71,8 +69,9 @@ class DashboardController extends Controller
         $todayCount = $today->count();
         $lastMonthCount = $lastMonth->count();
 
-        if ($lastMonthCount == 0)
+        if ($lastMonthCount == 0) {
             return 0;
+        }
 
         return round((($todayCount - $lastMonthCount) / $lastMonthCount) * 100, 1);
     }
@@ -103,8 +102,9 @@ class DashboardController extends Controller
             ->where('created_at', '<', now()->startOfMonth())
             ->count();
 
-        if ($lastMonth == 0)
+        if ($lastMonth == 0) {
             return 0;
+        }
 
         return round((($thisMonth - $lastMonth) / $lastMonth) * 100, 1);
     }
@@ -126,6 +126,7 @@ class DashboardController extends Controller
                 'count' => $count,
             ];
         }
+
         return $data;
     }
 
@@ -146,6 +147,7 @@ class DashboardController extends Controller
                 'count' => $count,
             ];
         }
+
         return $data;
     }
 }

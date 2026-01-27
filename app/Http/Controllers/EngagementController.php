@@ -33,7 +33,8 @@ class EngagementController extends Controller
             // Redirigir al dashboard (o ruta específica si el token incluyera un destino)
             return redirect()->route('dashboard')->with('success', '¡Bienvenido de vuelta!');
         } catch (\Exception $e) {
-            logger()->error("Engagement tracking error: " . $e->getMessage());
+            logger()->error('Engagement tracking error: '.$e->getMessage());
+
             return redirect()->route('login');
         }
     }

@@ -5,9 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
 
 class RateLimitMiddleware
 {
@@ -36,7 +35,7 @@ class RateLimitMiddleware
         // Obtener límite configurado
         $rateLimit = $this->getRateLimit($limit);
 
-        if (!$rateLimit) {
+        if (! $rateLimit) {
             return $next($request);
         }
 
@@ -82,20 +81,20 @@ class RateLimitMiddleware
         // NUEVO: Checkear whitelist
         $whitelist = config('app.rate_limit_whitelist', []);
         if (in_array($request->ip(), $whitelist)) {
-            return 'rate_limit:whitelist:' . $request->ip();
+            return 'rate_limit:whitelist:'.$request->ip();
         }
 
         $path = $request->path();
 
         // Para auth, siempre usar IP (prevenir brute force antes de login)
         if ($path === 'login' || $path === 'register') {
-            return 'rate_limit:ip:' . $request->ip() . ':' . $path;
+            return 'rate_limit:ip:'.$request->ip().':'.$path;
         }
 
         // Usar User ID si está autenticado, sino IP
         return auth()->check()
-            ? 'rate_limit:user:' . auth()->id() . ':' . $this->getRoute($request)
-            : 'rate_limit:ip:' . $request->ip() . ':' . $this->getRoute($request);
+            ? 'rate_limit:user:'.auth()->id().':'.$this->getRoute($request)
+            : 'rate_limit:ip:'.$request->ip().':'.$this->getRoute($request);
     }
 
     protected function getRoute(Request $request): string
@@ -123,18 +122,18 @@ class RateLimitMiddleware
             }
 
             // 2. Intentar por path si no hay por ruta
-            if (!$limit || !is_string($limit)) {
+            if (! $limit || ! is_string($limit)) {
                 $limit = config("app.rate_limits.{$path}");
             }
 
             // 3. Fallback para API
-            if ((!$limit || !is_string($limit)) && request()->is('api/*')) {
+            if ((! $limit || ! is_string($limit)) && request()->is('api/*')) {
                 $limit = config('app.rate_limits.api.default');
             }
         }
 
         // Si no hay límite configurado, retorna null (sin límite)
-        if (!$limit || !is_string($limit)) {
+        if (! $limit || ! is_string($limit)) {
             return null;
         }
 
@@ -152,7 +151,8 @@ class RateLimitMiddleware
             // User model logic confirms hasActiveSubscription() method exists.
             if ($user->hasActiveSubscription()) {
                 [$requests, $minutes] = explode(',', $limit);
-                return ($requests * 2) . ',' . $minutes;
+
+                return ($requests * 2).','.$minutes;
             }
         }
 

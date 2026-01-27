@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Transaction;
 use App\Models\Subscription;
+use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -14,7 +14,9 @@ class PaymentRefundTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected Transaction $transaction;
+
     protected Subscription $subscription;
 
     protected function setUp(): void
@@ -43,7 +45,7 @@ class PaymentRefundTest extends TestCase
     {
         // Transacción hace 5 días
         $this->transaction->update([
-            'created_at' => now()->subDays(5)
+            'created_at' => now()->subDays(5),
         ]);
 
         Http::fake([
@@ -76,7 +78,7 @@ class PaymentRefundTest extends TestCase
     {
         // Transacción hace 8 días
         $this->transaction->forceFill([
-            'created_at' => now()->subDays(8)
+            'created_at' => now()->subDays(8),
         ])->save();
 
         $response = $this->actingAs($this->user)

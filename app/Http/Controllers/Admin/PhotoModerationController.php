@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ProfilePhoto;
 use App\Models\AdminAuditLog;
+use App\Models\ProfilePhoto;
 use Illuminate\Http\Request;
 
 class PhotoModerationController extends Controller
@@ -34,14 +34,14 @@ class PhotoModerationController extends Controller
             'auditable_type' => ProfilePhoto::class,
             'old_values' => ['status' => $oldStatus],
             'new_values' => ['status' => 'approved'],
-            'ip_address' => request()->ip()
+            'ip_address' => request()->ip(),
         ]);
 
         if (request()->wantsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Foto aprobada Correctamente',
-                'status' => 'approved'
+                'status' => 'approved',
             ]);
         }
 
@@ -51,13 +51,13 @@ class PhotoModerationController extends Controller
     public function reject(Request $request, ProfilePhoto $photo)
     {
         $request->validate([
-            'reason' => 'required|string|max:500'
+            'reason' => 'required|string|max:500',
         ]);
 
         $oldStatus = $photo->moderation_status;
         $photo->update([
             'moderation_status' => 'rejected',
-            'rejection_reason' => $request->reason
+            'rejection_reason' => $request->reason,
         ]);
 
         AdminAuditLog::create([
@@ -68,17 +68,17 @@ class PhotoModerationController extends Controller
             'old_values' => ['status' => $oldStatus],
             'new_values' => [
                 'status' => 'rejected',
-                'reason' => $request->reason
+                'reason' => $request->reason,
             ],
             'reason' => $request->reason,
-            'ip_address' => request()->ip()
+            'ip_address' => request()->ip(),
         ]);
 
         if (request()->wantsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Foto rechazada exitosamente',
-                'status' => 'rejected'
+                'status' => 'rejected',
             ]);
         }
 

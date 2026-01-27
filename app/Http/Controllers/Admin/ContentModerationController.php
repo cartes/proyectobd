@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\AdminAuditLog;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ContentModerationController extends Controller
@@ -33,7 +33,7 @@ class ContentModerationController extends Controller
             'auditable_id' => $user->id,
             'auditable_type' => User::class,
             'new_values' => ['status' => 'approved'],
-            'ip_address' => request()->ip()
+            'ip_address' => request()->ip(),
         ]);
 
         return redirect()->back()->with('success', 'Propuesta de perfil aprobada.');
@@ -50,7 +50,7 @@ class ContentModerationController extends Controller
             'auditable_type' => User::class,
             'new_values' => ['status' => 'rejected', 'reason' => $request->reason],
             'reason' => $request->reason,
-            'ip_address' => request()->ip()
+            'ip_address' => request()->ip(),
         ]);
 
         return redirect()->back()->with('success', 'Propuesta de perfil rechazada y marcada para revisión.');

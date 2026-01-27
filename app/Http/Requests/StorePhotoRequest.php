@@ -27,8 +27,8 @@ class StorePhotoRequest extends FormRequest
             'photo' => [
                 'required',
                 'image',
-                'mimes:' . implode(',', ProfilePhoto::ALLOWED_TYPES),
-                'max:' . ProfilePhoto::MAX_FILE_SIZE,
+                'mimes:'.implode(',', ProfilePhoto::ALLOWED_TYPES),
+                'max:'.ProfilePhoto::MAX_FILE_SIZE,
             ],
             'potential_nudity' => 'nullable|boolean',
         ];
@@ -42,7 +42,7 @@ class StorePhotoRequest extends FormRequest
         return [
             'photo.required' => 'Debes seleccionar una foto',
             'photo.image' => 'El archivo debe ser una imagen',
-            'photo.mimes' => 'Solo se permiten fotos en formato: ' . implode(', ', ProfilePhoto::ALLOWED_TYPES),
+            'photo.mimes' => 'Solo se permiten fotos en formato: '.implode(', ', ProfilePhoto::ALLOWED_TYPES),
             'photo.max' => 'La foto no debe superar 5MB',
         ];
     }

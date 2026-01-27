@@ -11,6 +11,7 @@ class PlanController extends Controller
     public function index()
     {
         $plans = SubscriptionPlan::all();
+
         return view('admin.plans.index', compact('plans'));
     }
 

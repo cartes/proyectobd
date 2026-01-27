@@ -16,7 +16,7 @@ class Message extends Model
         'is_read',
         'read_at',
         'is_flagged',
-        'flagged_reason'
+        'flagged_reason',
     ];
 
     protected $casts = [

@@ -72,5 +72,4 @@ class Report extends Model
             'reviewed_at' => now(),
         ]);
     }
-
 }

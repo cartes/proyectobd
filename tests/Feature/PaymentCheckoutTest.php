@@ -2,12 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\SubscriptionPlan;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Services\MercadoPagoService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PaymentCheckoutTest extends TestCase
@@ -15,6 +14,7 @@ class PaymentCheckoutTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected SubscriptionPlan $plan;
 
     protected function setUp(): void
@@ -25,13 +25,13 @@ class PaymentCheckoutTest extends TestCase
         $this->plan = SubscriptionPlan::factory()->create([
             'name' => 'Premium',
             'amount' => 99.99,
-            'currency' => 'ARS'
+            'currency' => 'ARS',
         ]);
     }
 
     /**
      * TEST 1: Usuario logueado puede iniciar checkout
-     * 
+     *
      * Verifica:
      * - Autenticación requerida
      * - Datos del plan válidos
@@ -64,7 +64,7 @@ class PaymentCheckoutTest extends TestCase
             'user_id' => $this->user->id,
             'status' => 'pending',
             'amount' => 99.99,
-            'currency' => 'ARS'
+            'currency' => 'ARS',
         ]);
 
         // Verificar respuesta exitosa con preference_id
@@ -128,7 +128,7 @@ class PaymentCheckoutTest extends TestCase
 
     /**
      * TEST 6: Rate limiting en endpoint de checkout
-     * 
+     *
      * Máximo 5 intentos por minuto
      */
     public function test_checkout_is_rate_limited()

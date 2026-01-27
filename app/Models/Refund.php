@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Refund extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'user_id',
         'transaction_id',
@@ -138,7 +139,7 @@ class Refund extends Model
     /**
      * Aprobación manual del reembolso
      */
-    public function approve(string $notes = null): bool
+    public function approve(?string $notes = null): bool
     {
         return $this->update([
             'status' => 'approved',

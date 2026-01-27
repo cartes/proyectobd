@@ -5,17 +5,18 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Services\MercadoPagoService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-use Mockery\MockInterface;
-use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class RateLimitingTest extends TestCase
 {
     use RefreshDatabase;
 
     protected User $user;
+
     protected MockInterface $mpService;
 
     protected function setUp(): void
@@ -38,10 +39,10 @@ class RateLimitingTest extends TestCase
             ->andReturnUsing(function () {
                 return [
                     'success' => true,
-                    'preference_id' => 'pre_' . uniqid(),
+                    'preference_id' => 'pre_'.uniqid(),
                     'init_point' => 'http://mp.com',
                     'sandbox_init_point' => 'http://sandbox.mp.com',
-                    'external_reference' => 'ref_' . uniqid(),
+                    'external_reference' => 'ref_'.uniqid(),
                 ];
             });
 
@@ -99,9 +100,9 @@ class RateLimitingTest extends TestCase
                 'X-Signature' => 'ts=123,v1=123',
                 'X-Request-ID' => '123',
             ])->postJson('/api/v1/webhook/mercado-pago', [
-                        'type' => 'payment',
-                        'data' => ['id' => '123']
-                    ]);
+                'type' => 'payment',
+                'data' => ['id' => '123'],
+            ]);
 
             $response->assertStatus(200);
             $response->assertHeader('X-RateLimit-Limit', $limit);
@@ -127,9 +128,9 @@ class RateLimitingTest extends TestCase
             'X-Signature' => 'ts=123,v1=123',
             'X-Request-ID' => '123',
         ])->postJson('/api/v1/webhook/mercado-pago', [
-                    'type' => 'payment',
-                    'data' => ['id' => '123']
-                ]);
+            'type' => 'payment',
+            'data' => ['id' => '123'],
+        ]);
 
         $response->assertStatus(429);
     }
@@ -231,10 +232,10 @@ class RateLimitingTest extends TestCase
             ->andReturnUsing(function () {
                 return [
                     'success' => true,
-                    'preference_id' => 'pre_' . uniqid(),
+                    'preference_id' => 'pre_'.uniqid(),
                     'init_point' => 'http://mp.com',
                     'sandbox_init_point' => 'http://sandbox.mp.com',
-                    'external_reference' => 'ref_' . uniqid(),
+                    'external_reference' => 'ref_'.uniqid(),
                 ];
             });
 
@@ -434,9 +435,9 @@ class RateLimitingTest extends TestCase
     public function test_different_limits_per_endpoint()
     {
         Route::middleware(\App\Http\Middleware\RateLimitMiddleware::class)->group(function () {
-            Route::post('/api/match/like', fn() => 'ok')->name('match.like');
-            Route::post('/api/messages', fn() => 'ok')->name('chat.message');
-            Route::post('/payment/checkout', fn() => 'ok')->name('payment.checkout');
+            Route::post('/api/match/like', fn () => 'ok')->name('match.like');
+            Route::post('/api/messages', fn () => 'ok')->name('chat.message');
+            Route::post('/payment/checkout', fn () => 'ok')->name('payment.checkout');
         });
 
         $user = User::factory()->create();
@@ -471,7 +472,7 @@ class RateLimitingTest extends TestCase
     #[Test]
     public function test_rate_limit_headers_complete()
     {
-        Route::post('/api/match/like', fn() => 'ok')
+        Route::post('/api/match/like', fn () => 'ok')
             ->name('match.like')
             ->middleware(\App\Http\Middleware\RateLimitMiddleware::class);
 

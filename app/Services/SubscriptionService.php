@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Purchase;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\Transaction;
 use App\Models\User;
-use App\Models\Purchase;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -210,7 +210,7 @@ class SubscriptionService
         try {
             $subscription = $user->activeSubscription();
 
-            if (!$subscription) {
+            if (! $subscription) {
                 return [
                     'success' => false,
                     'error' => 'No hay suscripción activa para cancelar',
@@ -220,7 +220,7 @@ class SubscriptionService
             // Cancelar en Mercado Pago
             $result = $this->mpService->cancelPreApproval($subscription->mp_preapproval_id);
 
-            if (!$result['success']) {
+            if (! $result['success']) {
                 return $result;
             }
 
@@ -288,7 +288,7 @@ class SubscriptionService
         $subscription = $user->activeSubscription()->first();
 
         // Si no tiene suscripción activa, retornar features gratuitas
-        if (!$subscription) {
+        if (! $subscription) {
             return [
                 'unlimited_likes' => false,
                 'super_likes' => false,

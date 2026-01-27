@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('travel_frequency')->nullable()->comment('Frecuencia de viajes');
             $table->text('what_i_offer')->nullable()->comment('Qué puedo ofrecer');
             $table->json('mentorship_areas')->nullable()->comment('Áreas de mentoría');
-            
+
             // Campos específicos para Sugar Baby
             $table->text('appearance_details')->nullable()->comment('Detalles de apariencia');
             $table->string('personal_style')->nullable()->comment('Estilo personal');

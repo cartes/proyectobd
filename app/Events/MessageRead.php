@@ -16,13 +16,12 @@ class MessageRead implements ShouldBroadcast
         public int $conversationId,
         public int $messageId,
         public int $userId
-    ) {
-    }
+    ) {}
 
     public function broadcastOn(): array
     {
         return [
-            new Channel('conversation.' . $this->conversationId),
+            new Channel('conversation.'.$this->conversationId),
         ];
     }
 

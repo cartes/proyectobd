@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Mail\NewLikeEmail;
 use App\Mail\WeeklyStatsEmail;
-use Illuminate\Support\Facades\Mail;
+use App\Models\User;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
 
 class NotificationService
 {
@@ -15,8 +15,9 @@ class NotificationService
      */
     public function notifyNewLike(User $recipient, User $liker)
     {
-        if (!$this->shouldNotify($recipient)) {
+        if (! $this->shouldNotify($recipient)) {
             logger()->info("Skipping notification for inactive user #{$recipient->id}");
+
             return;
         }
 
@@ -33,7 +34,7 @@ class NotificationService
      */
     public function sendWeeklyStats(User $user, array $stats)
     {
-        if (!$this->shouldNotify($user, true)) {
+        if (! $this->shouldNotify($user, true)) {
             return;
         }
 
@@ -45,10 +46,8 @@ class NotificationService
 
     /**
      * Logic to determine if a user should receive notifications.
-     * 
-     * @param User $user
-     * @param bool $isWeekly Whether it's the weekly summary (more strict for inactive)
-     * @return bool
+     *
+     * @param  bool  $isWeekly  Whether it's the weekly summary (more strict for inactive)
      */
     private function shouldNotify(User $user, bool $isWeekly = false): bool
     {

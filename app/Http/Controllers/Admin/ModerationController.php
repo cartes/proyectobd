@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BlockedWord;
 use App\Models\Report;
 use App\Models\User;
 use App\Models\UserAction;
-use App\Models\BlockedWord;
 use App\Services\ModerationService;
 use Illuminate\Http\Request;
 
@@ -14,8 +14,7 @@ class ModerationController extends Controller
 {
     public function __construct(
         private ModerationService $moderationService
-    ) {
-    }
+    ) {}
 
     // Listar reportes
     public function reports(Request $request)
@@ -208,7 +207,7 @@ class ModerationController extends Controller
         $user->load([
             'photos' => function ($q) {
                 $q->orderBy('order', 'asc');
-            }
+            },
         ]);
 
         $reports = Report::where('reported_user_id', $user->id)
@@ -264,10 +263,11 @@ class ModerationController extends Controller
     public function toggleVerification(User $user)
     {
         $user->update([
-            'is_verified' => !$user->is_verified
+            'is_verified' => ! $user->is_verified,
         ]);
 
         $status = $user->is_verified ? 'verificado' : 'desverificado';
+
         return redirect()->back()->with('success', "Usuario {$status} correctamente.");
     }
 
@@ -275,12 +275,12 @@ class ModerationController extends Controller
     public function changeRole(Request $request, User $user)
     {
         $request->validate([
-            'user_type' => 'required|in:sugar_daddy,sugar_baby'
+            'user_type' => 'required|in:sugar_daddy,sugar_baby',
         ]);
 
         $oldType = $user->user_type;
         $user->update([
-            'user_type' => $request->user_type
+            'user_type' => $request->user_type,
         ]);
 
         \App\Models\AdminAuditLog::create([
@@ -302,7 +302,7 @@ class ModerationController extends Controller
         $request->validate([
             'is_premium' => 'required|boolean',
             'premium_until' => 'nullable|date|after:now',
-            'reason' => 'required|string|max:500'
+            'reason' => 'required|string|max:500',
         ]);
 
         $oldValues = [
@@ -330,6 +330,7 @@ class ModerationController extends Controller
         ]);
 
         $status = $user->is_premium ? 'activada' : 'desactivada';
+
         return redirect()->back()->with('success', "Suscripción Premium {$status} exitosamente.");
     }
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('rejection_reason')->nullable(); // Razón de rechazo
             $table->timestamps();
             $table->softDeletes();
-            
+
             // Índices
             $table->index(['user_id', 'is_primary']);
             $table->index(['user_id', 'order']);

@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 
 class ProfilePhoto extends Model
@@ -104,6 +104,8 @@ class ProfilePhoto extends Model
      * Constantes
      */
     public const MAX_PHOTOS = 8;
+
     public const MAX_FILE_SIZE = 5120; // 5MB en KB
+
     public const ALLOWED_TYPES = ['jpg', 'jpeg', 'png', 'webp'];
 }

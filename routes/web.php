@@ -1,19 +1,17 @@
 <?php
 
+use App\Http\Controllers\Admin\ModerationController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DiscoveryController;
+use App\Http\Controllers\MatchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilePhotoController;
-use App\Http\Controllers\DiscoveryController;
-use App\Http\Controllers\ChatController;
-use App\Http\Controllers\MatchController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\Admin\ModerationController;
-use App\Http\Controllers\WebhookController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SitemapController;
-
-use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PurchaseController;
-
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -172,4 +170,4 @@ Route::get('/e/{token}', [App\Http\Controllers\EngagementController::class, 'tra
 Route::get('/terminos-y-condiciones', [App\Http\Controllers\LegalController::class, 'terms'])->name('legal.terms');
 Route::get('/politica-de-privacidad', [App\Http\Controllers\LegalController::class, 'privacy'])->name('legal.privacy');
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

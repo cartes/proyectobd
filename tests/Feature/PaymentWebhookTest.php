@@ -14,7 +14,9 @@ class PaymentWebhookTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected Transaction $transaction;
+
     protected string $webhookSecret;
 
     protected function setUp(): void
@@ -54,7 +56,7 @@ class PaymentWebhookTest extends TestCase
             'type' => 'payment',
             'data' => [
                 'id' => $paymentId,
-            ]
+            ],
         ];
 
         Http::fake([
@@ -67,7 +69,7 @@ class PaymentWebhookTest extends TestCase
                 'metadata' => [
                     'user_id' => $this->user->id,
                     'product_type' => 'boost',
-                ]
+                ],
             ], 200),
         ]);
 
@@ -94,7 +96,7 @@ class PaymentWebhookTest extends TestCase
         $paymentId = $this->transaction->mp_payment_id;
         $payload = [
             'type' => 'payment',
-            'data' => ['id' => $paymentId, 'status' => 'approved']
+            'data' => ['id' => $paymentId, 'status' => 'approved'],
         ];
 
         $timestamp = (string) now()->timestamp;
@@ -122,7 +124,7 @@ class PaymentWebhookTest extends TestCase
         $preapprovalId = 'PA-123';
         $payload = [
             'type' => 'subscription_preapproval',
-            'data' => ['id' => $preapprovalId]
+            'data' => ['id' => $preapprovalId],
         ];
 
         $timestamp = (string) now()->timestamp;
@@ -173,7 +175,7 @@ class PaymentWebhookTest extends TestCase
                 'id' => $paymentId,
                 'amount' => 50.00,
                 'status' => 'approved',
-            ]
+            ],
         ];
 
         $timestamp = (string) now()->timestamp;
@@ -185,7 +187,7 @@ class PaymentWebhookTest extends TestCase
                 'status' => 'approved',
                 'transaction_amount' => 50.00,
                 'external_reference' => $this->transaction->external_reference,
-                'metadata' => ['user_id' => $this->user->id]
+                'metadata' => ['user_id' => $this->user->id],
             ], 200),
         ]);
 
@@ -214,7 +216,7 @@ class PaymentWebhookTest extends TestCase
             'data' => [
                 'id' => $paymentId,
                 'status' => 'rejected',
-            ]
+            ],
         ];
 
         $timestamp = (string) now()->timestamp;
@@ -226,7 +228,7 @@ class PaymentWebhookTest extends TestCase
                 'status' => 'rejected',
                 'transaction_amount' => 99.99,
                 'external_reference' => $this->transaction->external_reference,
-                'metadata' => ['user_id' => $this->user->id]
+                'metadata' => ['user_id' => $this->user->id],
             ], 200),
         ]);
 
@@ -256,7 +258,7 @@ class PaymentWebhookTest extends TestCase
     {
         $payload = [
             'action' => 'payment.created',
-            'data' => ['id' => 'MP-123', 'status' => 'approved']
+            'data' => ['id' => 'MP-123', 'status' => 'approved'],
         ];
 
         // Sin X-Signature header
@@ -273,7 +275,7 @@ class PaymentWebhookTest extends TestCase
         $paymentId = $this->transaction->mp_payment_id;
         $payload = [
             'type' => 'payment',
-            'data' => ['id' => $paymentId, 'status' => 'approved']
+            'data' => ['id' => $paymentId, 'status' => 'approved'],
         ];
 
         $timestamp = (string) now()->timestamp;

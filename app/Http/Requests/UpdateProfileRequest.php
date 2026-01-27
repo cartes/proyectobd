@@ -85,15 +85,15 @@ class UpdateProfileRequest extends FormRequest
         $features = app(\App\Services\SubscriptionService::class)->getUserFeatures($user);
 
         // Validar features premium
-        if (!$features['private_profiles'] && $this->has('is_private')) {
+        if (! $features['private_profiles'] && $this->has('is_private')) {
             $this->merge(['is_private' => false]);
         }
 
-        if (!$features['share_data']) {
+        if (! $features['share_data']) {
             if ($this->filled('social_instagram') || $this->filled('social_whatsapp')) {
                 $this->merge([
                     'social_instagram' => null,
-                    'social_whatsapp' => null
+                    'social_whatsapp' => null,
                 ]);
             }
         }

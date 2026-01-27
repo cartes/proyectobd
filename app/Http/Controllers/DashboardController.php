@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
 use App\Models\Message;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -166,10 +165,10 @@ class DashboardController extends Controller
     private function calculateProfileCompletion(User $user): int
     {
         $fields = [
-            'name' => !empty($user->name),
-            'bio' => !empty($user->bio),
-            'city' => !empty($user->city),
-            'birth_date' => !empty($user->birth_date),
+            'name' => ! empty($user->name),
+            'bio' => ! empty($user->bio),
+            'city' => ! empty($user->city),
+            'birth_date' => ! empty($user->birth_date),
             'photos' => $user->photos()->count() > 0,
             'is_verified' => $user->is_verified,
         ];

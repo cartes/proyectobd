@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\ProfilePhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +19,7 @@ class ProfilePhotoController extends Controller
             $file = $request->file('photo');
             // ✅ USAR extension() EN LUGAR DE getClientOriginalExtension() PARA MAYOR SEGURIDAD
             $extension = $file->extension();
-            $filename = Str::uuid() . '.' . $extension;
+            $filename = Str::uuid().'.'.$extension;
 
             // ✅ USAR RUTA OFUSCADA
             $path = $file->storeAs($user->getStoragePath(), $filename, 'public');
@@ -41,7 +40,7 @@ class ProfilePhotoController extends Controller
             return back()->with('success', '¡Foto subida exitosamente! 📸');
 
         } catch (\Exception $e) {
-            return back()->withErrors(['photo' => 'Error al subir la foto: ' . $e->getMessage()]);
+            return back()->withErrors(['photo' => 'Error al subir la foto: '.$e->getMessage()]);
         }
     }
 
@@ -125,7 +124,7 @@ class ProfilePhotoController extends Controller
 
             return back()->with('success', '¡Foto eliminada correctamente! 🗑️');
         } catch (\Exception $e) {
-            return back()->withErrors(['photo' => 'Error al eliminar la foto: ' . $e->getMessage()]);
+            return back()->withErrors(['photo' => 'Error al eliminar la foto: '.$e->getMessage()]);
         }
     }
 }

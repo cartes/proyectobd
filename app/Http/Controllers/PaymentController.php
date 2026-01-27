@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\MercadoPagoService;
-use App\Models\Transaction;
 use App\Models\Refund;
+use App\Models\Transaction;
+use App\Services\MercadoPagoService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class PaymentController extends Controller
 {
@@ -36,7 +36,7 @@ class PaymentController extends Controller
             if ($request->product_type === 'subscription' && $user->hasActiveSubscription()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'User already has an active subscription'
+                    'message' => 'User already has an active subscription',
                 ], 403);
             }
 
@@ -47,10 +47,10 @@ class PaymentController extends Controller
                 $request->metadata ?? []
             );
 
-            if (!$result['success']) {
+            if (! $result['success']) {
                 return response()->json([
                     'success' => false,
-                    'message' => $result['error'] ?? 'Error creating payment preference'
+                    'message' => $result['error'] ?? 'Error creating payment preference',
                 ], 400);
             }
 
@@ -75,12 +75,12 @@ class PaymentController extends Controller
         } catch (Exception $e) {
             Log::error('Checkout failed', [
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'An internal error occurred'
+                'message' => 'An internal error occurred',
             ], 500);
         }
     }
@@ -98,10 +98,10 @@ class PaymentController extends Controller
         try {
             $transaction = Transaction::where('mp_payment_id', $request->payment_id)->first();
 
-            if (!$transaction) {
+            if (! $transaction) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Transaction not found'
+                    'message' => 'Transaction not found',
                 ], 404);
             }
 
@@ -109,7 +109,7 @@ class PaymentController extends Controller
             if ($transaction->refunds()->exists()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Transaction already refunded'
+                    'message' => 'Transaction already refunded',
                 ], 403);
             }
 
@@ -117,7 +117,7 @@ class PaymentController extends Controller
             if ($transaction->created_at->lt(now()->subDays(7))) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Refund period expired'
+                    'message' => 'Refund period expired',
                 ], 403);
             }
 
@@ -126,10 +126,10 @@ class PaymentController extends Controller
                 $request->amount
             );
 
-            if (!$result['success']) {
+            if (! $result['success']) {
                 return response()->json([
                     'success' => false,
-                    'message' => $result['error'] ?? 'Refund failed'
+                    'message' => $result['error'] ?? 'Refund failed',
                 ], 400);
             }
 
@@ -161,12 +161,12 @@ class PaymentController extends Controller
         } catch (Exception $e) {
             Log::error('Refund failed', [
                 'error' => $e->getMessage(),
-                'payment_id' => $request->payment_id
+                'payment_id' => $request->payment_id,
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'An internal error occurred'
+                'message' => 'An internal error occurred',
             ], 500);
         }
     }
@@ -181,12 +181,13 @@ class PaymentController extends Controller
         $resourceId = $request->query('id'); // Mercado Pago a veces envía el ID aquí
         $payload = $request->all();
 
-        if (!$xSignature || !$xRequestId || !$this->mpService->validateSignature($xSignature, $xRequestId, $resourceId, $payload)) {
+        if (! $xSignature || ! $xRequestId || ! $this->mpService->validateSignature($xSignature, $xRequestId, $resourceId, $payload)) {
             Log::warning('Unauthorized MP Webhook attempt', [
-                'has_signature' => !empty($xSignature),
-                'has_request_id' => !empty($xRequestId),
-                'payload' => $payload
+                'has_signature' => ! empty($xSignature),
+                'has_request_id' => ! empty($xRequestId),
+                'payload' => $payload,
             ]);
+
             return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
         }
 

@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageRead;
+use App\Events\MessageSent;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
-use App\Events\MessageSent;
-use App\Events\MessageRead;
 use App\Services\ModerationService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ChatController extends Controller
 {
     public function __construct(
         private ModerationService $moderationService
-    ) {
-    }
+    ) {}
 
     /**
      * Listado de conversaciones del usuario autenticado
@@ -33,6 +31,7 @@ class ChatController extends Controller
                 $otherUser = $conversation->getOtherUser($userId);
                 $conversation->other_user = $otherUser;
                 $conversation->unread_count = $conversation->unreadCount($userId);
+
                 return $conversation;
             });
 
@@ -57,7 +56,7 @@ class ChatController extends Controller
         $otherUser = $conversation->getOtherUser($userId);
 
         // USAR TU MÉTODO hasMatchWith
-        if (!auth()->user()->hasMatchWith($otherUser)) {
+        if (! auth()->user()->hasMatchWith($otherUser)) {
             return redirect()->route('chat.index')
                 ->with('error', 'No puedes chatear con este usuario sin un match.');
         }
@@ -78,7 +77,6 @@ class ChatController extends Controller
         return view('chat.show', compact('conversation', 'messages', 'otherUser'));
     }
 
-
     /**
      * Enviar mensaje en una conversación
      */
@@ -86,7 +84,7 @@ class ChatController extends Controller
     {
         $request->validate([
             'content' => 'required|string|max:2000',
-            'type' => 'sometimes|in:text,image,emoji'
+            'type' => 'sometimes|in:text,image,emoji',
         ]);
 
         $userId = auth()->id();
@@ -104,7 +102,7 @@ class ChatController extends Controller
 
         $receiver = User::find($receiverId);
 
-        if (!$currentUser->hasMatchWith($receiver)) {
+        if (! $currentUser->hasMatchWith($receiver)) {
             return response()->json(['error' => 'No hay match con este usuario'], 403);
         }
 
@@ -154,7 +152,7 @@ class ChatController extends Controller
         }
 
         // VALIDAR QUE EXISTE MATCH usando tu método
-        if (!$currentUser->hasMatchWith($user)) {
+        if (! $currentUser->hasMatchWith($user)) {
             return redirect()->route('matches.index')
                 ->with('error', '❌ Necesitas hacer match con este usuario para poder chatear.');
         }
@@ -169,7 +167,7 @@ class ChatController extends Controller
         })->first();
 
         // Crear nueva conversación si no existe
-        if (!$conversation) {
+        if (! $conversation) {
             $conversation = Conversation::create([
                 'user_one_id' => $currentUser->id,
                 'user_two_id' => $user->id,
@@ -202,7 +200,7 @@ class ChatController extends Controller
         foreach ($unreadMessages as $message) {
             $message->update([
                 'is_read' => true,
-                'read_at' => now()
+                'read_at' => now(),
             ]);
 
             broadcast(new MessageRead(
@@ -222,7 +220,7 @@ class ChatController extends Controller
 
         $message->update([
             'is_read' => true,
-            'read_at' => now()
+            'read_at' => now(),
         ]);
 
         broadcast(new MessageRead(
@@ -247,10 +245,9 @@ class ChatController extends Controller
 
         $conversation->update([
             'is_blocked' => true,
-            'blocked_by' => auth()->id()
+            'blocked_by' => auth()->id(),
         ]);
 
         return response()->json(['status' => 'blocked']);
     }
-
 }

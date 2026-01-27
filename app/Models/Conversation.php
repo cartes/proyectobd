@@ -14,7 +14,7 @@ class Conversation extends Model
         'user_two_id',
         'last_message_at',
         'is_blocked',
-        'blocked_by'
+        'blocked_by',
     ];
 
     protected $casts = [

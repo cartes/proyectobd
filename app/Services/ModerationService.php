@@ -7,7 +7,6 @@ use App\Models\Message;
 use App\Models\Report;
 use App\Models\User;
 use App\Models\UserAction;
-use Illuminate\Support\Str;
 
 class ModerationService
 {
@@ -51,7 +50,7 @@ class ModerationService
         }
 
         return [
-            'is_flagged' => !empty($flaggedWords),
+            'is_flagged' => ! empty($flaggedWords),
             'flagged_words' => $flaggedWords,
             'severity_level' => $this->determineSeverity($totalSeverity),
             'total_severity' => $totalSeverity,
@@ -66,7 +65,7 @@ class ModerationService
         $blockedWords = BlockedWord::active()->pluck('word')->toArray();
 
         foreach ($blockedWords as $word) {
-            $pattern = '/\b' . preg_quote($word, '/') . '\b/iu';
+            $pattern = '/\b'.preg_quote($word, '/').'\b/iu';
             $replacement = str_repeat('*', strlen($word));
             $text = preg_replace($pattern, $replacement, $text);
         }
@@ -165,7 +164,7 @@ class ModerationService
     /**
      * Banear usuario permanentemente
      */
-    public function banUser(int $userId, string $reason, int $adminId = null)
+    public function banUser(int $userId, string $reason, ?int $adminId = null)
     {
         // Desactivar todas las acciones previas
         UserAction::where('user_id', $userId)
@@ -191,7 +190,7 @@ class ModerationService
     /**
      * Crear reporte
      */
-    public function createReport(int $reporterId, int $reportedUserId, string $type, $id, string $reason, string $description = null): Report
+    public function createReport(int $reporterId, int $reportedUserId, string $type, $id, string $reason, ?string $description = null): Report
     {
         return Report::create([
             'reporter_id' => $reporterId,
@@ -225,6 +224,7 @@ class ModerationService
     private function containsWord(string $text, string $word): bool
     {
         $normalized = $this->normalize($word);
+
         return stripos($text, $normalized) !== false;
     }
 
@@ -240,10 +240,13 @@ class ModerationService
 
     private function determineSeverity(int $score): string
     {
-        if ($score >= 5)
+        if ($score >= 5) {
             return 'high';
-        if ($score >= 3)
+        }
+        if ($score >= 3) {
             return 'medium';
+        }
+
         return 'low';
     }
 }

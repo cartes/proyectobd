@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\SubscriptionPlan;
 use Illuminate\Database\Seeder;
 
@@ -56,7 +55,6 @@ class SubscriptionPlanSeeder extends Seeder
             ],
             'is_active' => true,
         ]);
-
 
         // Plan Premium Anual
         SubscriptionPlan::create([

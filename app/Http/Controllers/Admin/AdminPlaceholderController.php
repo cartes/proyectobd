@@ -10,6 +10,7 @@ class AdminPlaceholderController extends Controller
     public function index(Request $request)
     {
         $title = $request->get('title', 'Módulo en Desarrollo');
+
         return view('admin.placeholder', compact('title'));
     }
 }

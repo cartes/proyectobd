@@ -4,13 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use App\Models\ProfileDetail;
-use App\Models\PaymentMethod;
-use App\Models\Subscription;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -182,6 +179,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Report::class, 'reporter_id');
     }
+
     // ==================== RELACIONES ANALYTICS ====================
     public function profileViews(): HasMany
     {
@@ -249,7 +247,6 @@ class User extends Authenticatable
         return $this->hasMany(PaymentMethod::class);
     }
 
-
     /**
      * Relación: un usuario puede tener muchas compras
      */
@@ -257,7 +254,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Purchase::class);
     }
-
 
     /**
      * ⭐ NUEVA: Relación con logs de auditoría de pagos
@@ -391,6 +387,7 @@ class User extends Authenticatable
         if ($this->super_likes_remaining > 0) {
             return $this->decrement('super_likes_remaining');
         }
+
         return false;
     }
 
@@ -555,7 +552,8 @@ class User extends Authenticatable
     public function getStoragePath(): string
     {
         // Usar un hash simple basado en el ID y la app_key para que no sea predecible
-        $hash = substr(hash('sha256', $this->id . config('app.key')), 0, 12);
+        $hash = substr(hash('sha256', $this->id.config('app.key')), 0, 12);
+
         return "profiles/{$hash}";
     }
 
@@ -625,5 +623,4 @@ class User extends Authenticatable
     {
         return $this->activeSubscription()->first();
     }
-
 }

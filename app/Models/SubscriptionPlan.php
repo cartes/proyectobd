@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class SubscriptionPlan extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'name',
         'slug',
@@ -49,7 +50,7 @@ class SubscriptionPlan extends Model
      */
     public function isOnSale(): bool
     {
-        return !is_null($this->sale_amount) &&
+        return ! is_null($this->sale_amount) &&
             ($this->sale_expires_at === null || $this->sale_expires_at->isFuture());
     }
 
