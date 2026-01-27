@@ -160,4 +160,65 @@ class RateLimitingTest extends TestCase
 
         $response->assertStatus(429);
     }
+
+    #[Test]
+    public function rate_limited_user_is_blocked_after_three_violations()
+    {
+        $limit = 5;
+
+        // Clear mock expectation mess from other tests or defaults?
+        // Using Mockery expectations is global per test? No, existing mocks should be fine.
+        // But we need to define expectations for the whole sequence.
+
+        // We will have:
+        // 3 Cycles of hitting limit (getting 429).
+        // Each 429 logs a warning.
+        // The 3rd 429 triggers an alert (blocking).
+
+        Log::shouldReceive('warning')
+            ->times(3)
+            ->withArgs(function ($message) {
+                return $message === 'Rate limit exceeded';
+            });
+
+        Log::shouldReceive('alert')
+            ->once()
+            ->withArgs(function ($message, $context) {
+                return $message === 'User blocked for 24 hours due to rate limit violations'
+                    && isset($context['key'], $context['violations'])
+                    && $context['violations'] === 3;
+            });
+
+        // 1st Violation Cycle
+        for ($i = 0; $i < $limit; $i++) {
+            $this->postJson('/login', ['email' => $this->user->email, 'password' => 'wrong']);
+        }
+        $this->postJson('/login', ['email' => $this->user->email, 'password' => 'wrong'])
+            ->assertStatus(429);
+
+        // 2nd Violation Cycle
+        // Since we are mocking/using array cache, keys persist? RefreshDatabase trait handles DB, but Cache?
+        // Tests usually use array driver which persists for the test unless cleared.
+        // But the rate limiter has a decay.
+        // We need to simulate that we are hitting it again "as a new violation"??
+        // Wait, the code says:
+        // if (tooManyAttempts) { violations++ }
+        // If we are already limited, any subsequent request is "tooManyAttempts".
+        // So we don't need to cycle limits. We just need to hit it 3 times while limited.
+
+        // So hitting it 2 more times should trigger block.
+
+        $this->postJson('/login', ['email' => $this->user->email, 'password' => 'wrong'])
+            ->assertStatus(429); // Violation 2
+
+        $this->postJson('/login', ['email' => $this->user->email, 'password' => 'wrong'])
+            ->assertStatus(429); // Violation 3 -> Logs Alert, Sets Block
+
+        // Check Block
+        $this->postJson('/login', ['email' => $this->user->email, 'password' => 'wrong'])
+            ->assertStatus(403)
+            ->assertJson([
+                'message' => 'Account temporarily blocked due to suspicious activity.',
+            ]);
+    }
 }

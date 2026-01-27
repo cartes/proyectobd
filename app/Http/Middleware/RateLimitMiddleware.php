@@ -23,6 +23,16 @@ class RateLimitMiddleware
         // Obtener identificador único (IP o User ID)
         $key = $this->getKey($request);
 
+        $violationKey = "{$key}:violations";
+        $isBlocked = cache()->get("{$key}:blocked", false);
+
+        if ($isBlocked) {
+            return response()->json([
+                'message' => 'Account temporarily blocked due to suspicious activity.',
+                'retry_after' => cache()->get("{$key}:blocked_until", 0) - now()->timestamp,
+            ], 403);
+        }
+
         // Obtener límite configurado
         $rateLimit = $this->getRateLimit($limit);
 
@@ -34,9 +44,24 @@ class RateLimitMiddleware
 
         // Verificar si excedió límite
         if ($this->limiter->tooManyAttempts($key, $requests)) {
+            $expectedRetryAfter = $this->limiter->availableIn($key);
+
+            $violations = cache()->get($violationKey, 0) + 1;
+            cache()->put($violationKey, $violations, 60 * 60); // 1 hora
+
+            if ($violations >= 3) {
+                cache()->put("{$key}:blocked", true, 24 * 60 * 60);
+                cache()->put("{$key}:blocked_until", now()->addDay()->timestamp, 24 * 60 * 60);
+
+                Log::alert('User blocked for 24 hours due to rate limit violations', [
+                    'key' => $key,
+                    'violations' => $violations,
+                ]);
+            }
+
             return $this->buildResponse(
                 $request,
-                $this->limiter->availableIn($key)
+                $expectedRetryAfter // Use normal retryAfter unless blocked? If blocked, next request handles.
             );
         }
 
