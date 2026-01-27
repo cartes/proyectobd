@@ -22,15 +22,6 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-// PÚBLICAS (webhook DEBE ser público)
-Route::post('/webhook/mercadopago', [WebhookController::class, 'handleMercadoPagoWebhook']);
+// PÚBLICAS (webhook se maneja en routes/web.php)
+// Las rutas de webhook están en web.php para evitar duplicación
 
-Route::post('/mercado-pago/webhook', [
-    \App\Http\Controllers\Api\WebhookController::class,
-    'handle'
-])->name('webhook.mercadopago');
-
-Route::get('/mercado-pago/webhook/test', [
-    \App\Http\Controllers\Api\WebhookController::class,
-    'test'
-]);
