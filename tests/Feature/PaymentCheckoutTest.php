@@ -125,4 +125,3 @@ class PaymentCheckoutTest extends TestCase
 
     }
 }
-
