@@ -30,12 +30,15 @@ class RateLimitingTest extends TestCase
 
         $this->mpService->shouldReceive('createPaymentPreference')
             ->times($limit)
-            ->andReturnUsing(fn() => [
-                'success' => true,
-                'preference_id' => 'pre_123',
-                'init_point' => 'http://mp.com',
-                'sandbox_init_point' => 'http://sandbox.mp.com',
-            ]);
+            ->andReturnUsing(function () {
+                return [
+                    'success' => true,
+                    'preference_id' => 'pre_' . uniqid(),
+                    'init_point' => 'http://mp.com',
+                    'sandbox_init_point' => 'http://sandbox.mp.com',
+                    'external_reference' => 'ref_' . uniqid(),
+                ];
+            });
 
         for ($i = 0; $i < $limit; $i++) {
             $response = $this->actingAs($this->user)
@@ -63,24 +66,33 @@ class RateLimitingTest extends TestCase
     {
         $limit = 10;
 
+        $this->mpService->shouldReceive('validateSignature')
+            ->andReturn(true);
+
         $this->mpService->shouldReceive('processWebhook')
             ->times($limit)
             ->andReturn(true);
 
         for ($i = 0; $i < $limit; $i++) {
-            $response = $this->postJson('/api/v1/webhook/mercado-pago', [
-                'type' => 'payment',
-                'data' => ['id' => '123']
-            ]);
+            $response = $this->withHeaders([
+                'X-Signature' => 'ts=123,v1=123',
+                'X-Request-ID' => '123',
+            ])->postJson('/api/v1/webhook/mercado-pago', [
+                        'type' => 'payment',
+                        'data' => ['id' => '123']
+                    ]);
 
             $response->assertStatus(200);
             $response->assertHeader('X-RateLimit-Limit', $limit);
         }
 
-        $response = $this->postJson('/api/v1/webhook/mercado-pago', [
-            'type' => 'payment',
-            'data' => ['id' => '123']
-        ]);
+        $response = $this->withHeaders([
+            'X-Signature' => 'ts=123,v1=123',
+            'X-Request-ID' => '123',
+        ])->postJson('/api/v1/webhook/mercado-pago', [
+                    'type' => 'payment',
+                    'data' => ['id' => '123']
+                ]);
 
         $response->assertStatus(429);
     }

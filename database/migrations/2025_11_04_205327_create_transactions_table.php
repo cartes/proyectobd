@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->foreignId('subscription_id')->nullable()->constrained('subscriptions')->onDelete('set null');
 
             $table->enum('type', ['subscription', 'purchase']); // tipo de transacción
-            $table->string('mp_payment_id')->unique(); // ID del pago en Mercado Pago
+            $table->string('mp_payment_id')->nullable()->unique(); // ID del pago en Mercado Pago
 
             $table->decimal('amount', 10, 2);
             $table->string('currency')->default('ARS');

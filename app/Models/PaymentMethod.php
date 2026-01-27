@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PaymentMethod extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'user_id',
         'type',
@@ -163,18 +165,18 @@ class PaymentMethod extends Model
     public function deactivate(): void
     {
         $this->update(['is_active' => false]);
-        
+
         // Si era el por defecto, cambiar a otro
         if ($this->is_default) {
             $this->update(['is_default' => false]);
-            
+
             // Intentar asignar otro como por defecto
             $another = $this->user
                 ->paymentMethods()
                 ->where('is_active', true)
                 ->where('id', '!=', $this->id)
                 ->first();
-                
+
             if ($another) {
                 $another->update(['is_default' => true]);
             }

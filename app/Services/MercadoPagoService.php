@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\PaymentAuditLog;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use Exception;
 
 class MercadoPagoService
@@ -109,35 +110,25 @@ class MercadoPagoService
                 'notification_url' => route('webhook.mercadopago'),
             ];
 
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($preferenceData));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Authorization: Bearer ' . $this->accessToken,
-                'Content-Type: application/json',
-            ]);
+            $response = Http::withToken($this->accessToken)
+                ->post($url, $preferenceData);
 
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-
-            if ($httpCode !== 201) {
+            if ($response->failed()) {
                 Log::error('MP createPaymentPreference failed', [
-                    'http_code' => $httpCode,
-                    'response' => $response,
+                    'http_code' => $response->status(),
+                    'response' => $response->body(),
                 ]);
                 return ['success' => false, 'error' => 'Failed to create preference'];
             }
 
-            $data = json_decode($response, true);
+            $data = $response->json();
 
             return [
                 'success' => true,
                 'preference_id' => $data['id'] ?? null,
                 'init_point' => $data['init_point'] ?? null,
                 'sandbox_init_point' => $data['sandbox_init_point'] ?? null,
+                'external_reference' => $externalReference,
             ];
         } catch (Exception $e) {
             Log::error('Error creating payment preference', [
@@ -182,56 +173,17 @@ class MercadoPagoService
         ]);
 
         // Realizar request a Mercado Pago
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.mercadopago.com/checkout/preferences');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . $this->accessToken,
-            'Content-Type: application/json',
-        ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        $url = 'https://api.mercadopago.com/checkout/preferences';
 
-        // ✅ CAPTURAR HEADERS DE LA RESPUESTA
-        $headerData = [];
-        curl_setopt($ch, CURLOPT_HEADERFUNCTION, function ($curl, $header) use (&$headerData) {
-            $len = strlen($header);
-            $header = explode(':', $header, 2);
-            if (count($header) < 2) {
-                return $len;
-            }
-            $name = strtolower(trim($header[0]));
-            $value = trim($header[1]);
-            $headerData[$name] = $value;
-            return $len;
-        });
+        $response = Http::withToken($this->accessToken)
+            ->post($url, $payload);
 
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curlError = curl_error($ch);
-        curl_close($ch);
-
-        // ✅ LOGUEAR HEADERS COMPLETOS
-        Log::debug('MP Response Headers', [
-            'x-request-id' => $headerData['x-request-id'] ?? 'N/A',
-            'x-idempotency-key' => $headerData['x-idempotency-key'] ?? 'N/A',
-            'date' => $headerData['date'] ?? 'N/A',
-            'all-headers' => $headerData,
-        ]);
-
-        Log::debug('MP Preference Response', [
-            'status' => $httpCode,
-            'response' => $response,
-            'curl_error' => $curlError,
-        ]);
-
-        $responseArray = json_decode($response, true);
+        $httpCode = $response->status();
+        $responseArray = $response->json();
 
         if ($httpCode !== 201) {
-            // ✅ LOGUEAR ERROR CON X-REQUEST-ID Y PAYLOAD
             Log::error('Preference creation failed', [
                 'status' => $httpCode,
-                'x-request-id' => $headerData['x-request-id'] ?? 'N/A',
                 'payload_sent' => json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
                 'response' => $responseArray,
             ]);
@@ -240,13 +192,11 @@ class MercadoPagoService
                 'success' => false,
                 'error' => $responseArray['message'] ?? 'Error desconocido',
                 'status' => $httpCode,
-                'x-request-id' => $headerData['x-request-id'] ?? 'N/A',
             ];
         }
 
         Log::info('Preference created successfully', [
             'preference_id' => $responseArray['id'] ?? null,
-            'x-request-id' => $headerData['x-request-id'] ?? 'N/A',
             'user_id' => $user->id,
             'plan_id' => $plan->id,
         ]);
@@ -256,7 +206,6 @@ class MercadoPagoService
             'preference_id' => $responseArray['id'],
             'init_point' => $responseArray['init_point'],
             'sandbox_init_point' => $responseArray['sandbox_init_point'] ?? $responseArray['init_point'],
-            'x-request-id' => $headerData['x-request-id'] ?? 'N/A',
         ];
     }
 
@@ -265,30 +214,22 @@ class MercadoPagoService
      */
     public function getPaymentInfo($paymentId)
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.mercadopago.com/v1/payments/' . $paymentId);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . $this->accessToken,
-        ]);
+        $url = 'https://api.mercadopago.com/v1/payments/' . $paymentId;
 
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        $response = Http::withToken($this->accessToken)
+            ->get($url);
 
-        $responseArray = json_decode($response, true);
+        $data = $response->json();
 
-        if ($httpCode !== 200) {
-            return [
-                'success' => false,
-                'error' => $responseArray['message'] ?? 'Error al obtener pago',
-            ];
+        if ($response->failed()) {
+            throw new Exception("Error al obtener información del pago: " . ($data['message'] ?? 'Error desconocido'));
         }
 
         return [
             'success' => true,
-            'status' => $responseArray['status'],
-            'payment_data' => $responseArray,
+            'status' => $data['status'] ?? null,
+            'amount' => $data['transaction_amount'] ?? null,
+            'payment_data' => $data,
         ];
     }
 
@@ -300,41 +241,24 @@ class MercadoPagoService
         try {
             $url = "https://api.mercadopago.com/preapproval/{$preApprovalId}";
 
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Authorization: Bearer ' . $this->accessToken,
-                'Content-Type: application/json',
-            ]);
+            $response = Http::withToken($this->accessToken)
+                ->get($url);
 
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-
-            if ($httpCode !== 200) {
+            if ($response->failed()) {
                 Log::error('MP getPreApprovalInfo failed', [
                     'preapproval_id' => $preApprovalId,
-                    'http_code' => $httpCode,
-                    'response' => $response,
+                    'http_code' => $response->status(),
+                    'response' => $response->body(),
                 ]);
                 return ['success' => false, 'error' => 'Failed to get preapproval info'];
             }
 
-            $data = json_decode($response, true);
-
             return [
                 'success' => true,
-                'preapproval_id' => $data['id'] ?? null,
-                'status' => $data['status'] ?? 'unknown',
-                'external_reference' => $data['external_reference'] ?? null,
-                'auto_recurring' => $data['auto_recurring'] ?? [],
-                'payer_email' => $data['payer_email'] ?? null,
-                'raw' => $data,
+                'data' => $response->json()
             ];
         } catch (Exception $e) {
             Log::error('Error getting preapproval info', [
-                'preapproval_id' => $preApprovalId,
                 'error' => $e->getMessage(),
             ]);
             return ['success' => false, 'error' => $e->getMessage()];
@@ -454,6 +378,51 @@ class MercadoPagoService
     /**
      * Procesar webhook de Mercado Pago (entry point desde el controller)
      */
+    /**
+     * Validar firma de webhook de Mercado Pago
+     */
+    public function validateSignature(string $xSignature, string $xRequestId, ?string $resourceId, array $payload): bool
+    {
+        $webhookSecret = config('services.mercadopago.webhook_secret');
+        if (!$webhookSecret) {
+            Log::warning('MP Webhook Secret not configured');
+            return false;
+        }
+
+        // Parsear x-signature (formato: ts=...,v1=...)
+        $parts = explode(',', $xSignature);
+        $ts = null;
+        $v1 = null;
+
+        foreach ($parts as $part) {
+            $kv = explode('=', $part);
+            if (count($kv) === 2) {
+                if (trim($kv[0]) === 'ts')
+                    $ts = trim($kv[1]);
+                if (trim($kv[0]) === 'v1')
+                    $v1 = trim($kv[1]);
+            }
+        }
+
+        if (!$ts || !$v1) {
+            Log::warning('Invalid x-signature format', ['signature' => $xSignature]);
+            return false;
+        }
+
+        // El ID del recurso está en el payload o en el query param (resourceId pasado)
+        $id = $resourceId ?? $payload['data']['id'] ?? $payload['id'] ?? null;
+
+        if ($id) {
+            // Manifest string: id:[id];ts:[ts];
+            $manifest = "id:{$id};ts:{$ts};";
+            $sha256 = hash_hmac('sha256', $manifest, $webhookSecret);
+
+            return hash_equals($sha256, $v1);
+        }
+
+        return false;
+    }
+
     public function processWebhook(array $payload): bool
     {
         try {
@@ -544,6 +513,16 @@ class MercadoPagoService
                 'metadata' => $metadata,
             ]);
         } else {
+            // Validar que el monto coincida (tolerancia de 0.01 por redondeo)
+            $receivedAmount = $paymentData['transaction_amount'] ?? 0;
+            if (abs($transaction->amount - $receivedAmount) > 0.01) {
+                Log::warning('Webhook amount mismatch', [
+                    'transaction_id' => $transaction->id,
+                    'expected' => $transaction->amount,
+                    'received' => $receivedAmount,
+                ]);
+                return false;
+            }
             $transaction->update(['status' => $status]);
         }
 
@@ -659,8 +638,8 @@ class MercadoPagoService
             return false;
         }
 
-        $status = $info['status'];
-        $externalReference = $info['external_reference'];
+        $status = $info['data']['status'] ?? null;
+        $externalReference = $info['data']['external_reference'] ?? null;
 
         $subscription = Subscription::where('mp_preapproval_id', $preapprovalId)->first();
 
@@ -759,33 +738,21 @@ class MercadoPagoService
     {
         try {
             $url = "https://api.mercadopago.com/v1/payments/{$mpPaymentId}/refunds";
-
             $payload = $amount ? ['amount' => $amount] : [];
 
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Authorization: Bearer ' . $this->accessToken,
-                'Content-Type: application/json',
-            ]);
+            $response = Http::withToken($this->accessToken)
+                ->post($url, $payload);
 
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-
-            if ($httpCode !== 201 && $httpCode !== 200) {
+            if ($response->failed()) {
                 Log::error('MP refund failed', [
                     'payment_id' => $mpPaymentId,
-                    'http_code' => $httpCode,
-                    'response' => $response,
+                    'http_code' => $response->status(),
+                    'response' => $response->body(),
                 ]);
                 return ['success' => false, 'error' => 'Refund failed'];
             }
 
-            $data = json_decode($response, true);
+            $data = $response->json();
 
             Log::info('Refund processed', [
                 'payment_id' => $mpPaymentId,

@@ -3,8 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use App\Models\Plan;
+use App\Models\SubscriptionPlan;
 use App\Models\Transaction;
+use App\Services\MercadoPagoService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -14,16 +15,16 @@ class PaymentCheckoutTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
-    protected Plan $plan;
+    protected SubscriptionPlan $plan;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->user = User::factory()->create(['user_type' => 'sugar_daddy']);
-        $this->plan = Plan::factory()->create([
+        $this->plan = SubscriptionPlan::factory()->create([
             'name' => 'Premium',
-            'price' => 99.99,
+            'amount' => 99.99,
             'currency' => 'ARS'
         ]);
     }
@@ -39,9 +40,23 @@ class PaymentCheckoutTest extends TestCase
      */
     public function test_authenticated_user_can_initiate_checkout()
     {
+        // Mock MercadoPagoService
+        $this->mock(MercadoPagoService::class, function ($mock) {
+            $mock->shouldReceive('createPaymentPreference')
+                ->once()
+                ->andReturn([
+                    'success' => true,
+                    'preference_id' => 'pref_123',
+                    'init_point' => 'http://mp.test/init',
+                    'sandbox_init_point' => 'http://mp.test/sandbox',
+                    'external_reference' => 'ref_123',
+                ]);
+        });
+
         $response = $this->actingAs($this->user)
-            ->post('/payment/checkout', [
-                'plan_id' => $this->plan->id,
+            ->post('/api/v1/checkout', [
+                'product_type' => 'boost',
+                'amount' => 99.99,
             ]);
 
         // Verificar que se creó Transaction en estado pending
@@ -52,10 +67,9 @@ class PaymentCheckoutTest extends TestCase
             'currency' => 'ARS'
         ]);
 
-        // Verificar redireccionamiento a Mercado Pago
-        $response->assertRedirect();
-        $redirectUrl = $response->headers->get('Location');
-        $this->assertStringContainsString('mercadopago.com', $redirectUrl);
+        // Verificar respuesta exitosa con preference_id
+        $response->assertSuccessful();
+        $response->assertJsonStructure(['success', 'preference_id', 'init_point']);
     }
 
     /**
@@ -63,8 +77,9 @@ class PaymentCheckoutTest extends TestCase
      */
     public function test_unauthenticated_user_cannot_checkout()
     {
-        $response = $this->post('/payment/checkout', [
-            'plan_id' => $this->plan->id,
+        $response = $this->post('/api/v1/checkout', [
+            'product_type' => 'boost',
+            'amount' => 99.99,
         ]);
 
         $response->assertRedirect(route('login'));
@@ -76,34 +91,18 @@ class PaymentCheckoutTest extends TestCase
     /**
      * TEST 3: Plan inexistente retorna error
      */
-    public function test_invalid_plan_returns_error()
+    public function test_invalid_parameters_returns_error()
     {
         $response = $this->actingAs($this->user)
-            ->post('/payment/checkout', [
-                'plan_id' => 9999,
+            ->post('/api/v1/checkout', [
+                'product_type' => '',
+                'amount' => -10,
             ]);
 
-        $response->assertNotFound();
+        $response->assertStatus(302); // Redirect back due to validation error (default behavior)
         $this->assertDatabaseMissing('transactions', [
             'user_id' => $this->user->id,
         ]);
-    }
-
-    /**
-     * TEST 4: Validación de monto negativo
-     */
-    public function test_negative_plan_price_is_rejected()
-    {
-        $invalidPlan = Plan::factory()->create([
-            'price' => -50.00,
-        ]);
-
-        $response = $this->actingAs($this->user)
-            ->post('/payment/checkout', [
-                'plan_id' => $invalidPlan->id,
-            ]);
-
-        $response->assertUnprocessable();
     }
 
     /**
@@ -115,12 +114,13 @@ class PaymentCheckoutTest extends TestCase
         $this->user->subscriptions()->create([
             'plan_id' => $this->plan->id,
             'status' => 'active',
-            'expires_at' => now()->addMonth(),
+            'ends_at' => now()->addMonth(),
         ]);
 
         $response = $this->actingAs($this->user)
-            ->post('/payment/checkout', [
-                'plan_id' => $this->plan->id,
+            ->post('/api/v1/checkout', [
+                'product_type' => 'subscription',
+                'amount' => 99.99,
             ]);
 
         $response->assertForbidden();
@@ -135,8 +135,9 @@ class PaymentCheckoutTest extends TestCase
     {
         for ($i = 0; $i < 6; $i++) {
             $response = $this->actingAs($this->user)
-                ->post('/payment/checkout', [
-                    'plan_id' => $this->plan->id,
+                ->post('/api/v1/checkout', [
+                    'product_type' => 'boost',
+                    'amount' => 99.99,
                 ]);
 
             if ($i < 5) {

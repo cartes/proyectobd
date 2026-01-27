@@ -2,10 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Transaction;
 use App\Models\Subscription;
+use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class PaymentWebhookTest extends TestCase
@@ -19,9 +20,9 @@ class PaymentWebhookTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->webhookSecret = config('services.mercadopago.webhook_secret');
-        
+
         $this->user = User::factory()->create();
         $this->transaction = Transaction::factory()->create([
             'user_id' => $this->user->id,
@@ -33,16 +34,12 @@ class PaymentWebhookTest extends TestCase
     /**
      * Generar firma válida para webhook
      */
-    protected function generateValidSignature(string $body): string
+    protected function generateValidSignature(string $body, string $timestamp, string $resourceId): string
     {
-        $timestamp = now()->timestamp;
-        $signature = hash_hmac(
-            'sha256',
-            "$timestamp.$body",
-            $this->webhookSecret
-        );
-        
-        return $signature;
+        $manifest = "id:{$resourceId};ts:{$timestamp};";
+        $v1 = hash_hmac('sha256', $manifest, $this->webhookSecret);
+
+        return "ts={$timestamp},v1={$v1}";
     }
 
     /**
@@ -50,37 +47,42 @@ class PaymentWebhookTest extends TestCase
      */
     public function test_webhook_with_valid_signature_processes_payment()
     {
+        $timestamp = (string) now()->timestamp;
+        $paymentId = $this->transaction->mp_payment_id;
+
         $payload = [
-            'action' => 'payment.created',
+            'type' => 'payment',
             'data' => [
-                'id' => 'MP-' . $this->transaction->mercado_pago_id,
-                'amount' => 99.99,
-                'status' => 'approved',
+                'id' => $paymentId,
             ]
         ];
 
-        $body = json_encode($payload);
-        $signature = $this->generateValidSignature($body);
-        $timestamp = now()->timestamp;
+        Http::fake([
+            'api.mercadopago.com/v1/payments/*' => Http::response([
+                'id' => $paymentId,
+                'status' => 'approved',
+                'transaction_amount' => 99.99,
+                'currency_id' => 'ARS',
+                'external_reference' => $this->transaction->external_reference,
+                'metadata' => [
+                    'user_id' => $this->user->id,
+                    'product_type' => 'boost',
+                ]
+            ], 200),
+        ]);
 
-        $response = $this->post('/webhook/mercado-pago', $payload, [
+        $signature = $this->generateValidSignature(json_encode($payload), $timestamp, $paymentId);
+
+        $response = $this->post('/api/v1/webhook/mercado-pago', $payload, [
             'X-Signature' => $signature,
             'X-Request-ID' => $timestamp,
         ]);
 
-        // Verificar respuesta exitosa
         $response->assertSuccessful();
 
-        // Verificar que Transaction fue actualizada
         $this->assertDatabaseHas('transactions', [
             'id' => $this->transaction->id,
             'status' => 'approved',
-        ]);
-
-        // Verificar que Subscription fue creada
-        $this->assertDatabaseHas('subscriptions', [
-            'user_id' => $this->user->id,
-            'status' => 'active',
         ]);
     }
 
@@ -89,18 +91,22 @@ class PaymentWebhookTest extends TestCase
      */
     public function test_webhook_with_invalid_signature_is_rejected()
     {
+        $paymentId = $this->transaction->mp_payment_id;
         $payload = [
-            'action' => 'payment.created',
-            'data' => ['id' => 'MP-123', 'status' => 'approved']
+            'type' => 'payment',
+            'data' => ['id' => $paymentId, 'status' => 'approved']
         ];
 
-        $response = $this->post('/webhook/mercado-pago', $payload, [
+        $timestamp = (string) now()->timestamp;
+        $signature = $this->generateValidSignature(json_encode($payload), $timestamp, $paymentId);
+
+        $response = $this->post('/api/v1/webhook/mercado-pago', $payload, [
             'X-Signature' => 'invalid_signature',
-            'X-Request-ID' => now()->timestamp,
+            'X-Request-ID' => $timestamp,
         ]);
 
         $response->assertUnauthorized();
-        
+
         // Verificar que NO se actualizó la transacción
         $this->assertDatabaseHas('transactions', [
             'id' => $this->transaction->id,
@@ -113,24 +119,39 @@ class PaymentWebhookTest extends TestCase
      */
     public function test_duplicate_webhook_does_not_create_duplicate_subscription()
     {
+        $preapprovalId = 'PA-123';
         $payload = [
-            'action' => 'payment.created',
-            'data' => ['id' => 'MP-123', 'status' => 'approved']
+            'type' => 'subscription_preapproval',
+            'data' => ['id' => $preapprovalId]
         ];
 
-        $body = json_encode($payload);
-        $signature = $this->generateValidSignature($body);
+        $timestamp = (string) now()->timestamp;
+        $signature = $this->generateValidSignature(json_encode($payload), $timestamp, $preapprovalId);
 
-        // Primer webhook
-        $this->post('/webhook/mercado-pago', $payload, [
+        // Create initial subscription
+        Subscription::factory()->create([
+            'user_id' => $this->user->id,
+            'mp_preapproval_id' => $preapprovalId,
+            'status' => 'pending',
+        ]);
+
+        Http::fake([
+            'api.mercadopago.com/preapproval/*' => Http::response([
+                'status' => 'authorized',
+                'external_reference' => 'ref_123',
+            ], 200),
+        ]);
+
+        // First call
+        $this->post('/api/v1/webhook/mercado-pago', $payload, [
             'X-Signature' => $signature,
-            'X-Request-ID' => now()->timestamp,
+            'X-Request-ID' => $timestamp,
         ])->assertSuccessful();
 
-        // Segundo webhook idéntico (duplicado)
-        $this->post('/webhook/mercado-pago', $payload, [
+        // Second call
+        $this->post('/api/v1/webhook/mercado-pago', $payload, [
             'X-Signature' => $signature,
-            'X-Request-ID' => now()->timestamp,
+            'X-Request-ID' => $timestamp,
         ])->assertSuccessful();
 
         // Verificar que solo existe 1 Subscription
@@ -145,21 +166,32 @@ class PaymentWebhookTest extends TestCase
      */
     public function test_webhook_with_mismatched_amount_is_rejected()
     {
+        $paymentId = $this->transaction->mp_payment_id;
         $payload = [
-            'action' => 'payment.created',
+            'type' => 'payment',
             'data' => [
-                'id' => 'MP-123',
-                'amount' => 50.00, // Diferente al esperado (99.99)
+                'id' => $paymentId,
+                'amount' => 50.00,
                 'status' => 'approved',
             ]
         ];
 
-        $body = json_encode($payload);
-        $signature = $this->generateValidSignature($body);
+        $timestamp = (string) now()->timestamp;
+        $signature = $this->generateValidSignature(json_encode($payload), $timestamp, $paymentId);
 
-        $response = $this->post('/webhook/mercado-pago', $payload, [
+        Http::fake([
+            'api.mercadopago.com/v1/payments/*' => Http::response([
+                'id' => $paymentId,
+                'status' => 'approved',
+                'transaction_amount' => 50.00,
+                'external_reference' => $this->transaction->external_reference,
+                'metadata' => ['user_id' => $this->user->id]
+            ], 200),
+        ]);
+
+        $response = $this->post('/api/v1/webhook/mercado-pago', $payload, [
             'X-Signature' => $signature,
-            'X-Request-ID' => now()->timestamp,
+            'X-Request-ID' => $timestamp,
         ]);
 
         $response->assertStatus(400); // Bad Request
@@ -176,21 +208,31 @@ class PaymentWebhookTest extends TestCase
      */
     public function test_rejected_payment_updates_transaction_status()
     {
+        $paymentId = $this->transaction->mp_payment_id;
         $payload = [
-            'action' => 'payment.updated',
+            'type' => 'payment',
             'data' => [
-                'id' => 'MP-123',
+                'id' => $paymentId,
                 'status' => 'rejected',
-                'failure_reason' => 'insufficient_funds',
             ]
         ];
 
-        $body = json_encode($payload);
-        $signature = $this->generateValidSignature($body);
+        $timestamp = (string) now()->timestamp;
+        $signature = $this->generateValidSignature(json_encode($payload), $timestamp, $paymentId);
 
-        $response = $this->post('/webhook/mercado-pago', $payload, [
+        Http::fake([
+            'api.mercadopago.com/v1/payments/*' => Http::response([
+                'id' => $paymentId,
+                'status' => 'rejected',
+                'transaction_amount' => 99.99,
+                'external_reference' => $this->transaction->external_reference,
+                'metadata' => ['user_id' => $this->user->id]
+            ], 200),
+        ]);
+
+        $response = $this->post('/api/v1/webhook/mercado-pago', $payload, [
             'X-Signature' => $signature,
-            'X-Request-ID' => now()->timestamp,
+            'X-Request-ID' => $timestamp,
         ]);
 
         $response->assertSuccessful();
@@ -218,7 +260,7 @@ class PaymentWebhookTest extends TestCase
         ];
 
         // Sin X-Signature header
-        $response = $this->post('/webhook/mercado-pago', $payload);
+        $response = $this->post('/api/v1/webhook/mercado-pago', $payload);
 
         $response->assertUnauthorized();
     }
@@ -228,17 +270,26 @@ class PaymentWebhookTest extends TestCase
      */
     public function test_webhook_returns_200_on_success()
     {
+        $paymentId = $this->transaction->mp_payment_id;
         $payload = [
-            'action' => 'payment.created',
-            'data' => ['id' => 'MP-123', 'status' => 'approved']
+            'type' => 'payment',
+            'data' => ['id' => $paymentId, 'status' => 'approved']
         ];
 
-        $body = json_encode($payload);
-        $signature = $this->generateValidSignature($body);
+        $timestamp = (string) now()->timestamp;
+        $signature = $this->generateValidSignature(json_encode($payload), $timestamp, $paymentId);
 
-        $response = $this->post('/webhook/mercado-pago', $payload, [
+        Http::fake([
+            'api.mercadopago.com/v1/payments/*' => Http::response([
+                'id' => $paymentId,
+                'status' => 'approved',
+                'transaction_amount' => 99.99,
+            ], 200),
+        ]);
+
+        $response = $this->post('/api/v1/webhook/mercado-pago', $payload, [
             'X-Signature' => $signature,
-            'X-Request-ID' => now()->timestamp,
+            'X-Request-ID' => $timestamp,
         ]);
 
         $response->assertStatus(200);

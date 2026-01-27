@@ -2,10 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Plan;
 use App\Models\Subscription;
+use App\Models\SubscriptionPlan;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class SubscriptionLifecycleTest extends TestCase
@@ -13,15 +14,16 @@ class SubscriptionLifecycleTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
-    protected Plan $plan;
+    protected SubscriptionPlan $plan;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->user = User::factory()->create();
-        $this->plan = Plan::factory()->create([
-            'duration_days' => 30,
+        $this->plan = SubscriptionPlan::factory()->create([
+            'frequency' => 1,
+            'frequency_type' => 'months',
         ]);
     }
 
@@ -34,7 +36,7 @@ class SubscriptionLifecycleTest extends TestCase
             'user_id' => $this->user->id,
             'plan_id' => $this->plan->id,
             'status' => 'active',
-            'expires_at' => now()->subDays(1), // Expiró ayer
+            'ends_at' => now()->subDays(1), // Expiró ayer
         ]);
 
         // Ejecutar cron job de expiración
@@ -54,22 +56,25 @@ class SubscriptionLifecycleTest extends TestCase
         $expiredSubscription = Subscription::factory()->create([
             'user_id' => $this->user->id,
             'status' => 'expired',
-            'expires_at' => now()->subDay(),
+            'ends_at' => now()->subDay(),
+        ]);
+
+        Http::fake([
+            'api.mercadopago.com/checkout/preferences' => Http::response([
+                'id' => 'pref_123',
+                'init_point' => 'http://mp.test/init',
+                'sandbox_init_point' => 'http://mp.test/sandbox',
+            ], 201),
         ]);
 
         $response = $this->actingAs($this->user)
-            ->post('/payment/checkout', [
-                'plan_id' => $this->plan->id,
-            ]);
+            ->post("/subscription/checkout/{$this->plan->id}");
 
-        $response->assertRedirect();
-
-        // Nueva suscripción con status active debe existir
-        $this->assertTrue(
-            Subscription::where('user_id', $this->user->id)
-                ->where('status', 'active')
-                ->exists()
-        );
+        $response->assertSuccessful();
+        $response->assertJson([
+            'success' => true,
+            'preference_id' => 'pref_123',
+        ]);
     }
 
     /**
@@ -80,7 +85,7 @@ class SubscriptionLifecycleTest extends TestCase
         $subscription = Subscription::factory()->create([
             'user_id' => $this->user->id,
             'status' => 'active',
-            'expires_at' => now()->addMonth(),
+            'ends_at' => now()->addMonth(),
         ]);
 
         // Verificar que usuario tiene suscripción activa

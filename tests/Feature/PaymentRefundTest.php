@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Transaction;
 use App\Models\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class PaymentRefundTest extends TestCase
@@ -19,20 +20,19 @@ class PaymentRefundTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->user = User::factory()->create();
-        
+
         $this->transaction = Transaction::factory()->create([
             'user_id' => $this->user->id,
             'status' => 'approved',
             'amount' => 99.99,
-            'mercado_pago_id' => 'MP-123456',
+            'mp_payment_id' => 'MP-123456',
         ]);
 
         $this->subscription = Subscription::factory()->create([
             'user_id' => $this->user->id,
             'status' => 'active',
-            'transaction_id' => $this->transaction->id,
         ]);
     }
 
@@ -46,9 +46,17 @@ class PaymentRefundTest extends TestCase
             'created_at' => now()->subDays(5)
         ]);
 
+        Http::fake([
+            'api.mercadopago.com/v1/payments/*/refunds' => Http::response([
+                'id' => 123456,
+                'status' => 'approved',
+                'amount' => 99.99,
+            ], 201),
+        ]);
+
         $response = $this->actingAs($this->user)
-            ->post('/payment/refund', [
-                'transaction_id' => $this->transaction->id,
+            ->post('/api/v1/refund', [
+                'payment_id' => $this->transaction->mp_payment_id,
                 'reason' => 'Not satisfied with service',
             ]);
 
@@ -67,17 +75,17 @@ class PaymentRefundTest extends TestCase
     public function test_refund_not_allowed_after_7_days()
     {
         // Transacción hace 8 días
-        $this->transaction->update([
+        $this->transaction->forceFill([
             'created_at' => now()->subDays(8)
-        ]);
+        ])->save();
 
         $response = $this->actingAs($this->user)
-            ->post('/payment/refund', [
-                'transaction_id' => $this->transaction->id,
+            ->post('/api/v1/refund', [
+                'payment_id' => $this->transaction->mp_payment_id,
             ]);
 
         $response->assertForbidden();
-        
+
         $this->assertDatabaseMissing('refunds', [
             'transaction_id' => $this->transaction->id,
         ]);
@@ -88,9 +96,17 @@ class PaymentRefundTest extends TestCase
      */
     public function test_successful_refund_cancels_subscription()
     {
+        Http::fake([
+            'api.mercadopago.com/v1/payments/*/refunds' => Http::response([
+                'id' => 123456,
+                'status' => 'approved',
+                'amount' => 99.99,
+            ], 201),
+        ]);
+
         $response = $this->actingAs($this->user)
-            ->post('/payment/refund', [
-                'transaction_id' => $this->transaction->id,
+            ->post('/api/v1/refund', [
+                'payment_id' => $this->transaction->mp_payment_id,
                 'reason' => 'Request refund',
             ]);
 
@@ -108,20 +124,28 @@ class PaymentRefundTest extends TestCase
      */
     public function test_cannot_refund_same_transaction_twice()
     {
+        Http::fake([
+            'api.mercadopago.com/v1/payments/*/refunds' => Http::response([
+                'id' => 123456,
+                'status' => 'approved',
+                'amount' => 99.99,
+            ], 201),
+        ]);
+
         // Primer reembolso
         $this->actingAs($this->user)
-            ->post('/payment/refund', [
-                'transaction_id' => $this->transaction->id,
+            ->post('/api/v1/refund', [
+                'payment_id' => $this->transaction->mp_payment_id,
             ]);
 
         // Segundo reembolso
         $response = $this->actingAs($this->user)
-            ->post('/payment/refund', [
-                'transaction_id' => $this->transaction->id,
+            ->post('/api/v1/refund', [
+                'payment_id' => $this->transaction->mp_payment_id,
             ]);
 
         $response->assertForbidden();
-        
+
         // Solo debe haber 1 refund
         $this->assertEquals(
             1,

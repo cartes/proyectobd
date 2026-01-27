@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('mp_plan_id')->nullable(); // ID del plan en Mercado Pago
             $table->string('mp_preapproval_id')->nullable(); // ID de preaprobación (suscripción activa)
 
-            $table->enum('status', ['active', 'cancelled', 'expired', 'pending', 'failed'])->default('pending');
+            $table->enum('status', ['active', 'cancelled', 'expired', 'pending', 'failed', 'authorized', 'paused'])->default('pending');
             $table->string('payment_method')->default('mercadopago'); // mercadopago
 
             $table->timestamp('starts_at')->nullable(); // Cuándo inicia la suscripción

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\ProfileDetail;
 use App\Models\PaymentMethod;
+use App\Models\Subscription;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -93,6 +94,17 @@ class User extends Authenticatable
     public function photos()
     {
         return $this->hasMany(ProfilePhoto::class)->ordered();
+    }
+
+    /**
+     * Verificar si tiene una suscripción activa
+     */
+    public function hasActiveSubscription(): bool
+    {
+        return $this->subscriptions()
+            ->where('status', 'active')
+            ->where('ends_at', '>', now())
+            ->exists();
     }
 
     /**

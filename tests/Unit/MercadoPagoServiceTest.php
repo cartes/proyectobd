@@ -2,12 +2,16 @@
 
 namespace Tests\Unit;
 
+use App\Models\User;
 use App\Services\MercadoPagoService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class MercadoPagoServiceTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected MercadoPagoService $service;
 
     protected function setUp(): void
@@ -21,22 +25,19 @@ class MercadoPagoServiceTest extends TestCase
      */
     public function test_service_creates_payment_preference()
     {
+        $user = User::factory()->create();
+
         Http::fake([
             'api.mercadopago.com/checkout/preferences' => Http::response([
                 'id' => 'MP-123456',
-                'client_id' => 'test-client',
                 'init_point' => 'https://mercadopago.com/checkout/abc123',
+                'sandbox_init_point' => 'https://mercadopago.com/checkout/sandbox/abc123',
             ], 201),
         ]);
 
-        $preference = $this->service->createPreference([
-            'title' => 'Premium Plan',
-            'price' => 99.99,
-            'currency' => 'ARS',
-            'user_id' => 1,
-        ]);
+        $preference = $this->service->createPaymentPreference($user, 'boost', 99.99);
 
-        $this->assertEquals('MP-123456', $preference['id']);
+        $this->assertEquals('MP-123456', $preference['preference_id']);
         $this->assertStringContainsString('mercadopago.com/checkout', $preference['init_point']);
     }
 
@@ -49,12 +50,12 @@ class MercadoPagoServiceTest extends TestCase
             'api.mercadopago.com/v1/payments/123456' => Http::response([
                 'id' => 123456,
                 'status' => 'approved',
-                'amount' => 99.99,
-                'currency' => 'ARS',
+                'transaction_amount' => 99.99,
+                'currency_id' => 'ARS',
             ], 200),
         ]);
 
-        $payment = $this->service->getPayment(123456);
+        $payment = $this->service->getPaymentInfo(123456);
 
         $this->assertEquals('approved', $payment['status']);
         $this->assertEquals(99.99, $payment['amount']);
@@ -72,6 +73,6 @@ class MercadoPagoServiceTest extends TestCase
         ]);
 
         $this->expectException(\Exception::class);
-        $this->service->getPayment(999999);
+        $this->service->getPaymentInfo(999999);
     }
 }
