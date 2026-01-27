@@ -30,11 +30,11 @@ class RateLimitingTest extends TestCase
 
         $this->mpService->shouldReceive('createPaymentPreference')
             ->times($limit)
-            ->andReturn([
+            ->andReturnUsing(fn() => [
                 'success' => true,
                 'preference_id' => 'pre_123',
                 'init_point' => 'http://mp.com',
-                'sandbox_init_point' => 'http://sandbox.mp.com'
+                'sandbox_init_point' => 'http://sandbox.mp.com',
             ]);
 
         for ($i = 0; $i < $limit; $i++) {
