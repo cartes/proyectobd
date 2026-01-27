@@ -19,9 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        if (!app()->environment('testing')) {
-            $middleware->trustProxies(at: '*');
-        }
+        $middleware->trustProxies(at: '*');
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
             'rate_limit' => \App\Http\Middleware\RateLimitMiddleware::class,
