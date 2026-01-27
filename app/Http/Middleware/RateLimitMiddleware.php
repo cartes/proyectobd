@@ -100,33 +100,52 @@ class RateLimitMiddleware
     protected function getRateLimit(?string $limit): ?string
     {
         if ($limit) {
-            return $limit;
-        }
+            // Already set passed explicitly
+        } else {
+            $route = request()->route();
+            $routeName = $route?->getName();
+            $path = request()->path();
 
-        $route = request()->route();
-        $routeName = $route?->getName();
-        $path = request()->path();
+            // 1. Intentar por nombre de ruta
+            if ($routeName) {
+                $limit = config("app.rate_limits.{$routeName}");
+            }
 
-        // 1. Intentar por nombre de ruta
-        if ($routeName) {
-            $configuredLimit = config("app.rate_limits.{$routeName}");
-            if (is_string($configuredLimit)) {
-                return $configuredLimit;
+            // 2. Intentar por path si no hay por ruta
+            if (!$limit || !is_string($limit)) {
+                $limit = config("app.rate_limits.{$path}");
+            }
+
+            // 3. Fallback para API
+            if ((!$limit || !is_string($limit)) && request()->is('api/*')) {
+                $limit = config('app.rate_limits.api.default');
             }
         }
 
-        // 2. Intentar por path (limpio)
-        $configuredLimit = config("app.rate_limits.{$path}");
-        if (is_string($configuredLimit)) {
-            return $configuredLimit;
+        // Si no hay límite configurado, retorna null (sin límite)
+        if (!$limit || !is_string($limit)) {
+            return null;
         }
 
-        // Fallback para API si no hay específico
-        if (request()->is('api/*')) {
-            return config('app.rate_limits.api.default');
+        // Modificar límites según tipo de usuario
+        $user = auth()->user();
+
+        if ($user) {
+            // Admin sin límite
+            if ($user->is_admin) {
+                return null;
+            }
+
+            // Premium users: 2x límite
+            // Prioritize hasActiveSubscription method if available, else attribute?
+            // User model logic confirms hasActiveSubscription() method exists.
+            if ($user->hasActiveSubscription()) {
+                [$requests, $minutes] = explode(',', $limit);
+                return ($requests * 2) . ',' . $minutes;
+            }
         }
 
-        return null;
+        return $limit;
     }
 
     protected function buildResponse(Request $request, int $retryAfter)

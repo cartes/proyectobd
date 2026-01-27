@@ -115,6 +115,14 @@ class User extends Authenticatable
         return $this->hasOne(ProfilePhoto::class)->where('is_primary', true);
     }
 
+    /**
+     * Accesor para atributo is_admin
+     */
+    public function getIsAdminAttribute(): bool
+    {
+        return $this->role === 'admin';
+    }
+
     // ==================== RELACIONES MATCHING ====================
 
     /**

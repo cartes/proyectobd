@@ -166,15 +166,6 @@ class RateLimitingTest extends TestCase
     {
         $limit = 5;
 
-        // Clear mock expectation mess from other tests or defaults?
-        // Using Mockery expectations is global per test? No, existing mocks should be fine.
-        // But we need to define expectations for the whole sequence.
-
-        // We will have:
-        // 3 Cycles of hitting limit (getting 429).
-        // Each 429 logs a warning.
-        // The 3rd 429 triggers an alert (blocking).
-
         Log::shouldReceive('warning')
             ->times(3)
             ->withArgs(function ($message) {
@@ -196,21 +187,11 @@ class RateLimitingTest extends TestCase
         $this->postJson('/login', ['email' => $this->user->email, 'password' => 'wrong'])
             ->assertStatus(429);
 
-        // 2nd Violation Cycle
-        // Since we are mocking/using array cache, keys persist? RefreshDatabase trait handles DB, but Cache?
-        // Tests usually use array driver which persists for the test unless cleared.
-        // But the rate limiter has a decay.
-        // We need to simulate that we are hitting it again "as a new violation"??
-        // Wait, the code says:
-        // if (tooManyAttempts) { violations++ }
-        // If we are already limited, any subsequent request is "tooManyAttempts".
-        // So we don't need to cycle limits. We just need to hit it 3 times while limited.
-
-        // So hitting it 2 more times should trigger block.
-
+        // 2nd Violation Cycle (hitting while limited)
         $this->postJson('/login', ['email' => $this->user->email, 'password' => 'wrong'])
             ->assertStatus(429); // Violation 2
 
+        // 3rd Violation Cycle (hitting while limited)
         $this->postJson('/login', ['email' => $this->user->email, 'password' => 'wrong'])
             ->assertStatus(429); // Violation 3 -> Logs Alert, Sets Block
 
@@ -220,5 +201,61 @@ class RateLimitingTest extends TestCase
             ->assertJson([
                 'message' => 'Account temporarily blocked due to suspicious activity.',
             ]);
+    }
+
+    #[Test]
+    public function premium_users_have_double_rate_limits()
+    {
+        $limit = 5;
+        $doubledLimit = $limit * 2;
+
+        // Ensure known limit for this test
+        config(['app.rate_limits.payment.checkout' => "{$limit},1"]);
+
+        // Create user
+        $user = User::factory()->create();
+
+        // Create active subscription for user
+        \App\Models\Subscription::factory()->create([
+            'user_id' => $user->id,
+            'status' => 'active',
+            'ends_at' => now()->addMonth(),
+        ]);
+
+        $this->mpService->shouldReceive('createPaymentPreference')
+            ->times($doubledLimit)
+            ->andReturnUsing(function () {
+                return [
+                    'success' => true,
+                    'preference_id' => 'pre_' . uniqid(),
+                    'init_point' => 'http://mp.com',
+                    'sandbox_init_point' => 'http://sandbox.mp.com',
+                    'external_reference' => 'ref_' . uniqid(),
+                ];
+            });
+
+        // Hit allowed limit (double)
+        for ($i = 0; $i < $doubledLimit; $i++) {
+            $response = $this->actingAs($user)
+                ->postJson('/api/v1/checkout', [
+                    'product_type' => 'boost',
+                    'amount' => 100,
+                ]);
+
+            $response->assertStatus(200);
+            $response->assertHeader('X-RateLimit-Limit', $doubledLimit);
+        }
+
+        // Verify next hit is blocked
+        Log::shouldReceive('warning')->once(); // One warning for the limit hit
+        Log::shouldReceive('alert')->once(); // One alert because it's payment route
+
+        $response = $this->actingAs($user)
+            ->postJson('/api/v1/checkout', [
+                'product_type' => 'boost',
+                'amount' => 100,
+            ]);
+
+        $response->assertStatus(429);
     }
 }
