@@ -79,6 +79,12 @@ class RateLimitMiddleware
 
     protected function getKey(Request $request): string
     {
+        // NUEVO: Checkear whitelist
+        $whitelist = config('app.rate_limit_whitelist', []);
+        if (in_array($request->ip(), $whitelist)) {
+            return 'rate_limit:whitelist:' . $request->ip();
+        }
+
         $path = $request->path();
 
         // Para auth, siempre usar IP (prevenir brute force antes de login)
@@ -99,6 +105,11 @@ class RateLimitMiddleware
 
     protected function getRateLimit(?string $limit): ?string
     {
+        // NUEVO: Si es whitelist, sin límite
+        if (in_array(request()->ip(), config('app.rate_limit_whitelist', []))) {
+            return null;
+        }
+
         if ($limit) {
             // Already set passed explicitly
         } else {

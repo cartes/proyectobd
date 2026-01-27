@@ -163,5 +163,13 @@ return [
         'api' => [
             'default' => '100,1',              // 100 requests por minuto
         ],
-    ]
+    ],
+
+    'rate_limit_whitelist' => [
+        '127.0.0.1',           // localhost IPv4
+        '::1',                 // localhost IPv6
+        // Agregar IPs de partners o servicios internos:
+        // '192.168.1.100',
+        // '10.0.0.1',
+    ],
 ];

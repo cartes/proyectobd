@@ -20,6 +20,9 @@ class RateLimitingTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        // Ensure whitelist is empty so tests trigger rate limits
+        config(['app.rate_limit_whitelist' => []]);
+
         $this->user = User::factory()->create();
         $this->mpService = $this->mock(MercadoPagoService::class);
     }
@@ -257,5 +260,30 @@ class RateLimitingTest extends TestCase
             ]);
 
         $response->assertStatus(429);
+    }
+
+    #[Test]
+    public function whitelisted_ip_is_not_rate_limited()
+    {
+        // Whitelist localhost
+        config(['app.rate_limit_whitelist' => ['127.0.0.1']]);
+
+        $attempts = 10; // Exceed normal limit of 5
+
+        // Neither warning nor alert should be called
+        Log::shouldReceive('warning')->never();
+        Log::shouldReceive('alert')->never();
+
+        for ($i = 0; $i < $attempts; $i++) {
+            // Use postJson to login with wrong credentials
+            // It might fail validation or auth but should NOT be 429.
+            // 422 Unprocessable Entity or 401 Unauthorized is fine.
+            $response = $this->postJson('/login', [
+                'email' => $this->user->email,
+                'password' => 'wrong',
+            ]);
+
+            $this->assertNotEquals(429, $response->status(), "Request $i was rate limited!");
+        }
     }
 }
