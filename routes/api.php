@@ -5,7 +5,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\WebhookController;
 
 // Autenticadas
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth')->group(function () {
 
     // Subscriptions
     Route::prefix('subscriptions')->group(function () {
@@ -26,11 +26,11 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/webhook/mercadopago', [WebhookController::class, 'handleMercadoPagoWebhook']);
 
 Route::post('/mercado-pago/webhook', [
-    \App\Http\Controllers\Api\WebhookController::class, 
+    \App\Http\Controllers\Api\WebhookController::class,
     'handle'
 ])->name('webhook.mercadopago');
 
 Route::get('/mercado-pago/webhook/test', [
-    \App\Http\Controllers\Api\WebhookController::class, 
+    \App\Http\Controllers\Api\WebhookController::class,
     'test'
 ]);
