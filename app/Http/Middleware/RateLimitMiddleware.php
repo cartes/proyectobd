@@ -6,6 +6,8 @@ use Closure;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class RateLimitMiddleware
 {
@@ -104,6 +106,28 @@ class RateLimitMiddleware
 
     protected function buildResponse(Request $request, int $retryAfter)
     {
+        Log::warning('Rate limit exceeded', [
+            'user_id' => auth()->id(),
+            'ip' => $request->ip(),
+            'route' => $request->route()?->getName(),
+            'path' => $request->path(),
+            'retry_after' => $retryAfter,
+            'timestamp' => now()->toIso8601String(),
+        ]);
+
+        if (
+            str_contains($request->path(), 'payment') ||
+            str_contains($request->path(), 'webhook') ||
+            str_contains($request->path(), 'checkout')
+        ) {
+            Log::alert('Suspicious payment activity blocked', [
+                'user_id' => auth()->id(),
+                'ip' => $request->ip(),
+                'endpoint' => $request->path(),
+                'retry_after' => $retryAfter,
+            ]);
+        }
+
         if ($request->expectsJson()) {
             return response()->json([
                 'message' => 'Too many requests. Please try again later.',

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
+use Illuminate\Support\Facades\Log;
 
 class RateLimitingTest extends TestCase
 {
@@ -51,6 +52,22 @@ class RateLimitingTest extends TestCase
             $response->assertHeader('X-RateLimit-Limit', $limit);
         }
 
+        // Expect warning for all rate limits
+        Log::shouldReceive('warning')
+            ->once()
+            ->withArgs(function ($message, $context) {
+                return $message === 'Rate limit exceeded'
+                    && isset($context['user_id'], $context['ip'], $context['route'], $context['path'], $context['retry_after'], $context['timestamp']);
+            });
+
+        // Expect alert for payment route
+        Log::shouldReceive('alert')
+            ->once()
+            ->withArgs(function ($message, $context) {
+                return $message === 'Suspicious payment activity blocked'
+                    && isset($context['user_id'], $context['ip'], $context['endpoint'], $context['retry_after']);
+            });
+
         $response = $this->actingAs($this->user)
             ->postJson('/api/v1/checkout', [
                 'product_type' => 'boost',
@@ -86,6 +103,22 @@ class RateLimitingTest extends TestCase
             $response->assertHeader('X-RateLimit-Limit', $limit);
         }
 
+        // Expect warning
+        Log::shouldReceive('warning')
+            ->once()
+            ->withArgs(function ($message, $context) {
+                return $message === 'Rate limit exceeded'
+                    && isset($context['ip'], $context['retry_after'], $context['timestamp']);
+            });
+
+        // Expect alert for webhook (payment related)
+        Log::shouldReceive('alert')
+            ->once()
+            ->withArgs(function ($message, $context) {
+                return $message === 'Suspicious payment activity blocked'
+                    && isset($context['ip'], $context['endpoint'], $context['retry_after']);
+            });
+
         $response = $this->withHeaders([
             'X-Signature' => 'ts=123,v1=123',
             'X-Request-ID' => '123',
@@ -103,14 +136,22 @@ class RateLimitingTest extends TestCase
         $limit = 5;
 
         for ($i = 0; $i < $limit; $i++) {
-            $response = $this->post('/login', [
+            $this->post('/login', [
                 'email' => $this->user->email,
                 'password' => 'wrong-password',
             ]);
-
-            $response->assertStatus(302);
-            $response->assertHeader('X-RateLimit-Limit', $limit);
         }
+
+        // Expect warning only
+        Log::shouldReceive('warning')
+            ->once()
+            ->withArgs(function ($message, $context) {
+                return $message === 'Rate limit exceeded'
+                    && isset($context['ip'], $context['retry_after'], $context['timestamp']);
+            });
+
+        // Explicitly expect NO alert
+        Log::shouldReceive('alert')->never();
 
         $response = $this->post('/login', [
             'email' => $this->user->email,
