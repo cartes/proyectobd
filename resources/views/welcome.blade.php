@@ -73,9 +73,9 @@
             </a>
 
             <div class="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-300">
+                <a href="{{ route('plans.public') }}" class="hover:text-pink-400 transition-colors">Planes</a>
                 <a href="#como-funciona" class="hover:text-pink-400 transition-colors">Cómo Funciona</a>
                 <a href="#beneficios" class="hover:text-pink-400 transition-colors">Beneficios</a>
-                <a href="#historias" class="hover:text-pink-400 transition-colors">Historias</a>
             </div>
 
             <div class="flex items-center gap-4">
@@ -121,6 +121,15 @@
         </div>
 
         <div class="relative z-10 container mx-auto px-6 text-center">
+            <div class="mb-6 animate-fade-in-up">
+                <div
+                    class="inline-block py-2 px-6 rounded-full bg-red-600 text-white text-sm font-black uppercase tracking-tighter shadow-xl shadow-red-500/40 rotate-[-2deg] border-2 border-white/20">
+                    🔥 ¡Los primeros 3 meses, todas las funcionalidades GRATIS!*
+                </div>
+                <div class="text-[10px] text-slate-500 mt-2 font-bold uppercase tracking-widest">* Excepto perfiles
+                    privados</div>
+            </div>
+
             <span
                 class="inline-block py-1 px-3 rounded-full bg-pink-500/10 border border-pink-500/30 text-pink-400 text-xs font-bold uppercase tracking-widest mb-6 animate-fade-in-up">
                 ✨ La comunidad #1 de Lifestyle en Latinoamérica
@@ -392,8 +401,10 @@
                             Condiciones</a></li>
                     <li><a href="{{ route('legal.privacy') }}" class="hover:text-pink-500 transition-colors">Política de
                             Privacidad</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Reglas de la Comunidad</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Seguridad</a></li>
+                    <li><a href="{{ route('legal.rules') }}" class="hover:text-pink-500 transition-colors">Reglas de la
+                            Comunidad</a></li>
+                    <li><a href="{{ route('legal.safety') }}"
+                            class="hover:text-pink-500 transition-colors">Seguridad</a></li>
                 </ul>
             </div>
 

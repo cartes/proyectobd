@@ -13,4 +13,14 @@ class LegalController extends Controller
     {
         return view('legal.privacy');
     }
+
+    public function rules()
+    {
+        return view('legal.rules');
+    }
+
+    public function safety()
+    {
+        return view('legal.safety');
+    }
 }
