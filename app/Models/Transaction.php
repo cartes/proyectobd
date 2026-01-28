@@ -11,6 +11,17 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if ($model->amount <= 0) {
+                throw new \Exception('Transaction amount must be positive.');
+            }
+        });
+    }
+
     protected $fillable = [
         'user_id',
         'subscription_id',
