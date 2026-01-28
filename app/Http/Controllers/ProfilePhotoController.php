@@ -19,7 +19,7 @@ class ProfilePhotoController extends Controller
             $file = $request->file('photo');
             // ✅ USAR extension() EN LUGAR DE getClientOriginalExtension() PARA MAYOR SEGURIDAD
             $extension = $file->extension();
-            $filename = Str::uuid().'.'.$extension;
+            $filename = Str::uuid() . '.' . $extension;
 
             // ✅ USAR RUTA OFUSCADA
             $path = $file->storeAs($user->getStoragePath(), $filename, 'public');
@@ -40,7 +40,13 @@ class ProfilePhotoController extends Controller
             return back()->with('success', '¡Foto subida exitosamente! 📸');
 
         } catch (\Exception $e) {
-            return back()->withErrors(['photo' => 'Error al subir la foto: '.$e->getMessage()]);
+            \Log::error('Photo upload failed', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'php_error' => $request->file('photo')?->getError(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()->withErrors(['photo' => 'Error al subir la foto: ' . $e->getMessage()]);
         }
     }
 
@@ -124,7 +130,7 @@ class ProfilePhotoController extends Controller
 
             return back()->with('success', '¡Foto eliminada correctamente! 🗑️');
         } catch (\Exception $e) {
-            return back()->withErrors(['photo' => 'Error al eliminar la foto: '.$e->getMessage()]);
+            return back()->withErrors(['photo' => 'Error al eliminar la foto: ' . $e->getMessage()]);
         }
     }
 }
