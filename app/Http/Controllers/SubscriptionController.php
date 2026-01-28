@@ -31,12 +31,19 @@ class SubscriptionController extends Controller
     {
         $user = Auth::user();
 
-        $plans = SubscriptionPlan::where('is_active', true)
-            ->where(function ($query) use ($user) {
+        $plansQuery = SubscriptionPlan::where('is_active', true);
+
+        if ($user) {
+            $plansQuery->where(function ($query) use ($user) {
                 $query->where('target_user_type', $user->user_type)
                     ->orWhereNull('target_user_type');
-            })
-            ->get();
+            });
+        } else {
+            // Marketing Strategy: Show only Sugar Daddy plans to guests
+            $plansQuery->where('target_user_type', 'sugar_daddy');
+        }
+
+        $plans = $plansQuery->get();
 
         // Formatear features de cada plan
         $plans = $plans->map(function ($plan) {
@@ -45,15 +52,14 @@ class SubscriptionController extends Controller
             return $plan;
         });
 
-        $user = Auth::user();
-
-        // Si ya tiene suscripción activa, pasar info
-        $activeSubscription = $user->activeSubscription()->first();
+        // Si ya tiene suscripción activa, pasar info (solo si está logueado)
+        $activeSubscription = $user ? $user->activeSubscription()->first() : null;
+        $userFeatures = $user ? app(SubscriptionService::class)->getUserFeatures($user) : null;
 
         return view('subscription.plans', [
             'plans' => $plans,
             'activeSubscription' => $activeSubscription,
-            'userFeatures' => app(SubscriptionService::class)->getUserFeatures($user),
+            'userFeatures' => $userFeatures,
         ]);
     }
 
@@ -68,7 +74,7 @@ class SubscriptionController extends Controller
             $user = Auth::user();
 
             // Validar que el plan existe
-            if (! $plan->is_active) {
+            if (!$plan->is_active) {
                 return response()->json([
                     'success' => false,
                     'error' => 'Este plan no está disponible',
@@ -113,8 +119,8 @@ class SubscriptionController extends Controller
                 $result = $this->subscriptionService->activateSubscription(
                     $user,
                     $plan,
-                    'FREE_'.\Illuminate\Support\Str::random(10), // ID simulado
-                    'FREE_'.\Illuminate\Support\Str::random(10),
+                    'FREE_' . \Illuminate\Support\Str::random(10), // ID simulado
+                    'FREE_' . \Illuminate\Support\Str::random(10),
                     0.00
                 );
 
@@ -135,7 +141,7 @@ class SubscriptionController extends Controller
 
             $preference = $this->mpService->createSubscriptionPreference($user, $plan);
 
-            if (! $preference['success']) {
+            if (!$preference['success']) {
                 Log::error('Failed to create MP preference', [
                     'error' => $preference['error'] ?? 'Unknown error',
                     'user_id' => $user->id,
@@ -193,7 +199,7 @@ class SubscriptionController extends Controller
         $paymentId = $request->query('payment_id');
         $status = $request->query('status');
 
-        if (! $paymentId) {
+        if (!$paymentId) {
             Log::warning('returnSuccess called without payment_id', [
                 'user_id' => $user->id,
                 'query_params' => $request->query(),
@@ -211,7 +217,7 @@ class SubscriptionController extends Controller
         // Obtener info del pago
         $paymentInfo = $this->mpService->getPaymentInfo($paymentId);
 
-        if (! $paymentInfo['success']) {
+        if (!$paymentInfo['success']) {
             Log::error('Failed to get payment info', [
                 'user_id' => $user->id,
                 'payment_id' => $paymentId,
@@ -328,7 +334,7 @@ class SubscriptionController extends Controller
         try {
             $user = Auth::guard('sanctum')->user();
 
-            if (! $user) {
+            if (!$user) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No autorizado',
@@ -364,7 +370,7 @@ class SubscriptionController extends Controller
         try {
             $user = Auth::guard('sanctum')->user();
 
-            if (! $user) {
+            if (!$user) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No autorizado',
@@ -374,7 +380,7 @@ class SubscriptionController extends Controller
             $subscription = Subscription::with('plan')
                 ->find($id);
 
-            if (! $subscription) {
+            if (!$subscription) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Suscripción no encontrada',
@@ -412,7 +418,7 @@ class SubscriptionController extends Controller
         try {
             $user = Auth::guard('sanctum')->user();
 
-            if (! $user) {
+            if (!$user) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No autorizado',
@@ -421,7 +427,7 @@ class SubscriptionController extends Controller
 
             $subscription = Subscription::find($id);
 
-            if (! $subscription) {
+            if (!$subscription) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Suscripción no encontrada',

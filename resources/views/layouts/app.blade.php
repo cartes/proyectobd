@@ -21,7 +21,7 @@
 
 @php
     $user = Auth::user();
-    $themeClass = $user->isSugarDaddy() ? 'theme-sd' : ($user->isSugarBaby() ? 'theme-sb' : '');
+    $themeClass = $user ? ($user->isSugarDaddy() ? 'theme-sd' : ($user->isSugarBaby() ? 'theme-sb' : '')) : '';
 @endphp
 
 <body class="font-sans antialiased bg-slate-50 {{ $themeClass }}">
@@ -32,7 +32,7 @@
 
             <!-- Logo -->
             <div class="flex items-center px-6 h-16 border-b border-gray-200">
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                <a href="{{ route('welcome') }}" class="flex items-center gap-3">
                     <div
                         class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,57 +47,74 @@
                 </a>
             </div>
 
-            <!-- User Info -->
-            <div class="p-4 border-b border-gray-200">
-                <div class="flex items-center space-x-3">
-                    <div class="flex-shrink-0">
-                        <div
-                            class="w-10 h-10 bg-gradient-to-r {{ Auth::user()->isAdmin() ? 'from-red-500 to-red-600' : (Auth::user()->isSugarDaddy() ? 'from-purple-500 to-purple-600' : 'from-pink-500 to-pink-600') }} rounded-full flex items-center justify-center text-white font-semibold">
-                            {{ substr(Auth::user()->name, 0, 1) }}
+            @auth
+                <!-- User Info -->
+                <div class="p-4 border-b border-gray-200">
+                    <div class="flex items-center space-x-3">
+                        <div class="flex-shrink-0">
+                            <div
+                                class="w-10 h-10 bg-gradient-to-r {{ Auth::user()->isAdmin() ? 'from-red-500 to-red-600' : (Auth::user()->isSugarDaddy() ? 'from-purple-500 to-purple-600' : 'from-pink-500 to-pink-600') }} rounded-full flex items-center justify-center text-white font-semibold">
+                                {{ substr(Auth::user()->name, 0, 1) }}
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-900 truncate">
+                                {{ Auth::user()->name }}
+                            </p>
+                            <p class="text-xs text-gray-500">
+                                @if (Auth::user()->isAdmin())
+                                    🛡️ Administrador
+                                @elseif(Auth::user()->isSugarDaddy())
+                                    👑 Sugar Daddy
+                                @else
+                                    💎 Sugar Baby
+                                @endif
+                            </p>
                         </div>
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-900 truncate">
-                            {{ Auth::user()->name }}
-                        </p>
-                        <p class="text-xs text-gray-500">
-                            @if (Auth::user()->isAdmin())
-                                🛡️ Administrador
-                            @elseif(Auth::user()->isSugarDaddy())
-                                👑 Sugar Daddy
-                            @else
-                                💎 Sugar Baby
-                            @endif
-                        </p>
-                    </div>
                 </div>
-            </div>
 
-            <!-- Navigation -->
-            <nav class="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
-                @if (Auth::user()->isAdmin())
-                    @include('components.navigation.admin')
-                @elseif(Auth::user()->isSugarDaddy())
-                    @include('components.navigation.sugar-daddy')
-                @else
-                    @include('components.navigation.sugar-baby')
-                @endif
-            </nav>
+                <!-- Navigation -->
+                <nav class="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
+                    @if (Auth::user()->isAdmin())
+                        @include('components.navigation.admin')
+                    @elseif(Auth::user()->isSugarDaddy())
+                        @include('components.navigation.sugar-daddy')
+                    @else
+                        @include('components.navigation.sugar-baby')
+                    @endif
+                </nav>
 
-            <!-- Logout -->
-            <div class="absolute bottom-0 w-full p-4 border-t border-gray-200 bg-white">
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit"
-                        class="flex items-center w-full px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors">
-                        <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 16l4-4m0 0l-4-4m0 0v3H7v2h10v3z"></path>
-                        </svg>
-                        Cerrar Sesión
-                    </button>
-                </form>
-            </div>
+                <!-- Logout -->
+                <div class="absolute bottom-0 w-full p-4 border-t border-gray-200 bg-white">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="flex items-center w-full px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors">
+                            <svg class="mr-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m0 0v3H7v2h10v3z"></path>
+                            </svg>
+                            Cerrar Sesión
+                        </button>
+                    </form>
+                </div>
+            @else
+                <!-- Guest Navigation -->
+                <nav class="flex-1 px-4 py-6 space-y-4">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Bienvenido</p>
+                    <a href="{{ route('login') }}"
+                        class="flex items-center gap-3 text-gray-600 hover:text-purple-600 font-bold transition-all p-2 rounded-xl hover:bg-purple-50">
+                        <span class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">👤</span>
+                        Inicia Sesión
+                    </a>
+                    <a href="{{ route('register') }}"
+                        class="flex items-center gap-3 text-gray-600 hover:text-purple-600 font-bold transition-all p-2 rounded-xl hover:bg-purple-50">
+                        <span class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">✨</span>
+                        Regístrate ahora
+                    </a>
+                </nav>
+            @endauth
         </div>
 
         <!-- Overlay for mobile -->
@@ -131,29 +148,38 @@
 
                 <!-- Top Actions -->
                 <div class="flex items-center gap-x-4 lg:gap-x-6">
-                    <!-- Notifications -->
-                    <button type="button"
-                        class="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        <span class="sr-only">Ver notificaciones</span>
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                        </svg>
-                        <span class="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500"></span>
-                    </button>
+                    @auth
+                        <!-- Notifications -->
+                        <button type="button"
+                            class="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <span class="sr-only">Ver notificaciones</span>
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                            </svg>
+                            <span class="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500"></span>
+                        </button>
 
-                    <!-- Premium Badge -->
-                    @if (!Auth::user()->isPremium())
-                        <a href="{{ route('subscription.plans') }}"
-                            class="text-xs bg-gradient-to-r from-amber-400 to-amber-500 text-white px-3 py-1 rounded-full font-medium hover:from-amber-500 hover:to-amber-600 transition-colors">
-                            ⭐ Upgrade Premium
-                        </a>
+                        <!-- Premium Badge -->
+                        @if (!Auth::user()->isPremium())
+                            <a href="{{ route('subscription.plans') }}"
+                                class="text-xs bg-gradient-to-r from-amber-400 to-amber-500 text-white px-3 py-1 rounded-full font-medium hover:from-amber-500 hover:to-amber-600 transition-colors">
+                                ⭐ Upgrade Premium
+                            </a>
+                        @else
+                            <span
+                                class="text-xs bg-gradient-to-r from-amber-400 to-amber-500 text-white px-3 py-1 rounded-full font-medium">
+                                👑 Premium
+                            </span>
+                        @endif
                     @else
-                        <span
-                            class="text-xs bg-gradient-to-r from-amber-400 to-amber-500 text-white px-3 py-1 rounded-full font-medium">
-                            👑 Premium
-                        </span>
-                    @endif
+                        <a href="{{ route('login') }}" class="text-sm font-semibold text-gray-600 hover:text-purple-600">
+                            Iniciar Sesión
+                        </a>
+                        <a href="{{ route('register') }}" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-purple-700 transition-all">
+                            Únete
+                        </a>
+                    @endauth
                 </div>
             </div>
 

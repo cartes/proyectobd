@@ -14,7 +14,8 @@ class ModerationController extends Controller
 {
     public function __construct(
         private ModerationService $moderationService
-    ) {}
+    ) {
+    }
 
     // Listar reportes
     public function reports(Request $request)
@@ -263,7 +264,7 @@ class ModerationController extends Controller
     public function toggleVerification(User $user)
     {
         $user->update([
-            'is_verified' => ! $user->is_verified,
+            'is_verified' => !$user->is_verified,
         ]);
 
         $status = $user->is_verified ? 'verificado' : 'desverificado';
@@ -332,5 +333,25 @@ class ModerationController extends Controller
         $status = $user->is_premium ? 'activada' : 'desactivada';
 
         return redirect()->back()->with('success', "Suscripción Premium {$status} exitosamente.");
+    }
+
+    // Toggle manual private profile status
+    public function togglePrivateProfile(User $user)
+    {
+        $user->load('profileDetail');
+
+        if (!$user->profileDetail) {
+            $user->profileDetail()->create();
+        }
+
+        $isPrivate = !($user->profileDetail->is_private ?? false);
+
+        $user->profileDetail->update([
+            'is_private' => $isPrivate,
+        ]);
+
+        $status = $isPrivate ? 'privado' : 'público';
+
+        return redirect()->back()->with('success', "Perfil marcado como {$status} exitosamente.");
     }
 }

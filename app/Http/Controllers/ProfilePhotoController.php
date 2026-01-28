@@ -17,9 +17,15 @@ class ProfilePhotoController extends Controller
         try {
             // Guardar archivo
             $file = $request->file('photo');
+
+            if (!$file) {
+                \Log::critical('ProfilePhotoController: File is null in store method.');
+                throw new \Exception('El servidor no recibió el archivo de imagen. Es posible que el archivo exceda los límites permitidos.');
+            }
+
             // ✅ USAR extension() EN LUGAR DE getClientOriginalExtension() PARA MAYOR SEGURIDAD
             $extension = $file->extension();
-            $filename = Str::uuid().'.'.$extension;
+            $filename = Str::uuid() . '.' . $extension;
 
             // ✅ USAR RUTA OFUSCADA
             $path = $file->storeAs($user->getStoragePath(), $filename, 'public');
@@ -40,7 +46,14 @@ class ProfilePhotoController extends Controller
             return back()->with('success', '¡Foto subida exitosamente! 📸');
 
         } catch (\Exception $e) {
-            return back()->withErrors(['photo' => 'Error al subir la foto: '.$e->getMessage()]);
+            \Log::error('ProfilePhotoController@store: Exception caught', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'has_file' => $request->hasFile('photo'),
+                'file_null' => is_null($request->file('photo')),
+                'trace' => substr($e->getTraceAsString(), 0, 1000) // Truncate trace for log clarity
+            ]);
+            return back()->withErrors(['photo' => 'Error al subir la foto: ' . $e->getMessage()]);
         }
     }
 
@@ -124,7 +137,7 @@ class ProfilePhotoController extends Controller
 
             return back()->with('success', '¡Foto eliminada correctamente! 🗑️');
         } catch (\Exception $e) {
-            return back()->withErrors(['photo' => 'Error al eliminar la foto: '.$e->getMessage()]);
+            return back()->withErrors(['photo' => 'Error al eliminar la foto: ' . $e->getMessage()]);
         }
     }
 }

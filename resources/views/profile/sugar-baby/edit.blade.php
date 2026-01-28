@@ -15,6 +15,53 @@
         @csrf
         @method('PUT')
 
+        {{-- Perfil Privado (HIGHLIGHT) --}}
+        <div class="bg-gradient-to-r from-pink-900 to-rose-900 rounded-3xl shadow-2xl p-8 mb-8 border-2 border-pink-400/30 overflow-hidden relative">
+            <div class="absolute top-0 right-0 p-4 opacity-10">
+                <svg class="w-24 h-24 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+            </div>
+
+            <div class="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-3 py-1 bg-pink-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Privilegio</span>
+                        <h2 class="text-3xl font-playfair font-bold text-white">Perfil Privado</h2>
+                    </div>
+                    <p class="text-pink-100 text-lg leading-relaxed mb-6">
+                        @if($hasPrivateProfilePlan)
+                            Tu perfil está actualmente en modo privado. Navega con total libertad, solo quienes tú decidas podrán verte.
+                        @else
+                            Toma el control total de tu imagen. Con el Perfil Privado, solo aparecerás para los Sugar Daddies que tú elijas. Seguridad y exclusividad garantizada.
+                        @endif
+                    </p>
+                    
+                    @if($hasPrivateProfilePlan)
+                        <div class="flex items-center gap-4">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="is_private" value="1" {{ $user->profileDetail->is_private ? 'checked' : '' }} class="sr-only peer">
+                                <div class="w-14 h-7 bg-white/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-green-500"></div>
+                                <span class="ml-3 text-sm font-bold text-white uppercase tracking-widest">
+                                    {{ $user->profileDetail->is_private ? 'Activado' : 'Desactivado' }}
+                                </span>
+                            </label>
+                            <p class="text-xs text-pink-300">Puedes desconectar y reconectar cuando quieras.</p>
+                        </div>
+                    @else
+                        <a href="{{ route('subscription.checkout', ['plan' => App\Models\SubscriptionPlan::where('slug', 'private-profile')->first()->id]) }}" 
+                           class="inline-flex items-center gap-3 px-8 py-4 bg-white text-pink-900 rounded-2xl font-black transition-all hover:scale-105 hover:bg-gray-100 shadow-xl"
+                           onclick="event.preventDefault(); window.location.href = event.target.closest('a').href;">
+                            🔒 Activar Privacidad por $5.000 CLP
+                        </a>
+                    @endif
+                </div>
+                <div class="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-6xl shadow-inner">
+                    💎
+                </div>
+            </div>
+        </div>
+
         {{-- Sobre Mí --}}
         <div class="bg-white rounded-3xl shadow-lg p-8 mb-6 border border-gray-100">
             <div class="flex items-center gap-3 mb-8">

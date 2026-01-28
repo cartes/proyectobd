@@ -27,8 +27,8 @@ class StorePhotoRequest extends FormRequest
             'photo' => [
                 'required',
                 'image',
-                'mimes:'.implode(',', ProfilePhoto::ALLOWED_TYPES),
-                'max:'.ProfilePhoto::MAX_FILE_SIZE,
+                'mimes:' . implode(',', ProfilePhoto::ALLOWED_TYPES),
+                'max:' . ProfilePhoto::MAX_FILE_SIZE,
             ],
             'potential_nudity' => 'nullable|boolean',
         ];
@@ -41,9 +41,31 @@ class StorePhotoRequest extends FormRequest
     {
         return [
             'photo.required' => 'Debes seleccionar una foto',
+            'photo.uploaded' => 'La foto no se pudo subir. Es posible que el archivo sea demasiado grande para el servidor.',
             'photo.image' => 'El archivo debe ser una imagen',
-            'photo.mimes' => 'Solo se permiten fotos en formato: '.implode(', ', ProfilePhoto::ALLOWED_TYPES),
+            'photo.mimes' => 'Solo se permiten fotos en formato: ' . implode(', ', ProfilePhoto::ALLOWED_TYPES),
             'photo.max' => 'La foto no debe superar 5MB',
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator($validator)
+    {
+        \Log::info('StorePhotoRequest: starting validation');
+        $validator->after(function ($validator) {
+            if ($this->hasFile('photo')) {
+                $file = $this->file('photo');
+                if (!$file->isValid()) {
+                    \Log::critical('DEBUG: PHP Upload Error', [
+                        'error_code' => $file->getError(),
+                        'error_message' => $file->getErrorMessage(),
+                    ]);
+                }
+            } else if ($this->exists('photo')) {
+                \Log::critical('DEBUG: Photo field exists but is not a file. Likely post_max_size exceeded.');
+            }
+        });
     }
 }

@@ -103,10 +103,14 @@
                                 </p>
 
                                 {{-- Analyzing State --}}
-                                <div x-show="isAnalyzing" class="mt-4 flex items-center justify-center gap-2 text-amber-600 font-bold animate-pulse">
+                                <div x-show="isAnalyzing"
+                                    class="mt-4 flex items-center justify-center gap-2 text-amber-600 font-bold animate-pulse">
                                     <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
                                     </svg>
                                     Analizando imagen...
                                 </div>
@@ -120,8 +124,7 @@
                             class="px-6 py-3 bg-gray-100 hover:bg-gray-200 border-2 border-gray-300 rounded-xl text-gray-700 font-bold transition-all duration-300">
                             Cancelar
                         </button>
-                        <button type="submit" :disabled="isAnalyzing"
-                            :class="{'opacity-50 cursor-not-allowed': isAnalyzing}"
+                        <button type="submit" :disabled="isAnalyzing" :class="{'opacity-50 cursor-not-allowed': isAnalyzing}"
                             class="px-8 py-3 bg-gradient-to-r {{ Auth::user()->user_type === 'sugar_daddy' ? 'from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800' : 'from-pink-500 to-pink-700 hover:from-pink-600 hover:to-pink-800' }} rounded-xl text-white font-bold transition-all duration-300 shadow-lg hover:scale-105">
                             📤 Subir Foto
                         </button>
@@ -242,8 +245,7 @@
     </div>
 
     @push('scripts')
-        <!-- TensorFlow.js and NSFWJS CDN -->
-        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+        <!-- NSFWJS CDN (Includes its own TF dependency) -->
         <script src="https://cdn.jsdelivr.net/npm/nsfwjs@latest/dist/browser/nsfwjs.min.js"></script>
         <script>
             function photoGallery() {
@@ -256,13 +258,21 @@
 
                     async init() {
                         console.log('Photo gallery initialized');
-                        try {
-                            // Cargar el modelo NSFWJS de forma asíncrona al iniciar
-                            this.model = await nsfwjs.load();
-                            console.log('NSFW Model loaded');
-                        } catch (e) {
-                            console.error('Error loading NSFW model:', e);
-                        }
+
+                        const checkNSFW = async () => {
+                            if (window.nsfwjs) {
+                                try {
+                                    this.model = await window.nsfwjs.load();
+                                    console.log('NSFW Model loaded');
+                                } catch (e) {
+                                    console.error('Error loading NSFW model:', e);
+                                }
+                            } else {
+                                setTimeout(checkNSFW, 200);
+                            }
+                        };
+
+                        checkNSFW();
                     },
 
                     async previewImage(event) {
@@ -286,7 +296,7 @@
 
                                         // Las categorías son: Porn, Sexy, Hentai, Neutral, Drawing
                                         // Sumamos las categorías de riesgo
-                                        const risky = predictions.filter(p => 
+                                        const risky = predictions.filter(p =>
                                             (['Porn', 'Sexy', 'Hentai'].includes(p.className)) && p.probability > 0.4
                                         );
 
