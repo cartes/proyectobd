@@ -245,8 +245,7 @@
     </div>
 
     @push('scripts')
-        <!-- TensorFlow.js and NSFWJS CDN -->
-        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+        <!-- NSFWJS CDN (Includes its own TF dependency) -->
         <script src="https://cdn.jsdelivr.net/npm/nsfwjs@latest/dist/browser/nsfwjs.min.js"></script>
         <script>
             function photoGallery() {
