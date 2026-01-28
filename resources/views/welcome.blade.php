@@ -121,27 +121,19 @@
         </div>
 
         <div class="relative z-10 container mx-auto px-6 text-center">
-            <div class="mb-6 animate-fade-in-up">
-                <div
-                    class="inline-block py-2 px-6 rounded-full bg-red-600 text-white text-sm font-black uppercase tracking-tighter shadow-xl shadow-red-500/40 rotate-[-2deg] border-2 border-white/20">
-                    🔥 ¡Los primeros 3 meses, todas las funcionalidades GRATIS!*
-                </div>
-                <div class="text-[10px] text-slate-500 mt-2 font-bold uppercase tracking-widest">* Excepto perfiles
-                    privados</div>
+            <div class="relative inline-block animate-fade-in-up">
+                <span
+                    class="inline-block py-1 px-3 rounded-full bg-pink-500/10 border border-pink-500/30 text-pink-400 text-xs font-bold uppercase tracking-widest mb-6">
+                    ✨ La comunidad #1 de Lifestyle en Latinoamérica
+                </span>
+
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight animation-delay-300">
+                    La <span
+                        class="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400">Buena
+                        Vida</span><br>
+                    es Mejor Compartida
+                </h1>
             </div>
-
-            <span
-                class="inline-block py-1 px-3 rounded-full bg-pink-500/10 border border-pink-500/30 text-pink-400 text-xs font-bold uppercase tracking-widest mb-6 animate-fade-in-up">
-                ✨ La comunidad #1 de Lifestyle en Latinoamérica
-            </span>
-
-            <h1
-                class="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight animate-fade-in-up animation-delay-300">
-                La <span
-                    class="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400">Buena
-                    Vida</span><br>
-                es Mejor Compartida
-            </h1>
 
             <p
                 class="text-xl md:text-2xl text-slate-300 mb-10 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in-up animation-delay-500">
