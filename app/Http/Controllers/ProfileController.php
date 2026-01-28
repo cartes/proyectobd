@@ -70,13 +70,10 @@ class ProfileController extends Controller
         if ($user->user_type === 'sugar_daddy') {
             return view('profile.sugar-daddy.show', compact('user', 'options', 'isOwnProfile'))
                 ->with('canSeeInstagram', $canSeeSocial);
-        } elseif ($user->user_type === 'sugar_baby') {
+        } else {
             return view('profile.sugar-baby.show', compact('user', 'options', 'isOwnProfile'))
                 ->with('canSeeInstagram', $canSeeSocial)
                 ->with('canSeeWhatsapp', $canSeeWhatsapp);
-        } else {
-            // Fallback/Admin view
-            return view('profile.show', compact('user', 'options', 'isOwnProfile'));
         }
     }
 
@@ -124,7 +121,7 @@ class ProfileController extends Controller
                 'travelFrequencies',
                 'mentorshipAreasOptions'
             ));
-        } elseif ($user->user_type === 'sugar_baby') {
+        } else {
             return view('profile.sugar-baby.edit', compact(
                 'user',
                 'bodyTypes',
@@ -135,18 +132,6 @@ class ProfileController extends Controller
                 'interestsOptions',
                 'personalStyles',
                 'fitnessLevels'
-            ));
-        } else {
-            // Admin / Generic view
-            return view('profile.edit', compact(
-                'user',
-                'bodyTypes',
-                'relationshipStatuses',
-                'childrenOptions',
-                'educationLevels',
-                'incomeRanges',
-                'availabilityOptions',
-                'interestsOptions'
             ));
         }
     }

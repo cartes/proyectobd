@@ -1,4 +1,4 @@
-<div class="bg-white rounded-3xl shadow-lg p-8 mb-6 border border-gray-100">
+<div class="bg-white rounded-3xl shadow-lg p-8 mb-6 border border-gray-100 pb-32">
     <div class="flex items-center gap-3 mb-8">
         <div
             class="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white text-xl shadow-lg">

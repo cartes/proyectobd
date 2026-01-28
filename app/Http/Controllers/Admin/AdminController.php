@@ -55,4 +55,8 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact('stats', 'recentTransactions', 'recentUsers'));
     }
+    public function config()
+    {
+        return view('admin.config.index');
+    }
 }

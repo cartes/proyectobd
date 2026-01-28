@@ -156,7 +156,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Módulos en desarrollo (Placeholders)
     Route::get('/finance/reports', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('finance.reports')->defaults('title', 'Reportes Financieros');
-    Route::get('/system/config', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('system.config')->defaults('title', 'Configuración Global');
+    Route::get('/system/config', [App\Http\Controllers\Admin\AdminController::class, 'config'])->name('system.config')->defaults('title', 'Configuración Global');
     Route::get('/system/logs', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('system.logs')->defaults('title', 'Logs del Sistema');
     Route::get('/system/stats', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('system.stats')->defaults('title', 'Estadísticas Generales');
     Route::get('/marketing/promotions', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('marketing.promotions')->defaults('title', 'Promociones');
@@ -170,4 +170,4 @@ Route::get('/e/{token}', [App\Http\Controllers\EngagementController::class, 'tra
 Route::get('/terminos-y-condiciones', [App\Http\Controllers\LegalController::class, 'terms'])->name('legal.terms');
 Route::get('/politica-de-privacidad', [App\Http\Controllers\LegalController::class, 'privacy'])->name('legal.privacy');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

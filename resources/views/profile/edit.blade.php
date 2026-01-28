@@ -4,20 +4,10 @@
 
 @section('content')
     <div class="mb-8">
-        <h1 class="text-4xl font-playfair font-bold bg-gradient-to-r {{ Auth::user()->user_type === 'sugar_daddy' ? 'from-purple-600 to-purple-800' : (Auth::user()->user_type === 'sugar_baby' ? 'from-pink-600 to-pink-800' : 'from-gray-700 to-gray-900') }} bg-clip-text text-transparent mb-3">
-            @if(Auth::user()->isAdmin)
-                ⚙️ Configuración
-            @else
-                ✏️ Editar Perfil
-            @endif
+        <h1 class="text-4xl font-playfair font-bold bg-gradient-to-r {{ Auth::user()->user_type === 'sugar_daddy' ? 'from-purple-600 to-purple-800' : 'from-pink-600 to-pink-800' }} bg-clip-text text-transparent mb-3">
+            ✏️ Editar Perfil
         </h1>
-        <p class="text-gray-600 text-lg">
-            @if(Auth::user()->isAdmin)
-                Administra tu cuenta y seguridad
-            @else
-                Completa tu información para destacar en Big-dad
-            @endif
-        </p>
+        <p class="text-gray-600 text-lg">Completa tu información para destacar en Big-dad</p>
     </div>
 
     <form action="{{ route('profile.update') }}" method="POST" x-data="profileForm()">
