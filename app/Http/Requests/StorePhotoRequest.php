@@ -42,7 +42,7 @@ class StorePhotoRequest extends FormRequest
     {
         return [
             'photo.required' => 'Debes seleccionar una foto',
-            'photo.uploaded' => 'La foto no se pudo subir correctamente. Error del servidor (PHP Error).',
+            'photo.uploaded' => 'La foto no se pudo subir. Es posible que el archivo sea demasiado grande para el servidor.',
             'photo.image' => 'El archivo debe ser una imagen',
             'photo.mimes' => 'Solo se permiten fotos en formato: ' . implode(', ', ProfilePhoto::ALLOWED_TYPES),
             'photo.max' => 'La foto no debe superar 5MB',
