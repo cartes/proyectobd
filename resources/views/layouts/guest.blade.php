@@ -22,6 +22,17 @@
 <body class="font-sans text-gray-900 antialiased">
     <div
         class="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-pink-800 flex flex-col sm:justify-center items-center pt-6 sm:pt-0 relative overflow-hidden">
+
+        <!-- Floating Home Button -->
+        <a href="/"
+            class="fixed top-6 left-6 z-50 flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white font-medium shadow-lg hover:bg-white/20 hover:scale-105 transition-all duration-300 group">
+            <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span>Volver al inicio</span>
+        </a>
+
         <!-- Decorative elements -->
         <div class="absolute inset-0 bg-black/20"></div>
         <div
@@ -39,7 +50,8 @@
             <!-- Logo/Brand -->
             <div class="flex justify-center mb-6">
                 <div class="text-center">
-                    <div class="flex items-center justify-center space-x-3 mb-2">
+                    <a href="/"
+                        class="flex items-center justify-center space-x-3 mb-2 hover:opacity-90 transition-opacity">
                         <div
                             class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
                             <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,7 +63,7 @@
                             style="font-family: 'Outfit', sans-serif;">
                             Big-Dad
                         </h1>
-                    </div>
+                    </a>
                     <p class="text-sm text-gray-600 mt-1 font-medium">Conexiones Premium</p>
                 </div>
             </div>
