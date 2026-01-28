@@ -170,4 +170,4 @@ Route::get('/e/{token}', [App\Http\Controllers\EngagementController::class, 'tra
 Route::get('/terminos-y-condiciones', [App\Http\Controllers\LegalController::class, 'terms'])->name('legal.terms');
 Route::get('/politica-de-privacidad', [App\Http\Controllers\LegalController::class, 'privacy'])->name('legal.privacy');
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
