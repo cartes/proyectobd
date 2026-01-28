@@ -246,8 +246,8 @@
 
     @push('scripts')
         <!-- TensorFlow.js and NSFWJS CDN -->
-        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/nsfwjs@2.4.2/dist/browser/nsfwjs.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/nsfwjs@latest/dist/browser/nsfwjs.min.js"></script>
         <script>
             function photoGallery() {
                 return {
@@ -259,13 +259,21 @@
 
                     async init() {
                         console.log('Photo gallery initialized');
-                        try {
-                            // Cargar el modelo NSFWJS de forma asíncrona al iniciar
-                            this.model = await nsfwjs.load('https://cdn.jsdelivr.net/npm/nsfwjs@2.4.2/models/', { type: 'graph' });
-                            console.log('NSFW Model loaded');
-                        } catch (e) {
-                            console.error('Error loading NSFW model:', e);
-                        }
+
+                        const checkNSFW = async () => {
+                            if (window.nsfwjs) {
+                                try {
+                                    this.model = await window.nsfwjs.load();
+                                    console.log('NSFW Model loaded');
+                                } catch (e) {
+                                    console.error('Error loading NSFW model:', e);
+                                }
+                            } else {
+                                setTimeout(checkNSFW, 200);
+                            }
+                        };
+
+                        checkNSFW();
                     },
 
                     async previewImage(event) {

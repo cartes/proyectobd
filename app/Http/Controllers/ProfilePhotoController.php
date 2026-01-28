@@ -17,6 +17,12 @@ class ProfilePhotoController extends Controller
         try {
             // Guardar archivo
             $file = $request->file('photo');
+
+            if (!$file) {
+                \Log::critical('ProfilePhotoController: File is null in store method.');
+                throw new \Exception('El servidor no recibió el archivo de imagen. Es posible que el archivo exceda los límites permitidos.');
+            }
+
             // ✅ USAR extension() EN LUGAR DE getClientOriginalExtension() PARA MAYOR SEGURIDAD
             $extension = $file->extension();
             $filename = Str::uuid() . '.' . $extension;

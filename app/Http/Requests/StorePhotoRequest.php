@@ -26,7 +26,7 @@ class StorePhotoRequest extends FormRequest
         return [
             'photo' => [
                 'required',
-                'uploaded:photo',
+                'uploaded',
                 'image',
                 'mimes:' . implode(',', ProfilePhoto::ALLOWED_TYPES),
                 'max:' . ProfilePhoto::MAX_FILE_SIZE,
