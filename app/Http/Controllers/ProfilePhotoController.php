@@ -40,11 +40,12 @@ class ProfilePhotoController extends Controller
             return back()->with('success', '¡Foto subida exitosamente! 📸');
 
         } catch (\Exception $e) {
-            \Log::error('Photo upload failed', [
+            \Log::error('ProfilePhotoController@store: Exception caught', [
                 'user_id' => $user->id,
                 'error' => $e->getMessage(),
-                'php_error' => $request->file('photo')?->getError(),
-                'trace' => $e->getTraceAsString()
+                'has_file' => $request->hasFile('photo'),
+                'file_null' => is_null($request->file('photo')),
+                'trace' => substr($e->getTraceAsString(), 0, 1000) // Truncate trace for log clarity
             ]);
             return back()->withErrors(['photo' => 'Error al subir la foto: ' . $e->getMessage()]);
         }

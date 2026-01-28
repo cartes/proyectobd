@@ -54,6 +54,7 @@ class StorePhotoRequest extends FormRequest
      */
     public function withValidator($validator)
     {
+        \Log::info('StorePhotoRequest: starting validation');
         $validator->after(function ($validator) {
             if ($this->hasFile('photo')) {
                 $file = $this->file('photo');
