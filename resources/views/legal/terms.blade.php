@@ -9,6 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
 </head>
 
 <body class="bg-[#0a0f1e] text-white font-outfit antialiased">
@@ -16,7 +19,7 @@
     <header class="border-b border-white/5 bg-[#0a0f1e]/80 backdrop-blur-xl sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
-                <a href="{{ route('landing') }}" class="flex items-center space-x-3">
+                <a href="{{ route('welcome') }}" class="flex items-center space-x-3">
                     <div
                         class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +33,7 @@
                     </span>
                 </a>
 
-                <a href="{{ route('landing') }}"
+                <a href="{{ route('welcome') }}"
                     class="px-6 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-sm font-bold">
                     Volver al Inicio
                 </a>
@@ -307,7 +310,7 @@
                         Política de Privacidad
                     </a>
                     <span>•</span>
-                    <a href="{{ route('landing') }}" class="hover:text-amber-400 transition-colors">
+                    <a href="{{ route('welcome') }}" class="hover:text-amber-400 transition-colors">
                         Inicio
                     </a>
                 </div>

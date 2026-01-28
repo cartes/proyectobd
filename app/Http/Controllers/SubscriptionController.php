@@ -38,6 +38,9 @@ class SubscriptionController extends Controller
                 $query->where('target_user_type', $user->user_type)
                     ->orWhereNull('target_user_type');
             });
+        } else {
+            // Marketing Strategy: Show only Sugar Daddy plans to guests
+            $plansQuery->where('target_user_type', 'sugar_daddy');
         }
 
         $plans = $plansQuery->get();

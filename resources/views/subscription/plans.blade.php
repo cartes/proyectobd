@@ -1,4 +1,4 @@
-@extends('layouts.subscription')
+@extends('layouts.subscription', ['hideSidebar' => true])
 
 @section('content')
     <!-- ✅ MERCADO PAGO SDK - AGREGAR AL HEAD -->
@@ -16,9 +16,20 @@
         <div class="max-w-7xl mx-auto py-16">
             <!-- Título -->
             <div class="text-center mb-16">
-                <h1 class="text-5xl font-black text-white mb-6 uppercase tracking-tighter">Planes Premium</h1>
-                <p class="text-xl text-gray-400 font-medium max-w-2xl mx-auto leading-relaxed">Desbloquea funciones
-                    exclusivas y eleva tu experiencia en Big-dad al siguiente nivel.</p>
+                <h1 class="text-5xl font-black text-white mb-6 uppercase tracking-tighter">
+                    @guest
+                        Planes Sugar Daddy
+                    @else
+                        Planes Premium
+                    @endguest
+                </h1>
+                <p class="text-xl text-gray-400 font-medium max-w-2xl mx-auto leading-relaxed">
+                    @guest
+                        Potencia tu perfil, obtén mayor visibilidad y conecta con Sugar Babies exclusivas hoy mismo.
+                    @else
+                        Desbloquea funciones exclusivas y eleva tu experiencia en Big-dad al siguiente nivel.
+                    @endguest
+                </p>
             </div>
 
             <!-- Plan Activo (si existe) -->
@@ -71,7 +82,8 @@
                         <!-- Plan Body -->
                         <div class="p-8 flex-1 flex flex-col">
                             <p class="text-gray-400 text-center text-sm font-medium mb-8 leading-relaxed px-4">
-                                {{ $plan->description }}</p>
+                                {{ $plan->description }}
+                            </p>
 
                             <!-- Features -->
                             <ul class="space-y-4 mb-10 flex-1">
@@ -157,7 +169,7 @@
                             return;
                         }
                     }
-                    
+
                     // Fallback para error
                     alert('Error: ' + (data.error || 'Error desconocido'));
                     btn.disabled = false;
