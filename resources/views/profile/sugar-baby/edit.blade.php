@@ -348,6 +348,9 @@
 
     </form>
 
+    {{-- Seguridad --}}
+    @include('profile.partials.premium-password-form')
+
     @push('scripts')
         <script>
             function profileForm() {
