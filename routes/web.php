@@ -174,4 +174,4 @@ Route::get('/reglas-de-la-comunidad', [App\Http\Controllers\LegalController::cla
 Route::get('/seguridad', [App\Http\Controllers\LegalController::class, 'safety'])->name('legal.safety');
 Route::get('/planes', [App\Http\Controllers\SubscriptionController::class, 'index'])->name('plans.public');
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

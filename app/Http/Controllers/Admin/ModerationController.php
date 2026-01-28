@@ -14,8 +14,7 @@ class ModerationController extends Controller
 {
     public function __construct(
         private ModerationService $moderationService
-    ) {
-    }
+    ) {}
 
     // Listar reportes
     public function reports(Request $request)
@@ -264,7 +263,7 @@ class ModerationController extends Controller
     public function toggleVerification(User $user)
     {
         $user->update([
-            'is_verified' => !$user->is_verified,
+            'is_verified' => ! $user->is_verified,
         ]);
 
         $status = $user->is_verified ? 'verificado' : 'desverificado';
@@ -340,11 +339,11 @@ class ModerationController extends Controller
     {
         $user->load('profileDetail');
 
-        if (!$user->profileDetail) {
+        if (! $user->profileDetail) {
             $user->profileDetail()->create();
         }
 
-        $isPrivate = !($user->profileDetail->is_private ?? false);
+        $isPrivate = ! ($user->profileDetail->is_private ?? false);
 
         $user->profileDetail->update([
             'is_private' => $isPrivate,

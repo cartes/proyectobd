@@ -74,7 +74,7 @@ class SubscriptionController extends Controller
             $user = Auth::user();
 
             // Validar que el plan existe
-            if (!$plan->is_active) {
+            if (! $plan->is_active) {
                 return response()->json([
                     'success' => false,
                     'error' => 'Este plan no está disponible',
@@ -119,8 +119,8 @@ class SubscriptionController extends Controller
                 $result = $this->subscriptionService->activateSubscription(
                     $user,
                     $plan,
-                    'FREE_' . \Illuminate\Support\Str::random(10), // ID simulado
-                    'FREE_' . \Illuminate\Support\Str::random(10),
+                    'FREE_'.\Illuminate\Support\Str::random(10), // ID simulado
+                    'FREE_'.\Illuminate\Support\Str::random(10),
                     0.00
                 );
 
@@ -141,7 +141,7 @@ class SubscriptionController extends Controller
 
             $preference = $this->mpService->createSubscriptionPreference($user, $plan);
 
-            if (!$preference['success']) {
+            if (! $preference['success']) {
                 Log::error('Failed to create MP preference', [
                     'error' => $preference['error'] ?? 'Unknown error',
                     'user_id' => $user->id,
@@ -199,7 +199,7 @@ class SubscriptionController extends Controller
         $paymentId = $request->query('payment_id');
         $status = $request->query('status');
 
-        if (!$paymentId) {
+        if (! $paymentId) {
             Log::warning('returnSuccess called without payment_id', [
                 'user_id' => $user->id,
                 'query_params' => $request->query(),
@@ -217,7 +217,7 @@ class SubscriptionController extends Controller
         // Obtener info del pago
         $paymentInfo = $this->mpService->getPaymentInfo($paymentId);
 
-        if (!$paymentInfo['success']) {
+        if (! $paymentInfo['success']) {
             Log::error('Failed to get payment info', [
                 'user_id' => $user->id,
                 'payment_id' => $paymentId,
@@ -334,7 +334,7 @@ class SubscriptionController extends Controller
         try {
             $user = Auth::guard('sanctum')->user();
 
-            if (!$user) {
+            if (! $user) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No autorizado',
@@ -370,7 +370,7 @@ class SubscriptionController extends Controller
         try {
             $user = Auth::guard('sanctum')->user();
 
-            if (!$user) {
+            if (! $user) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No autorizado',
@@ -380,7 +380,7 @@ class SubscriptionController extends Controller
             $subscription = Subscription::with('plan')
                 ->find($id);
 
-            if (!$subscription) {
+            if (! $subscription) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Suscripción no encontrada',
@@ -418,7 +418,7 @@ class SubscriptionController extends Controller
         try {
             $user = Auth::guard('sanctum')->user();
 
-            if (!$user) {
+            if (! $user) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No autorizado',
@@ -427,7 +427,7 @@ class SubscriptionController extends Controller
 
             $subscription = Subscription::find($id);
 
-            if (!$subscription) {
+            if (! $subscription) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Suscripción no encontrada',

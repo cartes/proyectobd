@@ -13,6 +13,7 @@ class PrivateProfileTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected SubscriptionPlan $privatePlan;
 
     protected function setUp(): void
@@ -124,7 +125,7 @@ class PrivateProfileTest extends TestCase
     public function test_user_without_feature_cannot_toggle_privacy()
     {
         // User starts with is_private = 0 (default)
-        if (!$this->user->profileDetail) {
+        if (! $this->user->profileDetail) {
             $this->user->profileDetail()->create(['is_private' => 0]);
         }
 
