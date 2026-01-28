@@ -31,6 +31,7 @@
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <env name="LOG_CHANNEL" value="stderr"/>
         <env name="MERCADO_PAGO_WEBHOOK_SECRET" value="test_secret"/>
     </php>
 </phpunit>
