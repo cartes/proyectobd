@@ -11,14 +11,14 @@ class ProfileController extends Controller
     public function show(?User $user = null)
     {
         // Si no se pasa un usuario, mostrar el perfil del usuario autenticado
-        if (!$user) {
+        if (! $user) {
             $user = Auth::user();
         }
 
         $authUser = Auth::user();
 
         // Si es otro usuario, verificar que haya match
-        if ($user->id !== $authUser->id && !$authUser->hasMatchWith($user)) {
+        if ($user->id !== $authUser->id && ! $authUser->hasMatchWith($user)) {
             abort(403, 'No tienes permiso para ver este perfil.');
         }
 
@@ -32,7 +32,7 @@ class ProfileController extends Controller
 
         $user->load('profileDetail');
 
-        if (!$user->profileDetail) {
+        if (! $user->profileDetail) {
             $user->profileDetail()->create([]);
             $user->load('profileDetail');
         }
@@ -56,7 +56,7 @@ class ProfileController extends Controller
         $isOwnProfile = $user->id === $authUser->id;
 
         // ✅ PERFILES PRIVADOS: Si es privado, solo el dueño o matches pueden verlo
-        if (!$isOwnProfile && $user->profileDetail->is_private && !$authUser->hasMatchWith($user)) {
+        if (! $isOwnProfile && $user->profileDetail->is_private && ! $authUser->hasMatchWith($user)) {
             abort(403, 'Este perfil es privado. Necesitas un match para verlo.');
         }
 
@@ -70,13 +70,10 @@ class ProfileController extends Controller
         if ($user->user_type === 'sugar_daddy') {
             return view('profile.sugar-daddy.show', compact('user', 'options', 'isOwnProfile'))
                 ->with('canSeeInstagram', $canSeeSocial);
-        } elseif ($user->user_type === 'sugar_baby') {
+        } else {
             return view('profile.sugar-baby.show', compact('user', 'options', 'isOwnProfile'))
                 ->with('canSeeInstagram', $canSeeSocial)
                 ->with('canSeeWhatsapp', $canSeeWhatsapp);
-        } else {
-            // Fallback/Admin view
-            return view('profile.show', compact('user', 'options', 'isOwnProfile'));
         }
     }
 
@@ -84,7 +81,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user()->load('profileDetail', 'photos');
 
-        if (!$user->profileDetail) {
+        if (! $user->profileDetail) {
             $user->profileDetail()->create([]);
             $user->load('profileDetail');
         }
@@ -124,7 +121,7 @@ class ProfileController extends Controller
                 'travelFrequencies',
                 'mentorshipAreasOptions'
             ));
-        } elseif ($user->user_type === 'sugar_baby') {
+        } else {
             return view('profile.sugar-baby.edit', compact(
                 'user',
                 'bodyTypes',
@@ -135,18 +132,6 @@ class ProfileController extends Controller
                 'interestsOptions',
                 'personalStyles',
                 'fitnessLevels'
-            ));
-        } else {
-            // Admin / Generic view
-            return view('profile.edit', compact(
-                'user',
-                'bodyTypes',
-                'relationshipStatuses',
-                'childrenOptions',
-                'educationLevels',
-                'incomeRanges',
-                'availabilityOptions',
-                'interestsOptions'
             ));
         }
     }

@@ -334,7 +334,7 @@
         </div>
 
         {{-- Botones --}}
-        <div class="flex items-center justify-between gap-4 mt-8">
+        <div class="flex items-center justify-between gap-4 sticky bottom-4">
             <a href="{{ route('profile.show') }}"
                 class="px-8 py-4 bg-gray-100 hover:bg-gray-200 border-2 border-gray-300 rounded-2xl text-gray-700 font-bold transition-all duration-300 hover:scale-105 shadow-lg">
                 ← Cancelar

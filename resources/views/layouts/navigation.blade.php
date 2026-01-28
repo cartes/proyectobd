@@ -39,11 +39,7 @@
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
-                            @if(Auth::user()->isAdmin)
-                                {{ __('Configuration') }}
-                            @else
-                                {{ __('Profile') }}
-                            @endif
+                            {{ __('Profile') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -92,11 +88,7 @@
 
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit')">
-                    @if(Auth::user()->isAdmin)
-                        {{ __('Configuration') }}
-                    @else
-                        {{ __('Profile') }}
-                    @endif
+                    {{ __('Profile') }}
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
