@@ -11,7 +11,7 @@ class ProfileController extends Controller
     public function show(?User $user = null)
     {
         // Si no se pasa un usuario, mostrar el perfil del usuario autenticado
-        if (!$user) {
+        if (! $user) {
             $user = Auth::user();
         }
 
@@ -30,7 +30,7 @@ class ProfileController extends Controller
 
         $user->load('profileDetail');
 
-        if (!$user->profileDetail) {
+        if (! $user->profileDetail) {
             $user->profileDetail()->create([]);
             $user->load('profileDetail');
         }
@@ -55,7 +55,7 @@ class ProfileController extends Controller
 
         // ✅ PERFILES PRIVADOS: Si es privado y no hay match, vista restringida
         $isRestricted = false;
-        if (!$isOwnProfile && $user->profileDetail->is_private && !$hasMatch) {
+        if (! $isOwnProfile && $user->profileDetail->is_private && ! $hasMatch) {
             $isRestricted = true;
         }
 
@@ -80,7 +80,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user()->load('profileDetail', 'photos');
 
-        if (!$user->profileDetail) {
+        if (! $user->profileDetail) {
             $user->profileDetail()->create([]);
             $user->load('profileDetail');
         }
