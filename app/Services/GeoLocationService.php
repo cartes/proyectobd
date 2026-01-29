@@ -35,13 +35,29 @@ class GeoLocationService
             if ($response->successful()) {
                 $data = $response->json();
                 $country = $data['country'] ?? null;
-                Log::info("GeoLocation: Detected {$country} for {$ip}");
+                Log::info("GeoLocation: Detected {$country} for {$ip} via ipapi.co");
                 return $country;
-            } else {
-                Log::warning("GeoLocation: API error for {$ip}: " . $response->status());
+            }
+            
+            Log::warning("GeoLocation: ipapi.co error for {$ip}: " . $response->status() . ". Trying fallback...");
+
+        } catch (\Exception $e) {
+            Log::error('GeoLocation: ipapi.co failed: ' . $e->getMessage());
+        }
+
+        // Fallback: ipwhois.app (Free, no key required)
+        try {
+            Log::info("GeoLocation: Querying fallback ipwhois.app for {$ip}");
+            $response = Http::timeout(3)->get("http://ipwhois.app/json/{$ip}");
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $country = $data['country_code'] ?? null; // Different key: country_code
+                Log::info("GeoLocation: Detected {$country} for {$ip} via ipwhois.app");
+                return $country;
             }
         } catch (\Exception $e) {
-            Log::error('GeoLocation detection failed: ' . $e->getMessage());
+            Log::error('GeoLocation: Fallback failed: ' . $e->getMessage());
         }
 
         return null; // Fallback will be handled in controller
