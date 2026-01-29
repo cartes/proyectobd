@@ -11,7 +11,7 @@ class ProfileController extends Controller
     public function show(?User $user = null)
     {
         // Si no se pasa un usuario, mostrar el perfil del usuario autenticado
-        if (!$user) { //arreglo
+        if (!$user) {
             $user = Auth::user();
         }
 
