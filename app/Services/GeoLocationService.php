@@ -41,9 +41,9 @@ class GeoLocationService
                 return $country;
             }
 
-            Log::warning('GeoLocation: ipapi.co error for ' . $ip . ': ' . $response->status() . '. Trying fallback...');
+            Log::warning('GeoLocation: ipapi.co error for '.$ip.': '.$response->status().'. Trying fallback...');
         } catch (\Exception $e) {
-            Log::error('GeoLocation: ipapi.co failed: ' . $e->getMessage());
+            Log::error('GeoLocation: ipapi.co failed: '.$e->getMessage());
         }
 
         // Fallback: ipwhois.app (Free, no key required)
@@ -59,7 +59,7 @@ class GeoLocationService
                 return $country;
             }
         } catch (\Exception $e) {
-            Log::error('GeoLocation: Fallback failed: ' . $e->getMessage());
+            Log::error('GeoLocation: Fallback failed: '.$e->getMessage());
         }
 
         return null;

@@ -27,7 +27,7 @@ class CountryFeaturesTest extends TestCase
             'ipapi.co/*/json/' => Http::response(['country' => 'CL'], 200),
         ]);
 
-        $service = new GeoLocationService();
+        $service = new GeoLocationService;
         $code = $service->getCountryCodeFromIp('8.8.8.8');
 
         $this->assertEquals('CL', $code);
@@ -39,7 +39,7 @@ class CountryFeaturesTest extends TestCase
             'ipapi.co/*/json/' => Http::response(null, 500),
         ]);
 
-        $service = new GeoLocationService();
+        $service = new GeoLocationService;
         $code = $service->getCountryCodeFromIp('8.8.8.8');
 
         $this->assertNull($code);
