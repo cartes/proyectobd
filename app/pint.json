@@ -1,0 +1,10 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "array_sytax": {
+            "syntax": "short"
+        },
+        "binary_operator_spaces": false,
+        "blank_line_before_statement": false
+    }
+}
