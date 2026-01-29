@@ -15,7 +15,7 @@ class GeoLocationService
     {
         // 1. En local, si es IP local, simular una IP real (ej. Chile) para probar
         if (app()->isLocal() && ($ip === '127.0.0.1' || $ip === '::1')) {
-            Log::info("GeoLocation: Localhost detected, simulating Santiago IP.");
+            Log::info('GeoLocation: Localhost detected, simulating Santiago IP.');
             $ip = '190.160.0.1'; // IP de ejemplo de Chile
         }
 
@@ -29,7 +29,7 @@ class GeoLocationService
         try {
             // Log for debugging
             Log::info("GeoLocation: Querying ipapi.co for {$ip}");
-            
+
             $response = Http::timeout(3)->get("https://ipapi.co/{$ip}/json/");
 
             if ($response->successful()) {
@@ -38,9 +38,8 @@ class GeoLocationService
                 Log::info("GeoLocation: Detected {$country} for {$ip} via ipapi.co");
                 return $country;
             }
-            
-            Log::warning("GeoLocation: ipapi.co error for {$ip}: " . $response->status() . ". Trying fallback...");
 
+            Log::warning('GeoLocation: ipapi.co error for ' . $ip . ': ' . $response->status() . '. Trying fallback...');
         } catch (\Exception $e) {
             Log::error('GeoLocation: ipapi.co failed: ' . $e->getMessage());
         }
@@ -60,6 +59,6 @@ class GeoLocationService
             Log::error('GeoLocation: Fallback failed: ' . $e->getMessage());
         }
 
-        return null; // Fallback will be handled in controller
+        return null;
     }
 }

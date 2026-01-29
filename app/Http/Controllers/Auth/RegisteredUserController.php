@@ -20,7 +20,7 @@ class RegisteredUserController extends Controller
     public function create(Request $request, \App\Services\GeoLocationService $geoService): View
     {
         $countries = \App\Models\Country::active()->orderBy('name')->get();
-        
+
         // Detectar país por IP
         $detectedCountryCode = $geoService->getCountryCodeFromIp($request->ip());
         $defaultCountry = null;
@@ -51,7 +51,7 @@ class RegisteredUserController extends Controller
             'gender' => ['required', 'in:male,female,other'],
             'birth_date' => ['required', 'date', 'before:today'],
             'country_id' => ['required', 'exists:countries,id'],
-            'city' => ['nullable', 'string', 'max:255'], // Ahora opcional
+            'city' => ['nullable', 'string', 'max:255'],
         ]);
 
         $user = User::create([
@@ -60,7 +60,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'user_type' => $request->user_type,
             'country_id' => $request->country_id,
-            'city' => $request->city, // Puede ser null
+            'city' => $request->city,
             'gender' => $request->gender,
             'birth_date' => $request->birth_date,
         ]);
