@@ -74,11 +74,26 @@
             </div>
 
             <div>
-                <x-input-label for="city" :value="__('Ciudad')" class="text-sm font-semibold text-gray-700" />
-                <x-text-input id="city"
+                <x-input-label for="country_id" :value="__('País')" class="text-sm font-semibold text-gray-700" />
+                <select id="country_id" name="country_id"
                     class="block mt-1 w-full rounded-lg border-gray-300 focus:border-purple-500 focus:ring-purple-500"
-                    type="text" name="city" :value="old('city')" required placeholder="Santiago, Valparaíso..." />
-                <x-input-error :messages="$errors->get('city')" class="mt-1" />
+                    required>
+                    <option value="">Selecciona tu país</option>
+                    @foreach($countries as $country)
+                        <option value="{{ $country->id }}"
+                            @selected(old('country_id', $defaultCountryId) == $country->id)
+                        >
+                            {{ $country->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <x-input-error :messages="$errors->get('country_id')" class="mt-1" />
+                @if(isset($defaultCountryId))
+                    <p class="text-xs text-green-600 mt-1">
+                        🌍 Detectamos que estás en {{ $countries->find($defaultCountryId)->name }}.
+                        <span class="text-gray-500">¿No es correcto? Puedes cambiarlo.</span>
+                    </p>
+                @endif
             </div>
 
             <div class="grid grid-cols-2 gap-3">
@@ -168,7 +183,7 @@
     <script>
         function registrationForm() {
             return {
-                userType: '{{ old("user_type", "") }}'
+                userType: '{{ old("user_type", "sugar_baby") }}'
             }
         }
     </script>

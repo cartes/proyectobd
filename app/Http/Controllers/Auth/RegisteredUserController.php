@@ -17,9 +17,23 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function create(Request $request, \App\Services\GeoLocationService $geoService): View
     {
-        return view('auth.register');
+        $countries = \App\Models\Country::active()->orderBy('name')->get();
+        
+        // Detectar país por IP
+        $detectedCountryCode = $geoService->getCountryCodeFromIp($request->ip());
+        $defaultCountry = null;
+
+        if ($detectedCountryCode) {
+            $defaultCountry = $countries->firstWhere('iso_code', $detectedCountryCode);
+        }
+
+        // Fallback a Chile si no se detecta (o primer de la lista)
+        // $defaultCountryId = $defaultCountry ? $defaultCountry->id : ($countries->firstWhere('iso_code', 'CL')?->id ?? null);
+        $defaultCountryId = $defaultCountry?->id;
+
+        return view('auth.register', compact('countries', 'defaultCountryId'));
     }
 
     /**
@@ -36,7 +50,8 @@ class RegisteredUserController extends Controller
             'user_type' => ['required', 'in:sugar_daddy,sugar_baby'],
             'gender' => ['required', 'in:male,female,other'],
             'birth_date' => ['required', 'date', 'before:today'],
-            'city' => ['required', 'string', 'max:255'],
+            'country_id' => ['required', 'exists:countries,id'],
+            'city' => ['nullable', 'string', 'max:255'], // Ahora opcional
         ]);
 
         $user = User::create([
@@ -44,9 +59,10 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'user_type' => $request->user_type,
+            'country_id' => $request->country_id,
+            'city' => $request->city, // Puede ser null
             'gender' => $request->gender,
             'birth_date' => $request->birth_date,
-            'city' => $request->city,
         ]);
 
         event(new Registered($user));
