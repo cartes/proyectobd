@@ -8,10 +8,9 @@ class ProfileController
 {
     public function index(Request $request)
     {
-        // Example usage
-        $isActive = true;
-        if (!$isActive) {
-            return response()->json(['message' => 'Inactive']);
+        // Si no se pasa un usuario, mostrar el perfil del usuario autenticado
+        if (!$user) {
+            $user = Auth::user();
         }
 
         $authUser = Auth::user();
@@ -29,7 +28,7 @@ class ProfileController
 
         $user->load('profileDetail');
 
-        if (! $user->profileDetail) {
+        if (!$user->profileDetail) {
             $user->profileDetail()->create([]);
             $user->load('profileDetail');
         }
@@ -54,7 +53,7 @@ class ProfileController
 
         // ✅ PERFILES PRIVADOS: Si es privado y no hay match, vista restringida
         $isRestricted = false;
-        if (! $isOwnProfile && $user->profileDetail->is_private && ! $hasMatch) {
+        if (!$isOwnProfile && $user->profileDetail->is_private && !$hasMatch) {
             $isRestricted = true;
         }
 
@@ -79,7 +78,7 @@ class ProfileController
     {
         $user = Auth::user()->load('profileDetail', 'photos');
 
-        if (! $user->profileDetail) {
+        if (!$user->profileDetail) {
             $user->profileDetail()->create([]);
             $user->load('profileDetail');
         }

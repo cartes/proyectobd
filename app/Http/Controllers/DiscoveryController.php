@@ -23,7 +23,7 @@ class DiscoveryController extends Controller
             })
             ->with(['profileDetail', 'photos']);
 
-        // Filtro por ciudad
+        // Filtro por ciudad (updated)
         if ($request->filled('city')) {
             $query->where('city', 'LIKE', '%'.$request->city.'%');
         }
