@@ -6,5 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Country extends Model
 {
-    //
+    use \Illuminate\Database\Eloquent\Factories\HasFactory;
+
+    protected $fillable = [
+        'name',
+        'iso_code',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 }
