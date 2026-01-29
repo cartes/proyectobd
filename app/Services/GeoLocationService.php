@@ -23,6 +23,7 @@ class GeoLocationService
         // (Only skip if we haven't just forced a public IP above)
         if ($ip === '127.0.0.1' || $ip === '::1' || str_starts_with($ip, '10.') || str_starts_with($ip, '192.168.')) {
             Log::info("GeoLocation: IP {$ip} skipped (local/private).");
+
             return null;
         }
 
@@ -36,6 +37,7 @@ class GeoLocationService
                 $data = $response->json();
                 $country = $data['country'] ?? null;
                 Log::info("GeoLocation: Detected {$country} for {$ip} via ipapi.co");
+
                 return $country;
             }
 
@@ -53,6 +55,7 @@ class GeoLocationService
                 $data = $response->json();
                 $country = $data['country_code'] ?? null; // Different key: country_code
                 Log::info("GeoLocation: Detected {$country} for {$ip} via ipwhois.app");
+
                 return $country;
             }
         } catch (\Exception $e) {

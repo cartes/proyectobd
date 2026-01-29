@@ -48,7 +48,7 @@ class CountryFeaturesTest extends TestCase
     public function test_registration_requires_country()
     {
         $this->seed(\Database\Seeders\CountrySeeder::class);
-        
+
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -85,7 +85,7 @@ class CountryFeaturesTest extends TestCase
             'country_id' => $country->id,
             'city' => 'Santiago',
         ]);
-        
+
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 }
