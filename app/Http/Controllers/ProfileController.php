@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProfileDetail;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
-class ProfileController extends Controller
+class ProfileController
 {
-    public function show(?User $user = null)
+    public function index(Request $request)
     {
-        // Si no se pasa un usuario, mostrar el perfil del usuario autenticado
-        if (! $user) {
-            $user = Auth::user();
+        // Example usage
+        $isActive = true;
+        if (!$isActive) {
+            return response()->json(['message' => 'Inactive']);
         }
 
         $authUser = Auth::user();
