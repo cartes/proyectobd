@@ -2,7 +2,7 @@
 
 *.blade.php text eol=lf
 *.js text eol=lf
-*.css diff=css
+*.css text eol=lf
 *.html diff=html
 *.md diff=markdown
 *.php text eol=lf
