@@ -27,7 +27,7 @@
                 <div class="flex-1">
                     <div class="flex items-center gap-3 mb-4">
                         <span class="px-3 py-1 bg-pink-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Privilegio</span>
-                        <h2 class="text-3xl font-playfair font-bold text-white">Perfil Privado</h2>
+                        <h2 class="text-3xl font-black text-white" style="font-family: 'Outfit', sans-serif;">Perfil Privado</h2>
                     </div>
                     <p class="text-pink-100 text-lg leading-relaxed mb-6">
                         @if($hasPrivateProfilePlan)
@@ -71,7 +71,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
                     </svg>
                 </div>
-                <h2 class="text-2xl font-playfair font-bold text-gray-900">Sobre Mí</h2>
+                <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Sobre Mí</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -263,7 +263,7 @@
                     class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-xl shadow-lg">
                     📚
                 </div>
-                <h2 class="text-2xl font-playfair font-bold text-gray-900">Educación y Ocupación</h2>
+                <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Educación y Ocupación</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -309,7 +309,7 @@
                     <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-playfair font-bold text-gray-900">Mis Aspiraciones y Metas</h2>
+                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis Aspiraciones y Metas</h2>
                     <p class="text-sm text-gray-600">Qué quieres lograr en la vida</p>
                 </div>
             </div>
@@ -331,7 +331,7 @@
                     <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-playfair font-bold text-gray-900">Mis Intereses</h2>
+                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis Intereses</h2>
                     <p class="text-sm text-gray-500">Selecciona lo que te apasiona (máximo 8)</p>
                 </div>
             </div>
@@ -369,7 +369,7 @@
                     <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-playfair font-bold text-gray-900">Mi Sugar Daddy Ideal</h2>
+                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi Sugar Daddy Ideal</h2>
                     <p class="text-sm text-gray-600">Describe a tu pareja perfecta</p>
                 </div>
             </div>

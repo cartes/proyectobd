@@ -77,15 +77,19 @@
                                     d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
                             </svg>
                         </div>
-                        <div class="absolute -bottom-3 -left-2 w-8 h-8 bg-white/20 backdrop-blur-md rounded-lg flex items-center justify-center border border-white/30 shadow-lg animate-bounce">
-                            <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        <div
+                            class="absolute -bottom-3 -left-2 w-8 h-8 bg-white/20 backdrop-blur-md rounded-lg flex items-center justify-center border border-white/30 shadow-lg animate-bounce">
+                            <svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                            </svg>
                         </div>
                     </div>
 
                     {{-- Info personal destacada --}}
                     <div>
-                        <h1
-                            class="text-5xl md:text-6xl font-playfair font-bold text-white mb-3 tracking-tight drop-shadow-lg">
+                        <h1 class="text-5xl md:text-6xl font-black text-white mb-3 tracking-tight drop-shadow-lg"
+                            style="font-family: 'Outfit', sans-serif;">
                             {{ $user->name }}
                         </h1>
                         <div class="flex items-center gap-3 text-white flex-wrap mb-3">
@@ -298,7 +302,7 @@
                         ✨
                     </div>
                     <div>
-                        <h2 class="text-2xl font-playfair font-bold text-gray-900">Sobre Mí</h2>
+                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Sobre Mí</h2>
                         <p class="text-sm text-gray-500">Información personal</p>
                     </div>
                 </div>
@@ -347,7 +351,7 @@
                         📚
                     </div>
                     <div>
-                        <h2 class="text-2xl font-playfair font-bold text-gray-900">Educación</h2>
+                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Educación</h2>
                         <p class="text-sm text-gray-500">Formación y actividades</p>
                     </div>
                 </div>
@@ -397,7 +401,8 @@
                             💖
                         </div>
                         <div>
-                            <h2 class="text-2xl font-playfair font-bold text-gray-900">Mis Intereses</h2>
+                            <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis Intereses
+                            </h2>
                             <p class="text-sm text-gray-500">Lo que me apasiona</p>
                         </div>
                     </div>
@@ -423,7 +428,8 @@
                                 📸
                             </div>
                             <div>
-                                <h2 class="text-2xl font-playfair font-bold text-gray-900">Mi Galería</h2>
+                                <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi Galería
+                                </h2>
                                 <p class="text-sm text-gray-500">{{ $user->photos->count() }} fotos</p>
                             </div>
                         </div>
@@ -560,7 +566,7 @@
                                 d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </div>
-                    <h3 class="text-3xl font-playfair font-bold mb-3">Sube tus fotos</h3>
+                    <h3 class="text-3xl font-black mb-3" style="font-family: 'Outfit', sans-serif;">Sube tus fotos</h3>
                     <p class="text-white/90 mb-8 text-lg">Las fotos aumentan significativamente tus posibilidades de conectar
                     </p>
                     <a href="{{ route('profile.photos.index') }}"
@@ -579,10 +585,14 @@
                 <div class="flex items-center gap-3 mb-6">
                     <div
                         class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white text-2xl shadow-lg">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
                     </div>
                     <div>
-                        <h2 class="text-2xl font-playfair font-bold text-gray-900">Mis Aspiraciones</h2>
+                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis
+                            Aspiraciones</h2>
                         <p class="text-sm text-gray-600">Sueños y metas</p>
                     </div>
                 </div>
@@ -600,10 +610,14 @@
                 <div class="flex items-center gap-3 mb-6">
                     <div
                         class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center text-white text-2xl shadow-lg">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
                     </div>
                     <div>
-                        <h2 class="text-2xl font-playfair font-bold text-gray-900">Mi Daddy Ideal</h2>
+                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi Daddy Ideal
+                        </h2>
                         <p class="text-sm text-gray-600">Lo que busco en una relación</p>
                     </div>
                 </div>
@@ -622,11 +636,12 @@
                     <div
                         class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center text-white text-2xl shadow-lg">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-2xl font-playfair font-bold text-gray-900">Qué Busco</h2>
+                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Qué Busco</h2>
                         <p class="text-sm text-gray-600">Mi relación ideal</p>
                     </div>
                 </div>
@@ -659,7 +674,7 @@
                 </div>
 
                 <!-- Contenido -->
-                <h3 class="text-3xl font-playfair font-bold text-white mb-3">
+                <h3 class="text-3xl font-black text-white mb-3" style="font-family: 'Outfit', sans-serif;">
                     Haz tu perfil más atractivo
                 </h3>
                 <p class="text-white/90 mb-8 text-lg leading-relaxed">
