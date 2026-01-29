@@ -5,8 +5,8 @@
 @section('content')
     <div class="mb-8">
         <h1
-            class="text-4xl font-playfair font-bold bg-gradient-to-r from-pink-600 to-fuchsia-800 bg-clip-text text-transparent mb-3">
-            ✨ Editar Mi Perfil
+            class="text-4xl font-black bg-gradient-to-r from-pink-600 to-fuchsia-800 bg-clip-text text-transparent mb-3 uppercase tracking-tighter" style="font-family: 'Outfit', sans-serif;">
+            Editar Mi Perfil
         </h1>
         <p class="text-gray-600 text-lg">Haz que tu perfil brille y atraiga a los mejores Sugar Daddies</p>
     </div>
@@ -27,7 +27,7 @@
                 <div class="flex-1">
                     <div class="flex items-center gap-3 mb-4">
                         <span class="px-3 py-1 bg-pink-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Privilegio</span>
-                        <h2 class="text-3xl font-playfair font-bold text-white">Perfil Privado</h2>
+                        <h2 class="text-3xl font-black text-white" style="font-family: 'Outfit', sans-serif;">Perfil Privado</h2>
                     </div>
                     <p class="text-pink-100 text-lg leading-relaxed mb-6">
                         @if($hasPrivateProfilePlan)
@@ -56,8 +56,8 @@
                         </a>
                     @endif
                 </div>
-                <div class="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-6xl shadow-inner">
-                    💎
+                <div class="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-6xl shadow-inner text-white/20">
+                    <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 13 10-13-10-5zM4.18 7L12 3.65 19.82 7 12 18.06 4.18 7z"/></svg>
                 </div>
             </div>
         </div>
@@ -67,9 +67,11 @@
             <div class="flex items-center gap-3 mb-8">
                 <div
                     class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center text-white text-xl shadow-lg">
-                    ✨
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
+                    </svg>
                 </div>
-                <h2 class="text-2xl font-playfair font-bold text-gray-900">Sobre Mí</h2>
+                <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Sobre Mí</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -261,7 +263,7 @@
                     class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-xl shadow-lg">
                     📚
                 </div>
-                <h2 class="text-2xl font-playfair font-bold text-gray-900">Educación y Ocupación</h2>
+                <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Educación y Ocupación</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -304,10 +306,10 @@
             <div class="flex items-center gap-3 mb-6">
                 <div
                     class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white text-xl shadow-lg">
-                    🌟
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-playfair font-bold text-gray-900">Mis Aspiraciones y Metas</h2>
+                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis Aspiraciones y Metas</h2>
                     <p class="text-sm text-gray-600">Qué quieres lograr en la vida</p>
                 </div>
             </div>
@@ -326,10 +328,10 @@
             <div class="flex items-center gap-3 mb-6">
                 <div
                     class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center text-white text-xl shadow-lg">
-                    💖
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-playfair font-bold text-gray-900">Mis Intereses</h2>
+                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis Intereses</h2>
                     <p class="text-sm text-gray-500">Selecciona lo que te apasiona (máximo 8)</p>
                 </div>
             </div>
@@ -364,10 +366,10 @@
             <div class="flex items-center gap-3 mb-6">
                 <div
                     class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center text-white text-xl shadow-lg">
-                    💕
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-playfair font-bold text-gray-900">Mi Sugar Daddy Ideal</h2>
+                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi Sugar Daddy Ideal</h2>
                     <p class="text-sm text-gray-600">Describe a tu pareja perfecta</p>
                 </div>
             </div>
@@ -380,6 +382,9 @@
             <p class="text-gray-600 text-sm mt-2 font-medium" x-text="`${idealDaddy.length}/500 caracteres`"></p>
         </div>
 
+        {{-- Seguridad --}}
+        @include('profile.partials.premium-password-form')
+
         {{-- Botones --}}
         <div class="flex items-center justify-between gap-4 sticky bottom-4">
             <a href="{{ route('profile.show') }}"
@@ -388,15 +393,13 @@
             </a>
             <button type="submit"
                 class="px-10 py-4 bg-gradient-to-r from-pink-500 to-fuchsia-600 hover:from-pink-600 hover:to-fuchsia-700 
-                           rounded-2xl text-white font-bold transition-all duration-300 shadow-2xl hover:scale-105 border-2 border-pink-300/30">
-                💾 Guardar Cambios
+                           rounded-2xl text-white font-black uppercase tracking-widest text-xs transition-all duration-300 shadow-2xl hover:scale-105 border-2 border-pink-300/30 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
+                Guardar Cambios
             </button>
         </div>
 
     </form>
-
-    {{-- Seguridad --}}
-    @include('profile.partials.premium-password-form')
 
     @push('scripts')
         <script>

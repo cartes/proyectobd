@@ -22,9 +22,11 @@
             </div>
             <div class="relative flex items-center justify-between">
                 <div>
-                    <h2 class="text-3xl font-extrabold tracking-tight">¡Hola, {{ $user->name }}! 👑</h2>
-                    <p class="text-indigo-100 mt-2 text-lg font-medium opacity-90">Descubre conexiones auténticas en
-                        Big-dad</p>
+                    <h2 class="text-3xl font-extrabold tracking-tight flex items-center gap-3">
+                        ¡Hola, {{ $user->name }}!
+                        <svg class="w-8 h-8 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]" fill="currentColor" viewBox="0 0 24 24"><path d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.55 18.55 20 18 20H6C5.45 20 5 19.55 5 19V18H19V19Z"/></svg>
+                    </h2>
+                    <p class="text-indigo-100 mt-2 text-lg font-medium opacity-90">Descubre conexiones auténticas en Big-dad</p>
                 </div>
                 <div class="text-right">
                     @if (!$user->isPremium())
@@ -34,8 +36,9 @@
                         </a>
                     @else
                         <span
-                            class="bg-indigo-500/80 backdrop-blur-md text-white px-5 py-2 rounded-full text-sm font-bold border border-indigo-400/50 shadow-lg">
-                            👑 Premium Member
+                            class="bg-indigo-500/80 backdrop-blur-md text-white px-5 py-2 rounded-full text-sm font-black border border-indigo-400/50 shadow-lg flex items-center gap-2 uppercase tracking-widest">
+                            <svg class="w-4 h-4 text-amber-300" fill="currentColor" viewBox="0 0 24 24"><path d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.55 18.55 20 18 20H6C5.45 20 5 19.55 5 19V18H19V19Z"/></svg>
+                            Premium
                         </span>
                     @endif
                 </div>
@@ -146,7 +149,9 @@
                     class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity">
                 </div>
                 <div class="relative">
-                    <div class="text-4xl mb-3 transform group-hover:rotate-12 transition-transform">👑</div>
+                    <div class="text-4xl mb-3 transform group-hover:rotate-12 transition-transform text-amber-400">
+                        <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.55 18.55 20 18 20H6C5.45 20 5 19.55 5 19V18H19V19Z"/></svg>
+                    </div>
                     <h4 class="text-white font-black uppercase tracking-tight">Premium</h4>
                     <p class="text-sm text-indigo-200 mt-1">{{ $user->isPremium() ? 'Mi Suscripción' : 'Ver planes' }}
                     </p>

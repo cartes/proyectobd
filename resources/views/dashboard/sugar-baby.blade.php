@@ -269,8 +269,8 @@
                                 <div
                                     class="glass-card bg-white/40 border border-gray-100 rounded-2xl p-5 hover:shadow-xl transition-all group overflow-hidden relative">
                                     <div
-                                        class="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-100 transition-opacity">
-                                        <span class="text-2xl">👑</span>
+                                        class="absolute top-4 right-4 p-2 opacity-20 group-hover:opacity-100 transition-opacity text-amber-400">
+                                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.55 18.55 20 18 20H6C5.45 20 5 19.55 5 19V18H19V19Z"/></svg>
                                     </div>
                                     <div class="flex items-start space-x-5 relative">
                                         <div class="flex-shrink-0">
@@ -295,8 +295,10 @@
                                                 {{ $daddy->bio }}</p>
                                             @if ($daddy->is_verified)
                                                 <span
-                                                    class="text-[10px] bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full inline-block mt-3 border border-emerald-200 uppercase tracking-tighter">✅
-                                                    Verificado</span>
+                                                    class="text-[10px] bg-emerald-50 text-emerald-700 font-black px-2.5 py-1 rounded-lg inline-flex mt-3 border border-emerald-100 uppercase tracking-tighter items-center gap-1">
+                                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                                                    Verificado
+                                                </span>
                                             @endif
                                         </div>
                                     </div>
@@ -306,8 +308,8 @@
                                             Ver Perfil
                                         </a>
                                         <button
-                                            class="flex-shrink-0 bg-pink-500 hover:bg-pink-600 text-white w-10 h-10 rounded-xl text-lg font-bold transition-all shadow-lg hover:rotate-6 active:scale-90">
-                                            💕
+                                            class="flex-shrink-0 bg-pink-500 hover:bg-pink-600 text-white w-10 h-10 rounded-xl flex items-center justify-center transition-all shadow-lg hover:rotate-6 active:scale-90">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                                         </button>
                                     </div>
                                 </div>
@@ -322,7 +324,12 @@
                 <!-- Recent Messages -->
                 <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
                     <div class="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/30">
-                        <h3 class="text-xl font-black text-gray-900 tracking-tight">Conversaciones 💬</h3>
+                        <h1 class="text-xl font-black text-gray-900 tracking-tight flex items-center gap-2">
+                            Conversaciones
+                            <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                        </h1>
                         <a href="{{ route('chat.index') }}"
                             class="text-pink-500 text-sm font-bold hover:text-pink-600 transition-colors uppercase tracking-widest">Ver
                             todas</a>

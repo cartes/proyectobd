@@ -40,8 +40,8 @@
 
         {{-- Header --}}
         <div class="mb-8">
-            <h1
-                class="text-4xl font-playfair font-bold bg-gradient-to-r {{ Auth::user()->user_type === 'sugar_daddy' ? 'from-purple-600 to-indigo-800' : 'from-pink-600 to-fuchsia-800' }} bg-clip-text text-transparent mb-3">
+            <h1 class="text-4xl font-black bg-gradient-to-r {{ Auth::user()->user_type === 'sugar_daddy' ? 'from-purple-600 to-indigo-800' : 'from-pink-600 to-fuchsia-800' }} bg-clip-text text-transparent mb-3 uppercase tracking-tighter"
+                style="font-family: 'Outfit', sans-serif;">
                 📸 Mis Fotos
             </h1>
             <p class="text-gray-600 text-lg">
@@ -60,7 +60,8 @@
                         ⬆️
                     </div>
                     <div>
-                        <h2 class="text-2xl font-playfair font-bold text-gray-900">Subir Nueva Foto</h2>
+                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Subir Nueva
+                            Foto</h2>
                         <p class="text-sm text-gray-500">JPG, PNG o WebP • Máximo 5MB</p>
                     </div>
                 </div>
@@ -155,7 +156,8 @@
                             🖼️
                         </div>
                         <div>
-                            <h2 class="text-2xl font-playfair font-bold text-gray-900">Mi Galería</h2>
+                            <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi Galería
+                            </h2>
                             <p class="text-sm text-gray-500">{{ Auth::user()->photos()->count() }} fotos • Arrastra para
                                 reordenar</p>
                         </div>
@@ -233,7 +235,7 @@
         @else
             <div class="bg-white rounded-3xl shadow-lg p-12 border border-gray-100 text-center">
                 <div class="text-6xl mb-4">📸</div>
-                <h3 class="text-2xl font-playfair font-bold text-gray-900 mb-2">
+                <h3 class="text-2xl font-black text-gray-900 mb-2" style="font-family: 'Outfit', sans-serif;">
                     Aún no tienes fotos
                 </h3>
                 <p class="text-gray-600 mb-6">

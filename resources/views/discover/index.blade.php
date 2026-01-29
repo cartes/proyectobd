@@ -26,15 +26,30 @@
             <div class="sticky top-0 z-40 px-6 py-6 backdrop-blur-xl border-b border-white/10 shadow-2xl" 
                  style="background: rgba(var(--primary-rgb, 79, 70, 229), 0.15);">
                 <div class="max-w-7xl mx-auto flex items-center justify-between">
-                    <div>
-                        <h1 class="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter drop-shadow-md">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-white/10 backdrop-blur-md shadow-inner border border-white/20">
                             @if (auth()->user()->user_type === 'sugar_daddy')
-                                💎 Sugar Babies
+                                {{-- Icono para Sugar Babies (Destellos/Diamante) --}}
+                                <svg class="w-8 h-8 text-amber-300 drop-shadow-[0_0_8px_rgba(252,211,77,0.5)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
+                                </svg>
                             @else
-                                👔 Sugar Daddies
+                                {{-- Icono para Sugar Daddies (Corona/Ejecutivo) --}}
+                                <svg class="w-8 h-8 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2z" />
+                                </svg>
                             @endif
-                        </h1>
-                        <p class="text-white/70 text-sm font-bold mt-1">{{ $users->total() }} perfiles disponibles</p>
+                        </div>
+                        <div>
+                            <h1 class="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter drop-shadow-xl leading-none">
+                                @if (auth()->user()->user_type === 'sugar_daddy')
+                                    Sugar Babies
+                                @else
+                                    Sugar Daddies
+                                @endif
+                            </h1>
+                            <p class="text-white/80 text-sm font-black mt-1 uppercase tracking-widest">{{ $users->total() }} disponibles</p>
+                        </div>
                     </div>
 
                     {{-- Botón Filtros --}}
@@ -92,15 +107,17 @@
                                 {{-- Badges --}}
                                 <div class="absolute top-5 left-5 right-5 flex justify-between items-start">
                                     @if ($profile->is_verified)
-                                        <span class="px-3 py-1.5 bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-black rounded-full uppercase tracking-tighter shadow-lg flex items-center gap-1.5">
-                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                                        <span class="px-3 py-1.5 bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-black rounded-full uppercase tracking-tighter shadow-lg flex items-center gap-1.5 border border-white/20">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 12l2 2 4-4m5.618-4.016A3.33 3.33 0 0018.333 2.667h-2.14a3.33 3.33 0 01-2.14-1.18l-1.04-1.04a1.66 1.66 0 00-2.347 0L9.61 1.487a3.33 3.33 0 01-2.14 1.18H5.333a3.33 3.33 0 00-3.333 3.333v2.14a3.33 3.33 0 01-1.18 2.14l-1.04 1.04a1.66 1.66 0 000 2.347l1.04 1.04a3.33 3.33 0 011.18 2.14v2.14A3.33 3.33 0 005.333 21.333h2.14a3.33 3.33 0 012.14 1.18l1.04 1.04a1.66 1.66 0 002.347 0l1.04-1.04a3.33 3.33 0 012.14-1.18h2.14a3.33 3.33 0 003.333-3.333v-2.14a3.33 3.33 0 011.18-2.14l1.04-1.04a1.66 1.66 0 000-2.347l-1.04-1.04a3.33 3.33 0 01-1.18-2.14v-2.14z" />
+                                            </svg>
                                             Verificado
                                         </span>
                                     @endif
                                     
                                     @if ($hasLiked)
-                                        <div class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center shadow-xl animate-pulse border-2 border-white/20">
-                                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" /></svg>
+                                        <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full flex items-center justify-center shadow-xl animate-pulse border-2 border-white/30">
+                                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                                         </div>
                                     @endif
                                 </div>
@@ -118,7 +135,7 @@
                                     @if ($profile->profileDetail && $profile->profileDetail->interests)
                                         <div class="flex flex-wrap gap-2">
                                             @foreach (array_slice($profile->profileDetail->interests, 0, 2) as $interest)
-                                                <span class="px-3 py-1 bg-white/10 backdrop-blur-md text-white text-[10px] font-black rounded-full border border-white/5 uppercase tracking-tighter">
+                                                <span class="px-3 py-1 bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-md text-white text-[10px] font-black rounded-full border border-white/20 uppercase tracking-tighter shadow-sm">
                                                     {{ $interestsOptions[$interest] ?? $interest }}
                                                 </span>
                                             @endforeach
@@ -128,17 +145,18 @@
                             </div>
 
                             {{-- Botones de Acción Premium --}}
-                            <div class="p-6 grid grid-cols-2 gap-3 bg-white/5 backdrop-blur-md">
+                            <div class="p-6 grid grid-cols-2 gap-3 bg-black/10 backdrop-blur-xl border-t border-white/5">
                                 <a href="{{ url('/profile/' . $profile->id) }}"
-                                   class="px-4 py-4 bg-white/10 hover:bg-white/20 text-white font-black rounded-2xl text-center text-xs uppercase tracking-widest transition-all active:scale-95 border border-white/10">
+                                   class="px-4 py-4 bg-white/10 hover:bg-white/20 text-white font-black rounded-2xl text-center text-xs uppercase tracking-widest transition-all active:scale-95 border border-white/10 shadow-sm">
                                     Perfil
                                 </a>
 
                                 @if ($hasLiked)
                                     <form method="POST" action="{{ route('discover.unlike', $profile) }}" class="flex">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="w-full py-4 bg-gray-800/50 hover:bg-red-500/20 text-red-400 font-black rounded-2xl text-xs uppercase tracking-widest transition-all border border-red-500/30">
-                                            💔 Quitar
+                                        <button type="submit" class="w-full py-4 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-black rounded-2xl text-xs uppercase tracking-widest transition-all shadow-lg shadow-red-500/25 flex items-center justify-center gap-2 group border border-white/10">
+                                            <span class="group-hover:rotate-12 transition-transform">💔</span> 
+                                            Quitar
                                         </button>
                                     </form>
                                 @else
