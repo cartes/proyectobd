@@ -28,7 +28,7 @@ class DiscoveryController extends Controller
 
         // Filtro por ciudad (updated)
         if ($request->filled('city')) {
-            $query->where('city', 'LIKE', "%{$request->city}%");
+            $query->where('city', 'LIKE', '%' . $request->city . '%');
         }
 
         // Filtro por intereses
