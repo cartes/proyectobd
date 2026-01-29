@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProfileDetail;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DiscoveryController extends Controller
 {
@@ -25,7 +28,7 @@ class DiscoveryController extends Controller
 
         // Filtro por ciudad (updated)
         if ($request->filled('city')) {
-            $query->where('city', 'LIKE', '%'.$request->city.'%');
+            $query->where('city', 'LIKE', "%{$request->city}%");
         }
 
         // Filtro por intereses
