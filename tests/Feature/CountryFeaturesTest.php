@@ -37,6 +37,7 @@ class CountryFeaturesTest extends TestCase
     {
         Http::fake([
             'ipapi.co/*/json/' => Http::response(null, 500),
+            'ipwhois.app/*' => Http::response(null, 500),
         ]);
 
         $service = new GeoLocationService;

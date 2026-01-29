@@ -18,6 +18,9 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register(): void
     {
+        $this->seed(\Database\Seeders\CountrySeeder::class);
+        $country = \App\Models\Country::where('iso_code', 'AR')->first();
+
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -27,6 +30,7 @@ class RegistrationTest extends TestCase
             'gender' => 'male',
             'birth_date' => '1990-01-01',
             'city' => 'Buenos Aires',
+            'country_id' => $country->id,
         ]);
 
         $this->assertAuthenticated();
