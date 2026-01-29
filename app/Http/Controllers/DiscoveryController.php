@@ -20,6 +20,7 @@ class DiscoveryController extends Controller
         $query = User::where('user_type', $targetUserType)
             ->where('is_active', true)
             ->where('id', '!=', $user->id)
+            ->where('role', '!=', 'admin')
             ->whereHas('profileDetail', function ($q) {
                 $q->where('is_private', false);
             })
@@ -27,7 +28,7 @@ class DiscoveryController extends Controller
 
         // Filtro por ciudad
         if ($request->filled('city')) {
-            $query->where('city', 'LIKE', '%'.$request->city.'%');
+            $query->where('city', 'LIKE', '%' . $request->city . '%');
         }
 
         // Filtro por intereses

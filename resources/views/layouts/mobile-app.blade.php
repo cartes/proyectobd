@@ -98,8 +98,8 @@
 
                     <svg class="w-6 h-6 transition-transform group-hover:scale-110 group-hover:rotate-12 relative z-10"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z">
                         </path>
                     </svg>
                     <span class="relative z-10">
@@ -109,16 +109,26 @@
                             Descubrir Daddies
                         @endif
                     </span>
-                    <span class="ml-auto text-xl relative z-10">
-                        @if($user->user_type === 'sugar_daddy') 💎 @else 👑 @endif
+                    <span class="ml-auto relative z-10 p-1 bg-white/20 rounded-lg backdrop-blur-sm">
+                        @if($user->user_type === 'sugar_daddy')
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L2 7l10 13 10-13-10-5zM4.18 7L12 3.65 19.82 7 12 18.06 4.18 7z" />
+                            </svg>
+                        @else
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"
+                                    transform="scale(0.8) translate(3,3)" />
+                                <path d="M2 20h20v2H2z" />
+                            </svg>
+                        @endif
                     </span>
                 </a>
 
                 {{-- Mis Favoritos --}}
                 <a href="{{ route('discover.favorites') }}" class="group flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all
                           {{ request()->routeIs('discover.favorites')
-    ? 'bg-white/10 text-white shadow-xl border border-white/20'
-    : 'text-gray-500 hover:bg-white/5 hover:text-white' }}">
+    ? 'bg-pink-50 text-pink-600 shadow-sm ring-1 ring-pink-100 scale-105'
+    : 'text-gray-500 hover:bg-pink-50 hover:text-pink-600 transition-colors' }}">
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="currentColor"
                         viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
@@ -131,8 +141,8 @@
                 {{-- Matches --}}
                 <a href="{{ route('matches.index') }}" class="group flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all
                           {{ request()->routeIs('matches.*')
-    ? 'bg-white/10 text-white shadow-xl border border-white/20'
-    : 'text-gray-500 hover:bg-white/5 hover:text-white' }}">
+    ? 'bg-pink-50 text-pink-600 shadow-sm ring-1 ring-pink-100 scale-105'
+    : 'text-gray-500 hover:bg-pink-50 hover:text-pink-600 transition-colors' }}">
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="currentColor"
                         viewBox="0 0 20 20">
                         <path
@@ -144,8 +154,8 @@
                 {{-- Mensajes --}}
                 <a href="{{ route('chat.index') }}" class="group flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all
                           {{ request()->routeIs('chat.*')
-    ? 'bg-white/10 text-white shadow-xl border border-white/20'
-    : 'text-gray-500 hover:bg-white/5 hover:text-white' }}">
+    ? 'bg-pink-50 text-pink-600 shadow-sm ring-1 ring-pink-100 scale-105'
+    : 'text-gray-500 hover:bg-pink-50 hover:text-pink-600 transition-colors' }}">
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
@@ -157,8 +167,8 @@
                 {{-- Dashboard --}}
                 <a href="{{ route('dashboard') }}" class="group flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all
                           {{ request()->routeIs('dashboard')
-    ? 'bg-white/10 text-white shadow-xl border border-white/20'
-    : 'text-gray-500 hover:bg-white/5 hover:text-white' }}">
+    ? 'bg-pink-50 text-pink-600 shadow-sm ring-1 ring-pink-100 scale-105'
+    : 'text-gray-500 hover:bg-pink-50 hover:text-pink-600 transition-colors' }}">
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
@@ -218,7 +228,7 @@
                             </svg>
                         </div>
                         <span class="text-[10px] font-black uppercase tracking-tighter">
-                            @if($user->user_type === 'sugar_daddy') 💎 Babies @else 👑 Daddies @endif
+                            @if($user->user_type === 'sugar_daddy') Babies @else Daddies @endif
                         </span>
                     </a>
 
