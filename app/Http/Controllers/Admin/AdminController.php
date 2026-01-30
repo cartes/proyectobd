@@ -58,6 +58,8 @@ class AdminController extends Controller
 
     public function config()
     {
-        return view('admin.config.index');
+        $countries = \App\Models\Country::orderBy('name')->get();
+
+        return view('admin.config.index', compact('countries'));
     }
 }
