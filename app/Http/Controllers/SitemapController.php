@@ -40,4 +40,18 @@ class SitemapController extends Controller
         return response($xml, 200)
             ->header('Content-Type', 'application/xml');
     }
+
+    /**
+     * Generate XML sitemap for blog posts
+     */
+    public function blog()
+    {
+        $posts = \App\Models\BlogPost::published()
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        return response()
+            ->view('sitemap.blog', compact('posts'))
+            ->header('Content-Type', 'text/xml');
+    }
 }
