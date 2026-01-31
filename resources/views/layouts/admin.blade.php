@@ -54,6 +54,7 @@
             color: #ec4899;
         }
     </style>
+    @stack('styles')
 </head>
 
 <body class="bg-[#05070a] text-gray-200 antialiased min-h-screen flex">
@@ -315,6 +316,7 @@
         </div>
     </main>
 
+    @stack('scripts')
 </body>
 
 </html>

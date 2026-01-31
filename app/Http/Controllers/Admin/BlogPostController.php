@@ -69,14 +69,14 @@ class BlogPostController extends Controller
             'slug' => 'nullable|string|max:255|unique:blog_posts,slug',
             'excerpt' => 'nullable|string',
             'content' => 'required|string',
-            'featured_image' => 'nullable|image|max:2048',
+            'featured_image' => 'nullable|image|max:10240', // 10MB
             'category_id' => 'nullable|exists:blog_categories,id',
             'status' => 'required|in:draft,published,scheduled',
             'published_at' => 'nullable|date',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string',
-            'og_image' => 'nullable|image|max:2048',
+            'og_image' => 'nullable|image|max:10240', // 10MB
         ]);
 
         // Handle featured image upload
@@ -104,6 +104,16 @@ class BlogPostController extends Controller
 
         $post = BlogPost::create($validated);
 
+        // Return JSON for AJAX requests
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Post creado exitosamente.',
+                'post' => $post->fresh(),
+                'redirect_url' => route('admin.blog.posts.edit', $post)
+            ]);
+        }
+
         return redirect()->route('admin.blog.posts.edit', $post)
             ->with('success', 'Post creado exitosamente. Puedes continuar editando.');
     }
@@ -128,14 +138,14 @@ class BlogPostController extends Controller
             'slug' => 'nullable|string|max:255|unique:blog_posts,slug,'.$post->id,
             'excerpt' => 'nullable|string',
             'content' => 'required|string',
-            'featured_image' => 'nullable|image|max:2048',
+            'featured_image' => 'nullable|image|max:10240', // 10MB
             'category_id' => 'nullable|exists:blog_categories,id',
             'status' => 'required|in:draft,published,scheduled',
             'published_at' => 'nullable|date',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string',
-            'og_image' => 'nullable|image|max:2048',
+            'og_image' => 'nullable|image|max:10240', // 10MB
         ]);
 
         // Handle featured image upload
@@ -162,6 +172,15 @@ class BlogPostController extends Controller
         }
 
         $post->update($validated);
+
+        // Return JSON for AJAX requests
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Post actualizado exitosamente.',
+                'post' => $post->fresh()
+            ]);
+        }
 
         return redirect()->route('admin.blog.posts.edit', $post)
             ->with('success', 'Post actualizado exitosamente.');

@@ -2,10 +2,16 @@
 
 @section('title', 'Editar Post - Blog')
 
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
+@endpush
+
 @section('content')
     <form action="{{ route('admin.blog.posts.update', $post) }}" method="POST" enctype="multipart/form-data" id="postForm">
         @csrf
         @method('PUT')
+        <input type="hidden" name="status" id="postStatus" value="{{ $post->status }}">
 
         <div class="space-y-6">
             {{-- Header --}}
@@ -42,11 +48,11 @@
                         class="px-6 py-3 bg-white/5 hover:bg-white/10 text-gray-300 rounded-xl font-semibold transition-colors">
                         Volver
                     </a>
-                    <button type="submit" name="status" value="draft"
+                    <button type="submit" name="status_btn" value="draft"
                         class="px-6 py-3 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-500 rounded-xl font-semibold transition-colors">
                         Guardar Borrador
                     </button>
-                    <button type="submit" name="status" value="published"
+                    <button type="submit" name="status_btn" value="published"
                         class="px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-xl font-semibold transition-colors">
                         {{ $post->status === 'published' ? 'Actualizar' : 'Publicar' }}
                     </button>
@@ -280,76 +286,243 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    {{-- CKEditor 5 Styles for Dark Theme --}}
+    <style>
+        .ck-editor__editable_inline {
+            min-height: 400px;
+            background-color: #1f2937 !important;
+            color: #e5e7eb !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .ck.ck-editor__main>.ck-editor__editable {
+            background: #1f2937 !important;
+        }
+
+        .ck.ck-toolbar {
+            background: #111827 !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .ck.ck-toolbar__separator {
+            background: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .ck.ck-button {
+            color: #9ca3af !important;
+            cursor: pointer !important;
+        }
+
+        .ck.ck-button:not(.ck-disabled):hover,
+        .ck.ck-button.ck-on {
+            background: #374151 !important;
+            color: #fff !important;
+        }
+
+        .ck.ck-list {
+            background: #1f2937 !important;
+        }
+
+        .ck.ck-list__item .ck-button:hover:not(.ck-disabled) {
+            background: #374151 !important;
+        }
+
+        .ck.ck-dropdown__panel {
+            background: #1f2937 !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+    </style>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize TinyMCE
-            tinymce.init({
-                selector: '#content',
-                height: 500,
-                menubar: false,
-                plugins: [
-                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                    'insertdatetime', 'media', 'table', 'help', 'wordcount'
-                ],
-                toolbar: 'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-                content_style: 'body { font-family: Inter, sans-serif; font-size: 16px; color: #fff; background: #0c111d; }',
-                skin: 'oxide-dark',
-                content_css: 'dark',
-                setup: function(editor) {
-                    editor.on('change keyup', function() {
+            // Initialize CKEditor 5
+            let editorInstance;
+            ClassicEditor
+                .create(document.querySelector('#content'), {
+                    toolbar: [
+                        'heading', '|',
+                        'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+                        'undo', 'redo'
+                    ],
+                    heading: {
+                        options: [{
+                                model: 'paragraph',
+                                title: 'Párrafo',
+                                class: 'ck-heading_paragraph'
+                            },
+                            {
+                                model: 'heading2',
+                                view: 'h2',
+                                title: 'Título 2',
+                                class: 'ck-heading_heading2'
+                            },
+                            {
+                                model: 'heading3',
+                                view: 'h3',
+                                title: 'Título 3',
+                                class: 'ck-heading_heading3'
+                            }
+                        ]
+                    }
+                })
+                .then(editor => {
+                    editorInstance = editor;
+                    // Update textarea whenever editor content changes
+                    editor.model.document.on('change:data', () => {
+                        document.querySelector('#content').value = editor.getData();
                         updateStats();
                     });
-                }
-            });
+                    // Force update stats on load
+                    setTimeout(updateStats, 500);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
 
             // Handle Slug Logic
             const slugInput = document.getElementById('slug');
             const editSlugBtn = document.getElementById('editSlugBtn');
 
-            // Toggle Edit Mode
             editSlugBtn.addEventListener('click', function() {
                 slugInput.removeAttribute('readonly');
                 slugInput.classList.remove('cursor-not-allowed', 'text-gray-400');
                 slugInput.classList.add('text-gray-200');
                 slugInput.focus();
-                this.style.display = 'none'; // Hide button after unlocking
+                this.style.display = 'none';
             });
 
-            // Image preview
+            // Image preview & Compression
             const featuredImage = document.getElementById('featuredImage');
             const imagePreview = document.getElementById('imagePreview');
             const previewImg = document.getElementById('previewImg');
+            const submitButtons = document.querySelectorAll('button[type="submit"]');
 
             featuredImage.addEventListener('change', function(e) {
                 const file = e.target.files[0];
-                if (file) {
+                if (file && file.type.startsWith('image/')) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         previewImg.src = e.target.result;
                         imagePreview.classList.remove('hidden');
+                        if (document.getElementById('currentImage')) {
+                            document.getElementById('currentImage').classList.add('opacity-50');
+                        }
                     };
                     reader.readAsDataURL(file);
+
+                    if (file.size > 1024 * 1024) {
+                        setCompressingState(true);
+                        compressImage(file);
+                    }
                 }
             });
 
-            // Update stats
-            function updateStats() {
-                const content = tinymce.get('content').getContent({
-                    format: 'text'
+            function setCompressingState(isCompressing) {
+                submitButtons.forEach(btn => {
+                    btn.disabled = isCompressing;
+                    if (isCompressing) {
+                        btn.dataset.originalText = btn.innerText;
+                        btn.innerText = 'Optimizando...';
+                    } else {
+                        btn.innerText = btn.dataset.originalText || btn.innerText;
+                    }
                 });
+            }
+
+            function compressImage(file) {
+                new Compressor(file, {
+                    quality: 0.8,
+                    maxWidth: 1920,
+                    success(result) {
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(result);
+                        featuredImage.files = dataTransfer.files;
+                        setCompressingState(false);
+                    },
+                    error(err) {
+                        console.error(err);
+                        setCompressingState(false);
+                    }
+                });
+            }
+
+            // Stats Update
+            function updateStats() {
+                if (!editorInstance) return;
+                const content = editorInstance.getData().replace(/<[^>]*>/g, '');
                 const words = content.trim().split(/\s+/).filter(w => w.length > 0).length;
                 const chars = content.length;
-                const readingTime = Math.ceil(words / 200); // 200 words per minute
+                const readingTime = Math.ceil(words / 200);
 
                 document.getElementById('wordCount').textContent = words.toLocaleString();
                 document.getElementById('charCount').textContent = chars.toLocaleString();
                 document.getElementById('readingTime').textContent = readingTime + ' min';
             }
 
-            // Initial stats update
-            setTimeout(updateStats, 1000);
+            // AJAX Submission
+            const postForm = document.getElementById('postForm');
+
+            postForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Set status based on which button was clicked
+                const clickedButton = e.submitter;
+                if (clickedButton && clickedButton.name === 'status_btn') {
+                    document.getElementById('postStatus').value = clickedButton.value;
+                }
+
+                const formData = new FormData(postForm);
+
+                submitButtons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.dataset.originalText = btn.innerText;
+                    btn.innerText = 'Guardando...';
+                });
+
+                fetch(postForm.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(async response => {
+                        const data = await response.json();
+                        if (response.ok) {
+                            return data;
+                        } else {
+                            if (response.status === 422) {
+                                console.error('Validation errors:', data.errors);
+                            }
+                            throw new Error(data.message || 'Error del servidor');
+                        }
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            showNotification(data.message, 'success');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification(error.message || 'Error al guardar el post', 'error');
+                    })
+                    .finally(() => {
+                        submitButtons.forEach(btn => {
+                            btn.disabled = false;
+                            btn.innerText = btn.dataset.originalText || btn.innerText;
+                        });
+                    });
+            });
+
+            function showNotification(message, type) {
+                const toast = document.createElement('div');
+                toast.className =
+                    `fixed top-4 right-4 px-6 py-4 rounded-xl shadow-lg z-50 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white`;
+                toast.innerText = message;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
         });
     </script>
 @endpush

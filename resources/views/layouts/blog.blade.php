@@ -32,7 +32,9 @@
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
 
     {{-- Fonts --}}
-    <link href="https://fonts.bunny.net/css?family=playfair-display:400,700,900|inter:400,500,600,700,800,900|outfit:400,500,600,700,800,900&display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.bunny.net/css?family=playfair-display:400,700,900|inter:400,500,600,700,800,900|outfit:400,500,600,700,800,900&display=swap"
+        rel="stylesheet" />
 
     {{-- Scripts --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -43,31 +45,45 @@
         $gtmId = \App\Models\BlogSettings::get('google_tag_manager_id');
     @endphp
 
-    @if($gaId)
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '{{ $gaId }}');
-    </script>
+    @if ($gaId)
+        <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', '{{ $gaId }}');
+        </script>
     @endif
 
-    @if($gtmId)
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','{{ $gtmId }}');</script>
+    @if ($gtmId)
+        <!-- Google Tag Manager -->
+        <script>
+            (function(w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({
+                    'gtm.start': new Date().getTime(),
+                    event: 'gtm.js'
+                });
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != 'dataLayer' ? '&l=' + l : '';
+                j.async = true;
+                j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                f.parentNode.insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', '{{ $gtmId }}');
+        </script>
     @endif
 
     {{-- Custom Header Scripts --}}
     @php
         $headerScripts = \App\Models\BlogSettings::get('header_scripts');
     @endphp
-    @if($headerScripts)
+    @if ($headerScripts)
         {!! $headerScripts !!}
     @endif
 
@@ -75,85 +91,58 @@
 </head>
 
 <body class="font-sans antialiased bg-gray-50">
-    @if($gtmId)
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $gtmId }}"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @if ($gtmId)
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $gtmId }}" height="0"
+                width="0" style="display:none;visibility:hidden"></iframe></noscript>
     @endif
 
-    {{-- Blog Header --}}
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                {{-- Logo --}}
-                <div class="flex items-center">
-                    <a href="{{ route('welcome') }}" class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
-                            </svg>
-                        </div>
-                        <div class="text-2xl font-black bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent" style="font-family: 'Outfit', sans-serif;">
-                            Big-Dad
-                        </div>
-                    </a>
-                    <span class="ml-4 text-gray-400">|</span>
-                    <a href="{{ route('blog.index') }}" class="ml-4 text-lg font-semibold text-gray-700 hover:text-amber-600 transition-colors">
-                        Blog
-                    </a>
-                </div>
+    {{-- Sticky Navigation (matching welcome/blog index) --}}
+    <nav
+        class="fixed top-0 left-0 w-full z-50 bg-slate-900/90 backdrop-blur-md shadow-lg py-4 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+            <a href="{{ route('welcome') }}"
+                class="text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
+                BIG-<span class="text-pink-500">DAD</span>
+            </a>
 
-                {{-- Navigation --}}
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="{{ route('blog.index') }}" class="text-gray-600 hover:text-amber-600 font-medium transition-colors {{ request()->routeIs('blog.index') ? 'text-amber-600' : '' }}">
-                        Inicio
-                    </a>
-                    
-                    @php
-                        $categories = \App\Models\BlogCategory::active()->get();
-                    @endphp
-                    
-                    @if($categories->count() > 0)
-                        <div class="relative group">
-                            <button class="text-gray-600 hover:text-amber-600 font-medium transition-colors flex items-center gap-1">
-                                Categorías
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                                @foreach($categories as $category)
-                                    <a href="{{ route('blog.category', $category->slug) }}" class="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 first:rounded-t-lg last:rounded-b-lg">
-                                        {{ $category->name }}
-                                    </a>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-amber-600 font-medium transition-colors">
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="text-gray-600 hover:text-amber-600 font-medium transition-colors">
-                            Iniciar Sesión
-                        </a>
-                        <a href="{{ route('register') }}" class="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-amber-600 hover:to-orange-700 transition-all shadow-md">
-                            Únete
-                        </a>
-                    @endauth
-                </div>
-
-                {{-- Mobile Menu Button --}}
-                <button class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100" x-data @click="$dispatch('toggle-mobile-menu')">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
+            <div class="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-300">
+                <a href="{{ route('plans.public') }}" class="hover:text-pink-400 transition-colors">Planes</a>
+                <a href="{{ route('blog.index') }}"
+                    class="text-white hover:text-pink-400 transition-colors border-b-2 border-pink-500">Blog</a>
+                <a href="/#como-funciona" class="hover:text-pink-400 transition-colors">Cómo Funciona</a>
+                <a href="/#beneficios" class="hover:text-pink-400 transition-colors">Beneficios</a>
             </div>
-        </nav>
-    </header>
+
+            <div class="flex items-center gap-4">
+                @auth
+                    <a href="{{ route('dashboard') }}"
+                        class="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full text-sm font-bold shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 transition-all">
+                        Dashboard
+                    </a>
+                @else
+                    <a href="{{ route('login') }}"
+                        class="px-5 py-2.5 border-2 border-pink-500 rounded-full text-sm font-bold hover:bg-pink-500/10 transition-all">
+                        Iniciar Sesión
+                    </a>
+                    <a href="{{ route('register') }}"
+                        class="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full text-sm font-bold shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 transition-all">
+                        Únete Ahora
+                    </a>
+                @endauth
+            </div>
+
+            {{-- Mobile Menu Button --}}
+            <button class="md:hidden p-2 rounded-lg text-white hover:bg-white/10">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    {{-- Spacer for fixed nav --}}
+    <div class="h-20"></div>
 
     {{-- Main Content --}}
     <main class="min-h-screen">
@@ -167,9 +156,11 @@
                 {{-- About --}}
                 <div class="col-span-1 md:col-span-2">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
                             </svg>
                         </div>
                         <div class="text-2xl font-black text-white" style="font-family: 'Outfit', sans-serif;">
@@ -177,7 +168,8 @@
                         </div>
                     </div>
                     <p class="text-gray-400 mb-4">
-                        Tu plataforma de conexiones premium. Descubre artículos, consejos y las últimas noticias en nuestro blog.
+                        Tu plataforma de conexiones premium. Descubre artículos, consejos y las últimas noticias en
+                        nuestro blog.
                     </p>
                 </div>
 
@@ -185,13 +177,18 @@
                 <div>
                     <h3 class="text-white font-semibold mb-4">Enlaces Rápidos</h3>
                     <ul class="space-y-2">
-                        <li><a href="{{ route('blog.index') }}" class="hover:text-amber-500 transition-colors">Blog</a></li>
-                        <li><a href="{{ route('welcome') }}" class="hover:text-amber-500 transition-colors">Inicio</a></li>
+                        <li><a href="{{ route('blog.index') }}" class="hover:text-amber-500 transition-colors">Blog</a>
+                        </li>
+                        <li><a href="{{ route('welcome') }}" class="hover:text-amber-500 transition-colors">Inicio</a>
+                        </li>
                         @auth
-                            <li><a href="{{ route('dashboard') }}" class="hover:text-amber-500 transition-colors">Dashboard</a></li>
+                            <li><a href="{{ route('dashboard') }}"
+                                    class="hover:text-amber-500 transition-colors">Dashboard</a></li>
                         @else
-                            <li><a href="{{ route('login') }}" class="hover:text-amber-500 transition-colors">Iniciar Sesión</a></li>
-                            <li><a href="{{ route('register') }}" class="hover:text-amber-500 transition-colors">Registrarse</a></li>
+                            <li><a href="{{ route('login') }}" class="hover:text-amber-500 transition-colors">Iniciar
+                                    Sesión</a></li>
+                            <li><a href="{{ route('register') }}"
+                                    class="hover:text-amber-500 transition-colors">Registrarse</a></li>
                         @endauth
                     </ul>
                 </div>
@@ -200,9 +197,10 @@
                 <div>
                     <h3 class="text-white font-semibold mb-4">Categorías</h3>
                     <ul class="space-y-2">
-                        @foreach($categories->take(5) as $category)
+                        @foreach ($categories->take(5) as $category)
                             <li>
-                                <a href="{{ route('blog.category', $category->slug) }}" class="hover:text-amber-500 transition-colors">
+                                <a href="{{ route('blog.category', $category->slug) }}"
+                                    class="hover:text-amber-500 transition-colors">
                                     {{ $category->name }}
                                 </a>
                             </li>
@@ -222,7 +220,7 @@
     @php
         $footerScripts = \App\Models\BlogSettings::get('footer_scripts');
     @endphp
-    @if($footerScripts)
+    @if ($footerScripts)
         {!! $footerScripts !!}
     @endif
 
