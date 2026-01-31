@@ -74,12 +74,13 @@
 
             <div class="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-300">
                 <a href="{{ route('plans.public') }}" class="hover:text-pink-400 transition-colors">Planes</a>
+                <a href="{{ route('blog.index') }}" class="hover:text-pink-400 transition-colors">Blog</a>
                 <a href="#como-funciona" class="hover:text-pink-400 transition-colors">Cómo Funciona</a>
                 <a href="#beneficios" class="hover:text-pink-400 transition-colors">Beneficios</a>
             </div>
 
             <div class="flex items-center gap-4">
-                @if(auth()->check())
+                @if (auth()->check())
                     <a href="{{ route('dashboard') }}"
                         class="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full text-sm font-bold shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 transition-all">
                         Mi Panel VIP
@@ -185,7 +186,8 @@
     <section id="como-funciona" class="py-24 bg-slate-900 relative">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-5xl font-black mb-4"><span class="text-pink-500">Desbloquea</span> Tu Nuevo
+                <h2 class="text-3xl md:text-5xl font-black mb-4"><span class="text-pink-500">Desbloquea</span> Tu
+                    Nuevo
                     Estilo de Vida</h2>
                 <p class="text-slate-400 max-w-2xl mx-auto">En Big-dad, simplificamos las reglas del juego. Conecta con
                     personas de élite en toda Latinoamérica.</p>
@@ -221,7 +223,8 @@
                         class="w-16 h-16 bg-indigo-500/20 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
                         🥂</div>
                     <h3 class="text-xl font-bold mb-3">3. Vive la Experiencia</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">Conecta, chatea y acuerda esa primera cita soñada.
+                    <p class="text-slate-400 text-sm leading-relaxed">Conecta, chatea y acuerda esa primera cita
+                        soñada.
                         Cenas, viajes o simplemente buena compañía.</p>
                 </div>
             </div>
@@ -244,7 +247,8 @@
                         <!-- Floating Badge -->
                         <div
                             class="absolute -bottom-8 -right-8 bg-white text-slate-900 p-6 rounded-2xl shadow-xl max-w-xs hidden md:block">
-                            <p class="font-serif italic text-lg mb-2">"La vida es demasiado corta para citas aburridas."
+                            <p class="font-serif italic text-lg mb-2">"La vida es demasiado corta para citas
+                                aburridas."
                             </p>
                             <div class="flex items-center gap-2">
                                 <span class="text-pink-500">★★★★★</span>
@@ -258,7 +262,8 @@
                     <span class="text-pink-500 font-bold tracking-widest uppercase text-sm mb-2 block">¿Por qué
                         Big-dad?</span>
                     <h2 class="text-4xl md:text-5xl font-black mb-8 leading-tight">Más que Citas,<br>Un <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-400">Estilo de
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-400">Estilo
+                            de
                             Vida</span>.</h2>
 
                     <ul class="space-y-6">
@@ -319,7 +324,8 @@
                     <p class="text-slate-400 mb-8 h-12">¿Buscas mentoría, regalos y viajes? Encuentra a alguien que
                         disfrute consentirte.</p>
                     <ul class="text-left space-y-3 mb-8 text-sm text-slate-300">
-                        <li class="flex items-center gap-2"><span class="text-pink-500">●</span> Registro 100% Gratuito
+                        <li class="flex items-center gap-2"><span class="text-pink-500">●</span> Registro 100%
+                            Gratuito
                         </li>
                         <li class="flex items-center gap-2"><span class="text-pink-500">●</span> Perfil destacado
                             disponible</li>
@@ -380,9 +386,12 @@
                 <h4 class="text-white font-bold mb-6 uppercase tracking-wider">Descubrir</h4>
                 <ul class="space-y-3">
                     <li><a href="#" class="hover:text-pink-500 transition-colors">Sugar Babies Premium</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Sugar Daddies Verificados</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Elite Dating Internacional</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Blog de Estilo de Vida</a></li>
+                    <li><a href="#" class="hover:text-pink-500 transition-colors">Sugar Daddies Verificados</a>
+                    </li>
+                    <li><a href="#" class="hover:text-pink-500 transition-colors">Elite Dating Internacional</a>
+                    </li>
+                    <li><a href="#" class="hover:text-pink-500 transition-colors">Blog de Estilo de Vida</a>
+                    </li>
                 </ul>
             </div>
 
@@ -391,9 +400,11 @@
                 <ul class="space-y-3">
                     <li><a href="{{ route('legal.terms') }}" class="hover:text-pink-500 transition-colors">Términos y
                             Condiciones</a></li>
-                    <li><a href="{{ route('legal.privacy') }}" class="hover:text-pink-500 transition-colors">Política de
+                    <li><a href="{{ route('legal.privacy') }}" class="hover:text-pink-500 transition-colors">Política
+                            de
                             Privacidad</a></li>
-                    <li><a href="{{ route('legal.rules') }}" class="hover:text-pink-500 transition-colors">Reglas de la
+                    <li><a href="{{ route('legal.rules') }}" class="hover:text-pink-500 transition-colors">Reglas de
+                            la
                             Comunidad</a></li>
                     <li><a href="{{ route('legal.safety') }}"
                             class="hover:text-pink-500 transition-colors">Seguridad</a></li>
