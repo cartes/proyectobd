@@ -110,7 +110,7 @@ class BlogPostController extends Controller
                 'success' => true,
                 'message' => 'Post creado exitosamente.',
                 'post' => $post->fresh(),
-                'redirect_url' => route('admin.blog.posts.edit', $post)
+                'redirect_url' => route('admin.blog.posts.edit', $post),
             ]);
         }
 
@@ -178,7 +178,7 @@ class BlogPostController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Post actualizado exitosamente.',
-                'post' => $post->fresh()
+                'post' => $post->fresh(),
             ]);
         }
 
