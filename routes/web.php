@@ -20,6 +20,7 @@ Route::get('/', function () {
 
 // SEO Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/sitemap-blog.xml', [SitemapController::class, 'blog'])->name('sitemap.blog');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
@@ -168,6 +169,48 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/', [\App\Http\Controllers\Admin\CountryController::class, 'index'])->name('index');
         Route::post('/{country}/toggle', [\App\Http\Controllers\Admin\CountryController::class, 'toggleStatus'])->name('toggle');
     });
+
+    // Blog Management
+    Route::prefix('blog')->name('blog.')->group(function () {
+        // Dashboard del Blog
+        Route::get('/', [\App\Http\Controllers\Admin\BlogController::class, 'dashboard'])->name('dashboard');
+
+        // Gestión de Posts
+        Route::prefix('posts')->name('posts.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\BlogPostController::class, 'index'])->name('index');
+            Route::get('/create', [\App\Http\Controllers\Admin\BlogPostController::class, 'create'])->name('create');
+            Route::post('/', [\App\Http\Controllers\Admin\BlogPostController::class, 'store'])->name('store');
+            Route::get('/{post}/edit', [\App\Http\Controllers\Admin\BlogPostController::class, 'edit'])->name('edit');
+            Route::put('/{post}', [\App\Http\Controllers\Admin\BlogPostController::class, 'update'])->name('update');
+            Route::delete('/{post}', [\App\Http\Controllers\Admin\BlogPostController::class, 'destroy'])->name('destroy');
+            Route::post('/upload-image', [\App\Http\Controllers\Admin\BlogPostController::class, 'uploadImage'])->name('upload-image');
+            Route::post('/{post}/duplicate', [\App\Http\Controllers\Admin\BlogPostController::class, 'duplicate'])->name('duplicate');
+        });
+
+        // Gestión de Categorías
+        Route::prefix('categories')->name('categories.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'index'])->name('index');
+            Route::post('/', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'store'])->name('store');
+            Route::put('/{category}', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'update'])->name('update');
+            Route::delete('/{category}', [\App\Http\Controllers\Admin\BlogCategoryController::class, 'destroy'])->name('destroy');
+        });
+
+        // Configuración y SEO
+        Route::prefix('settings')->name('settings.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\BlogSettingsController::class, 'index'])->name('index');
+            Route::put('/', [\App\Http\Controllers\Admin\BlogSettingsController::class, 'update'])->name('update');
+            Route::get('/seo', [\App\Http\Controllers\Admin\BlogSettingsController::class, 'seo'])->name('seo');
+            Route::get('/analytics', [\App\Http\Controllers\Admin\BlogSettingsController::class, 'analytics'])->name('analytics');
+            Route::get('/scripts', [\App\Http\Controllers\Admin\BlogSettingsController::class, 'scripts'])->name('scripts');
+        });
+    });
+});
+
+// Blog Público - Accesible para todos los visitantes
+Route::prefix('blog')->name('blog.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\BlogController::class, 'index'])->name('index');
+    Route::get('/categoria/{slug}', [\App\Http\Controllers\BlogController::class, 'category'])->name('category');
+    Route::get('/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('show');
 });
 
 // Tracking de Engagement desde Email
