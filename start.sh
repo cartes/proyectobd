@@ -1,13 +1,23 @@
 #!/bin/bash
-echo "Fixing permissions..."
-chmod -R 775 storage bootstrap/cache
-chmod -R 775 public
+echo "Ensuring directories exist..."
+mkdir -p storage/app/public
+mkdir -p storage/framework/cache
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+
+echo "Fixing permissions (aggressive)..."
+chmod -R 777 storage bootstrap/cache
+chmod -R 777 public
 
 echo "Running migrations..."
 php artisan migrate --force
 
-echo "Linking storage..."
+echo "Re-linking storage..."
+rm -f public/storage
 php artisan storage:link
+
+echo "Verifying link..."
+ls -la public/storage
 
 echo "Caching config..."
 php artisan config:cache
