@@ -12,12 +12,21 @@ chmod -R 777 public
 echo "Running migrations..."
 php artisan migrate --force
 
-echo "Re-linking storage..."
+echo "Re-linking storage (manual absolute link)..."
 rm -f public/storage
-php artisan storage:link
+# Use absolute paths for the symlink to avoid relative path confusion
+ln -s $PWD/storage/app/public $PWD/public/storage
 
-echo "Verifying link..."
+echo "Creating debug files..."
+echo "Public Access OK" > public/debug_public.txt
+echo "Storage Access OK" > storage/app/public/debug_storage.txt
+
+echo "Fixing permissions (final)..."
+chmod -R 777 storage bootstrap/cache public
+
+echo "Verifying link and permissions..."
 ls -la public/storage
+ls -la storage/app/public
 
 echo "Caching config..."
 php artisan config:cache
