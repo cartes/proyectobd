@@ -12,11 +12,16 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\StorageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
+
+// Controlled Storage Routes (Handling 403/405 and Privacy)
+Route::get('/storage/profiles/{hash}/{file}', [StorageController::class, 'showProfilePhoto']);
+Route::get('/storage/{path}', [StorageController::class, 'showPublicFile'])->where('path', '.*');
 
 // SEO Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
