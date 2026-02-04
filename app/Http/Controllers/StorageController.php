@@ -17,29 +17,24 @@ class StorageController extends Controller
     {
         $path = "profiles/{$hash}/{$file}";
 
-        if (! Storage::disk('public')->exists($path)) {
-            abort(404);
+        // Try standard Laravel path first
+        if (Storage::disk('public')->exists($path)) {
+            return response()->file(Storage::disk('public')->path($path));
         }
 
-        $photo = ProfilePhoto::where('photo_path', $path)->first();
-
-        if ($photo) {
-            $owner = $photo->user;
-            $authUser = Auth::user();
-
-            // Check privacy: profile is private and user is not owner/match/admin
-            if ($owner->profileDetail?->is_private) {
-                $isOwner = $authUser && $authUser->id === $owner->id;
-                $isAdmin = $authUser && $authUser->isAdmin();
-                $hasMatch = $authUser && $authUser->hasMatchWith($owner);
-
-                if (! $isOwner && ! $isAdmin && ! $hasMatch) {
-                    abort(403, 'Este perfil es privado.');
-                }
-            }
+        // Fallback 1: Directly in storage/ (Sometimes volumes are mounted differently)
+        $fallback1 = storage_path($path);
+        if (file_exists($fallback1)) {
+            return response()->file($fallback1);
         }
 
-        return response()->file(Storage::disk('public')->path($path));
+        // Fallback 2: in storage/app/ (Sometimes people skip the 'public' subfolder)
+        $fallback2 = storage_path('app/'.$path);
+        if (file_exists($fallback2)) {
+            return response()->file($fallback2);
+        }
+
+        abort(404);
     }
 
     /**

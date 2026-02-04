@@ -8,6 +8,9 @@ mkdir -p storage/framework/views
 echo "Fixing permissions..."
 chmod -R 775 storage bootstrap/cache
 
+echo "Removing broken symlinks..."
+rm -rf public/storage
+
 echo "Running migrations..."
 php artisan migrate --force
 
