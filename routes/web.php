@@ -22,6 +22,7 @@ Route::get('/', function () {
 // Controlled Storage Routes (Handling 403/405 and Privacy)
 Route::get('/storage/profiles/{hash}/{file}', [StorageController::class, 'showProfilePhoto']);
 Route::get('/storage/{path}', [StorageController::class, 'showPublicFile'])->where('path', '.*');
+Route::get('/debug/storage', [StorageController::class, 'listFiles'])->middleware('auth');
 
 // SEO Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');

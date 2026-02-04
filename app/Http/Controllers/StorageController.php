@@ -17,8 +17,12 @@ class StorageController extends Controller
     public function showProfilePhoto(string $hash, string $file): BinaryFileResponse
     {
         $path = "profiles/{$hash}/{$file}";
+        $absolutePath = Storage::disk('public')->path($path);
 
-        \Log::info("StorageController: Request for $path");
+        \Log::info("StorageController: Request for $path", [
+            'absolute_path' => $absolutePath,
+            'exists' => Storage::disk('public')->exists($path)
+        ]);
 
         if (!Storage::disk('public')->exists($path)) {
             \Log::warning("StorageController: File not found at $path");
@@ -49,11 +53,9 @@ class StorageController extends Controller
             }
         } else {
             \Log::warning("StorageController: No ProfilePhoto record found for path $path");
-            // If it's in storage but no DB record, we might still want to serve it or not.
-            // But if it's a profile photo, lack of record is suspicious.
         }
 
-        return response()->file(Storage::disk('public')->path($path));
+        return response()->file($absolutePath);
     }
 
     /**
@@ -66,5 +68,21 @@ class StorageController extends Controller
         }
 
         return response()->file(Storage::disk('public')->path($path));
+    }
+
+    /**
+     * Debugging: List all files in public storage.
+     */
+    public function listFiles()
+    {
+        if (!Auth::user() || !Auth::user()->isAdmin()) {
+            abort(403);
+        }
+
+        $allFiles = Storage::disk('public')->allFiles();
+        return response()->json([
+            'root' => Storage::disk('public')->path(''),
+            'files' => $allFiles
+        ]);
     }
 }
