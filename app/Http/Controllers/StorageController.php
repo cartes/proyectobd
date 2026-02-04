@@ -18,7 +18,10 @@ class StorageController extends Controller
     {
         $path = "profiles/{$hash}/{$file}";
 
+        \Log::info("StorageController: Request for $path");
+
         if (!Storage::disk('public')->exists($path)) {
+            \Log::warning("StorageController: File not found at $path");
             abort(404);
         }
 
@@ -28,16 +31,26 @@ class StorageController extends Controller
             $owner = $photo->user;
             $authUser = Auth::user();
 
+            \Log::info("StorageController: Photo found. Owner ID: " . ($owner->id ?? 'N/A') . ", Auth User ID: " . ($authUser->id ?? 'Guest'));
+
             // Check privacy: profile is private and user is not owner/match/admin
             if ($owner->profileDetail?->is_private) {
+                \Log::info("StorageController: Profile is private.");
                 $isOwner = $authUser && $authUser->id === $owner->id;
                 $isAdmin = $authUser && $authUser->isAdmin();
                 $hasMatch = $authUser && $authUser->hasMatchWith($owner);
 
                 if (!$isOwner && !$isAdmin && !$hasMatch) {
+                    \Log::warning("StorageController: Unauthorized access to private profile photo.");
                     abort(403, 'Este perfil es privado.');
                 }
+            } else {
+                \Log::info("StorageController: Profile is public.");
             }
+        } else {
+            \Log::warning("StorageController: No ProfilePhoto record found for path $path");
+            // If it's in storage but no DB record, we might still want to serve it or not.
+            // But if it's a profile photo, lack of record is suspicious.
         }
 
         return response()->file(Storage::disk('public')->path($path));
