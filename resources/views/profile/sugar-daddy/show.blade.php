@@ -89,15 +89,13 @@
                                     {{ $user->age }} años
                                 </span>
                             @endif
-                            @if ($user->city)
+                            @if ($user->country)
                                 <span
-                                    class="px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-lg border border-white/20 font-semibold flex items-center gap-2">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    {{ $user->city }}
+                                    class="px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-lg border border-white/20 font-semibold flex items-center gap-2 shadow-lg">
+                                    <img src="https://flagcdn.com/w40/{{ strtolower($user->country->iso_code) }}.png"
+                                        alt="{{ $user->country->name }}"
+                                        class="w-6 h-6 rounded-full object-cover border-2 border-white/30">
+                                    {{ $user->country->name }}
                                 </span>
                             @endif
                             <span
@@ -111,8 +109,8 @@
                             </span>
 
                             {{-- ✅ INSTAGRAM PREMIUM --}}
-                            @if($user->profileDetail->social_instagram)
-                                @if($canSeeInstagram || $isOwnProfile)
+                            @if ($user->profileDetail->social_instagram)
+                                @if ($canSeeInstagram || $isOwnProfile)
                                     <a href="https://instagram.com/{{ str_replace('@', '', $user->profileDetail->social_instagram) }}"
                                         target="_blank"
                                         class="px-4 py-1.5 rounded-full bg-pink-500/30 backdrop-blur-lg border border-pink-400/50 font-bold shadow-lg flex items-center gap-2 hover:bg-pink-500/50 transition-all text-sm">
@@ -134,7 +132,7 @@
                 </div>
 
                 {{-- Botones de Acción --}}
-                @if($isOwnProfile)
+                @if ($isOwnProfile)
                     <a href="{{ route('profile.edit') }}"
                         class="px-8 py-4 bg-white/20 hover:bg-white/30 backdrop-blur-lg border border-white/30 rounded-2xl text-white font-bold transition-all duration-300 hover:scale-105 shadow-xl">
                         <span class="flex items-center gap-2">
@@ -152,7 +150,9 @@
                         <form action="{{ $hasLiked ? route('discover.unlike', $user) : route('discover.like', $user) }}"
                             method="POST">
                             @csrf
-                            @if($hasLiked) @method('DELETE') @endif
+                            @if ($hasLiked)
+                                @method('DELETE')
+                            @endif
                             <button type="submit"
                                 class="px-8 py-4 {{ $hasLiked ? 'bg-pink-500/80' : 'bg-white/20' }} hover:bg-white/30 backdrop-blur-lg border border-white/30 rounded-2xl text-white font-bold transition-all duration-300 hover:scale-105 shadow-xl flex items-center gap-2">
                                 <svg class="w-6 h-6" fill="{{ $hasLiked ? 'currentColor' : 'none' }}" stroke="currentColor"
@@ -189,7 +189,7 @@
     </div>
 
     {{-- Grid de secciones --}}
-    @if(!empty($isRestricted) && $isRestricted)
+    @if (!empty($isRestricted) && $isRestricted)
         {{-- VISTA RESTRINGIDA (Perfil Privado) --}}
         <div class="min-h-[50vh] flex flex-col items-center justify-center text-center p-8 bg-gray-50 rounded-3xl mt-8">
             <div class="bg-white rounded-3xl p-12 max-w-2xl w-full shadow-xl border border-gray-100">
@@ -205,7 +205,8 @@
                 <p class="text-gray-600 text-lg mb-8 leading-relaxed">
                     Este perfil es exclusivo y mantiene su información privada.
                     <br>
-                    <span class="font-semibold text-gray-800">Da Like o envía un mensaje</span>. Si hacen Match, tendrás acceso
+                    <span class="font-semibold text-gray-800">Da Like o envía un mensaje</span>. Si hacen Match, tendrás
+                    acceso
                     completo a su información y fotos.
                 </p>
 
@@ -485,7 +486,8 @@
                                 <button @click="closeLightbox"
                                     class="absolute top-4 right-4 z-50 p-3 bg-white/10 hover:bg-white/25 rounded-full transition-all duration-300 backdrop-blur-lg"
                                     aria-label="Cerrar galería">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M6 18L18 6M6 6l12 12" />
                                     </svg>
@@ -500,7 +502,8 @@
                                 {{-- Imagen Principal --}}
                                 <div class="flex items-center justify-center h-full">
                                     <template x-for="(photo, index) in photos" :key="index">
-                                        <div x-show="currentIndex === index" x-transition:enter="transition ease-out duration-300"
+                                        <div x-show="currentIndex === index"
+                                            x-transition:enter="transition ease-out duration-300"
                                             x-transition:enter-start="opacity-0 scale-95"
                                             x-transition:enter-end="opacity-100 scale-100"
                                             class="flex items-center justify-center h-full">
@@ -514,8 +517,10 @@
                                 <button @click.stop="prev" x-show="photos.length > 1"
                                     class="absolute left-4 top-1/2 -translate-y-1/2 p-4 bg-white/10 hover:bg-white/25 rounded-full transition-all duration-300 backdrop-blur-lg"
                                     aria-label="Imagen anterior">
-                                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
+                                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                            d="M15 19l-7-7 7-7" />
                                     </svg>
                                 </button>
 
@@ -523,8 +528,10 @@
                                 <button @click.stop="next" x-show="photos.length > 1"
                                     class="absolute right-4 top-1/2 -translate-y-1/2 p-4 bg-white/10 hover:bg-white/25 rounded-full transition-all duration-300 backdrop-blur-lg"
                                     aria-label="Imagen siguiente">
-                                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
+                                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                            d="M9 5l7 7-7 7" />
                                     </svg>
                                 </button>
 
@@ -532,8 +539,10 @@
                                 <div x-show="photos.length > 1"
                                     class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2">
                                     <template x-for="(photo, index) in photos" :key="index">
-                                        <button @click="currentIndex = index" class="h-2.5 rounded-full transition-all duration-300"
-                                            :class="index === currentIndex ? 'bg-white w-10' : 'bg-white/50 hover:bg-white/75 w-2.5'"
+                                        <button @click="currentIndex = index"
+                                            class="h-2.5 rounded-full transition-all duration-300"
+                                            :class="index === currentIndex ? 'bg-white w-10' :
+                                                'bg-white/50 hover:bg-white/75 w-2.5'"
                                             :aria-label="`Ir a imagen ${index + 1}`">
                                         </button>
                                     </template>
@@ -556,7 +565,8 @@
                         </svg>
                     </div>
                     <h3 class="text-3xl font-playfair font-bold mb-3">Sube tus fotos</h3>
-                    <p class="text-white/90 mb-8 text-lg">Las fotos aumentan significativamente tus posibilidades de conectar
+                    <p class="text-white/90 mb-8 text-lg">Las fotos aumentan significativamente tus posibilidades de
+                        conectar
                     </p>
                     <a href="{{ route('profile.photos.index') }}"
                         class="inline-block px-10 py-4 bg-white/20 hover:bg-white/30 backdrop-blur-lg border-2 border-white/40 rounded-2xl font-bold transition-all duration-300 hover:scale-105 shadow-2xl">
@@ -599,8 +609,10 @@
 
             <div class="relative z-10">
                 <div class="w-24 h-24 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-12 h-12 text-white animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    <svg class="w-12 h-12 text-white animate-bounce" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </div>
                 <h3 class="text-3xl font-playfair font-bold text-white mb-3">

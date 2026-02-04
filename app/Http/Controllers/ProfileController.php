@@ -29,7 +29,7 @@ class ProfileController
             ]);
         }
 
-        $user->load('profileDetail');
+        $user->load(['profileDetail', 'country']);
 
         if (! $user->profileDetail) {
             $user->profileDetail()->create([]);
@@ -79,7 +79,7 @@ class ProfileController
 
     public function edit()
     {
-        $user = Auth::user()->load('profileDetail', 'photos');
+        $user = Auth::user()->load('profileDetail', 'photos', 'country');
 
         if (! $user->profileDetail) {
             $user->profileDetail()->create([]);
