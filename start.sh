@@ -1,19 +1,5 @@
 #!/bin/bash
-# Force PHP to scan current directory for .ini files (loading php.ini)
-export PHP_INI_SCAN_DIR=:$PWD
-
-echo "Starting with custom PHP configuration..."
-php --ini
-
-echo "Running migrations..."
-php artisan migrate --force
-
-echo "Linking storage..."
-php artisan storage:link
-
-echo "Caching config..."
-php artisan config:cache
-php artisan route:cache
-
 echo "Starting server..."
-php artisan serve --host=0.0.0.0 --port=$PORT
+# Explicitly use php.ini via -c flag and start built-in server via server.php
+# This avoids overriding system extension loading via environment variables
+php -c php.ini -S 0.0.0.0:$PORT server.php
