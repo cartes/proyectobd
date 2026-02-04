@@ -105,7 +105,7 @@ class ProfilePhoto extends Model
      */
     public const MAX_PHOTOS = 8;
 
-    public const MAX_FILE_SIZE = 5120; // 5MB en KB
+    public const MAX_FILE_SIZE = 20480; // 20MB en KB
 
     public const ALLOWED_TYPES = ['jpg', 'jpeg', 'png', 'webp'];
 }
