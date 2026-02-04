@@ -25,7 +25,12 @@ class StorageController extends Controller
         ]);
 
         if (!Storage::disk('public')->exists($path)) {
-            \Log::warning("StorageController: File not found at $path");
+            $parentDir = dirname($path);
+            $filesInDir = Storage::disk('public')->files($parentDir);
+            \Log::warning("StorageController: File not found at $path", [
+                'parent_dir' => $parentDir,
+                'files_in_parent' => $filesInDir
+            ]);
             abort(404);
         }
 

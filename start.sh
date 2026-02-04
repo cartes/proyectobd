@@ -1,4 +1,10 @@
 #!/bin/bash
+echo "Ensuring storage directories exist..."
+mkdir -p storage/app/public/profiles
+mkdir -p storage/framework/cache
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+
 echo "Fixing permissions..."
 chmod -R 775 storage bootstrap/cache
 
