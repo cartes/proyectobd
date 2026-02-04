@@ -62,7 +62,7 @@
                     <div>
                         <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Subir Nueva
                             Foto</h2>
-                        <p class="text-sm text-gray-500">JPG, PNG o WebP • Máximo 5MB</p>
+                        <p class="text-sm text-gray-500">JPG, PNG o WebP • Máximo 20MB</p>
                     </div>
                 </div>
 
@@ -71,8 +71,8 @@
 
                     {{-- Drop Zone --}}
                     <div class="relative">
-                        <input type="file" id="photoInput" name="photo" accept="image/jpeg,image/png,image/webp" class="hidden"
-                            @change="previewImage($event)">
+                        <input type="file" id="photoInput" name="photo" accept="image/jpeg,image/png,image/webp"
+                            class="hidden" @change="previewImage($event)">
                         <input type="hidden" name="potential_nudity" x-model="potentialNudity">
 
                         <label for="photoInput" class="block cursor-pointer">
@@ -81,7 +81,8 @@
 
                                 {{-- Preview --}}
                                 <div x-show="previewUrl" class="mb-4">
-                                    <img :src="previewUrl" alt="Preview" class="max-h-64 mx-auto rounded-2xl shadow-lg">
+                                    <img :src="previewUrl" alt="Preview"
+                                        class="max-h-64 mx-auto rounded-2xl shadow-lg">
                                 </div>
 
                                 {{-- Upload Icon --}}
@@ -95,7 +96,7 @@
                                         Click para seleccionar o arrastra una foto aquí
                                     </p>
                                     <p class="text-sm text-gray-500">
-                                        Formatos: JPG, PNG, WebP • Máximo 5MB
+                                        Formatos: JPG, PNG, WebP • Máximo 20MB
                                     </p>
                                 </div>
 
@@ -107,8 +108,8 @@
                                 <div x-show="isAnalyzing"
                                     class="mt-4 flex items-center justify-center gap-2 text-amber-600 font-bold animate-pulse">
                                     <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                            stroke-width="4"></circle>
+                                        <circle class="opacity-25" cx="12" cy="12" r="10"
+                                            stroke="currentColor" stroke-width="4"></circle>
                                         <path class="opacity-75" fill="currentColor"
                                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                                         </path>
@@ -125,7 +126,8 @@
                             class="px-6 py-3 bg-gray-100 hover:bg-gray-200 border-2 border-gray-300 rounded-xl text-gray-700 font-bold transition-all duration-300">
                             Cancelar
                         </button>
-                        <button type="submit" :disabled="isAnalyzing" :class="{'opacity-50 cursor-not-allowed': isAnalyzing}"
+                        <button type="submit" :disabled="isAnalyzing"
+                            :class="{ 'opacity-50 cursor-not-allowed': isAnalyzing }"
                             class="px-8 py-3 bg-gradient-to-r {{ Auth::user()->user_type === 'sugar_daddy' ? 'from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800' : 'from-pink-500 to-pink-700 hover:from-pink-600 hover:to-pink-800' }} rounded-xl text-white font-bold transition-all duration-300 shadow-lg hover:scale-105">
                             📤 Subir Foto
                         </button>
@@ -156,7 +158,8 @@
                             🖼️
                         </div>
                         <div>
-                            <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi Galería
+                            <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi
+                                Galería
                             </h2>
                             <p class="text-sm text-gray-500">{{ Auth::user()->photos()->count() }} fotos • Arrastra para
                                 reordenar</p>
@@ -169,8 +172,8 @@
 
                     @foreach (Auth::user()->photos as $photo)
                         <div class="relative group cursor-move" draggable="true" data-photo-id="{{ $photo->id }}"
-                            @dragstart="dragStart($event)" @dragend="dragEnd($event)" @dragover.prevent="dragOver($event)"
-                            @dragleave="dragLeave($event)">
+                            @dragstart="dragStart($event)" @dragend="dragEnd($event)"
+                            @dragover.prevent="dragOver($event)" @dragleave="dragLeave($event)">
 
                             {{-- Imagen --}}
                             <div
@@ -190,7 +193,8 @@
                                                 ⭐ Principal
                                             </span>
                                         @else
-                                            <form action="{{ route('profile.photos.setPrimary', $photo) }}" method="POST">
+                                            <form action="{{ route('profile.photos.setPrimary', $photo) }}"
+                                                method="POST">
                                                 @csrf
                                                 @method('PUT')
                                                 <button type="submit"
@@ -299,7 +303,8 @@
                                         // Las categorías son: Porn, Sexy, Hentai, Neutral, Drawing
                                         // Sumamos las categorías de riesgo
                                         const risky = predictions.filter(p =>
-                                            (['Porn', 'Sexy', 'Hentai'].includes(p.className)) && p.probability > 0.4
+                                            (['Porn', 'Sexy', 'Hentai'].includes(p.className)) && p
+                                            .probability > 0.4
                                         );
 
                                         if (risky.length > 0) {
