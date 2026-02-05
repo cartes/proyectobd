@@ -306,7 +306,7 @@ class SubscriptionService
         }
 
         // Features según el plan (puedes personalizarlas por plan)
-        $features = $subscription->plan->features ?? [];
+        $features = $subscription->plan?->features ?? [];
 
         return [
             'unlimited_likes' => in_array('unlimited_likes', $features),
@@ -319,7 +319,7 @@ class SubscriptionService
             'private_profiles' => in_array('private_profiles', $features),
             'extended_photos' => in_array('extended_photos', $features),
             'share_data' => in_array('share_data', $features),
-            'plan_name' => $subscription->plan->name,
+            'plan_name' => $subscription->plan?->name ?? 'Desconocido',
             'expires_at' => $subscription->ends_at,
         ];
     }
