@@ -107,7 +107,7 @@ class ProfileController
         // Obtener features del usuario
         $features = app(\App\Services\SubscriptionService::class)->getUserFeatures($user);
         $hasPrivateProfilePlan = $features['private_profiles'] ?? false;
-        
+
         // Obtener el plan de perfil privado para el link de suscripción
         $privateProfilePlan = \App\Models\SubscriptionPlan::where('slug', 'private-profile')->first();
 
