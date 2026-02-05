@@ -357,7 +357,8 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-black !text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis Intereses
+                    <h2 class="text-2xl font-black !text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis
+                        Intereses
                     </h2>
                     <p class="text-sm text-gray-500">Selecciona lo que te apasiona (máximo 8)</p>
                 </div>
@@ -413,8 +414,6 @@
             <p class="text-gray-600 text-sm mt-2 font-medium" x-text="`${idealDaddy.length}/500 caracteres`"></p>
         </div>
 
-        {{-- Seguridad --}}
-        @include('profile.partials.premium-password-form')
 
         {{-- Botones --}}
         <div class="flex items-center justify-between gap-4 sticky bottom-4">
@@ -434,6 +433,9 @@
         </div>
 
     </form>
+
+    {{-- Seguridad (formulario separado) --}}
+    @include('profile.partials.premium-password-form')
 
     @push('scripts')
         <script>
