@@ -108,6 +108,9 @@ class ProfileController
         $features = app(\App\Services\SubscriptionService::class)->getUserFeatures($user);
         $hasPrivateProfilePlan = $features['private_profiles'] ?? false;
 
+        // Obtener el plan de perfil privado para el link de suscripción
+        $privateProfilePlan = \App\Models\SubscriptionPlan::where('slug', 'private-profile')->first();
+
         // Redirigir según el tipo de usuario
         if ($user->user_type === 'sugar_daddy') {
             return view('profile.sugar-daddy.edit', compact(
@@ -123,7 +126,8 @@ class ProfileController
                 'companySizes',
                 'travelFrequencies',
                 'mentorshipAreasOptions',
-                'hasPrivateProfilePlan'
+                'hasPrivateProfilePlan',
+                'privateProfilePlan'
             ));
         } else {
             return view('profile.sugar-baby.edit', compact(
@@ -136,7 +140,8 @@ class ProfileController
                 'interestsOptions',
                 'personalStyles',
                 'fitnessLevels',
-                'hasPrivateProfilePlan'
+                'hasPrivateProfilePlan',
+                'privateProfilePlan'
             ));
         }
     }
