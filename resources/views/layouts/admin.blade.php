@@ -57,10 +57,38 @@
     @stack('styles')
 </head>
 
-<body class="bg-[#05070a] text-gray-200 antialiased min-h-screen flex">
+<body class="bg-[#05070a] text-gray-200 antialiased min-h-screen lg:flex" x-data="{ mobileMenuOpen: false }">
+
+    <!-- Mobile Header -->
+    <div
+        class="lg:hidden flex items-center justify-between px-6 py-4 bg-[#0c111d] border-b border-white/5 sticky top-0 z-50">
+        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2">
+            <div
+                class="w-8 h-8 bg-pink-500 rounded-lg flex items-center justify-center font-black text-white text-base">
+                B</div>
+            <div class="font-outfit text-lg font-bold">Admin</div>
+        </a>
+        <button @click="mobileMenuOpen = !mobileMenuOpen"
+            class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16" />
+                <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0" @click="mobileMenuOpen = false"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"></div>
 
     <!-- Sidebar -->
-    <aside class="w-72 bg-[#0c111d] border-r border-white/5 flex flex-col fixed h-full z-50">
+    <aside :class="mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+        class="w-72 bg-[#0c111d] border-r border-white/5 flex flex-col fixed h-full z-50 transition-transform duration-300 ease-in-out">
         <!-- Logo -->
         <div class="px-8 py-10">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
@@ -264,13 +292,14 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 ml-72 h-screen overflow-y-auto">
-        <!-- Top Header -->
+    <main class="flex-1 lg:ml-72 min-h-screen flex flex-col">
+        <!-- Top Header (Desktop) -->
         <header
-            class="h-20 border-b border-white/5 px-10 flex items-center justify-between sticky top-0 bg-[#05070a]/80 backdrop-blur-xl z-40">
+            class="hidden lg:flex h-20 border-b border-white/5 px-10 items-center justify-between sticky top-0 bg-[#05070a]/80 backdrop-blur-xl z-40">
             <div>
                 <h1 class="text-2xl font-outfit font-bold tracking-tight">@yield('title', 'Admin Panel')</h1>
             </div>
+
 
             <div class="flex items-center gap-4">
                 <button
@@ -289,7 +318,11 @@
         </header>
 
         <!-- Content -->
-        <div class="p-10">
+        <div class="p-6 lg:p-10 flex-1">
+            <div class="lg:hidden mb-10">
+                <h2 class="text-3xl font-outfit font-bold tracking-tight">@yield('title', 'Admin Panel')</h2>
+                <div class="h-1 w-12 bg-pink-500 rounded-full mt-2"></div>
+            </div>
             @if (session('success'))
                 <div
                     class="mb-8 p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-2xl flex items-center gap-3">

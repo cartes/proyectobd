@@ -163,7 +163,7 @@ class ModerationController extends Controller
     // Gestión de usuarios
     public function users(Request $request)
     {
-        $query = User::withCount(['sentMessages', 'receivedMessages'])
+        $query = User::with(['country'])->withCount(['sentMessages', 'receivedMessages'])
             ->latest();
 
         if ($request->search) {
@@ -175,6 +175,14 @@ class ModerationController extends Controller
 
         if ($request->user_type) {
             $query->where('user_type', $request->user_type);
+        }
+
+        if ($request->has('country_id')) {
+            if ($request->country_id === 'none') {
+                $query->whereNull('country_id');
+            } elseif ($request->country_id) {
+                $query->where('country_id', $request->country_id);
+            }
         }
 
         if ($request->status === 'suspended') {
@@ -197,7 +205,9 @@ class ModerationController extends Controller
             $q->where('action_type', 'ban')->active();
         })->count();
 
-        return view('admin.moderation.users', compact('users', 'activeCount', 'bannedCount'));
+        $countries = \App\Models\Country::active()->orderBy('name')->get();
+
+        return view('admin.moderation.users', compact('users', 'activeCount', 'bannedCount', 'countries'));
     }
 
     // Ver detalle de usuario
@@ -210,17 +220,33 @@ class ModerationController extends Controller
             },
         ]);
 
-        $reports = Report::where('reported_user_id', $user->id)
-            ->with('reporter')
-            ->latest()
-            ->paginate(10);
+        $reports = $user->reports()->with('reporter')->latest()->paginate(5);
+        $actions = $user->actions()->latest()->paginate(5);
+        $countries = \App\Models\Country::active()->orderBy('name')->get();
 
-        $actions = UserAction::where('user_id', $user->id)
-            ->with('initiatedBy')
-            ->latest()
-            ->paginate(10);
+        return view('admin.moderation.user-detail', compact('user', 'reports', 'actions', 'countries'));
+    }
 
-        return view('admin.moderation.user-detail', compact('user', 'reports', 'actions'));
+    public function changeCountry(Request $request, User $user)
+    {
+        $request->validate([
+            'country_id' => 'required|exists:countries,id',
+        ]);
+
+        $oldCountryId = $user->country_id;
+        $user->update(['country_id' => $request->country_id]);
+
+        \App\Models\AdminAuditLog::create([
+            'admin_id' => auth()->id(),
+            'action_type' => 'change_country',
+            'auditable_id' => $user->id,
+            'auditable_type' => User::class,
+            'old_values' => ['country_id' => $oldCountryId],
+            'new_values' => ['country_id' => $user->country_id],
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()->back()->with('success', 'País actualizado correctamente.');
     }
 
     // Acciones directas sobre usuarios

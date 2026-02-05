@@ -25,8 +25,9 @@
                         <div class="relative">
                             <img src="{{ $user->primary_photo_url ?? '/images/default-avatar.png' }}"
                                 class="w-32 h-32 rounded-3xl object-cover border-2 border-white/10 shadow-2xl">
-                            @if($user->is_verified)
-                                <div class="absolute -bottom-2 -right-2 bg-blue-500 p-1.5 rounded-xl border-4 border-[#0c111d]">
+                            @if ($user->is_verified)
+                                <div
+                                    class="absolute -bottom-2 -right-2 bg-blue-500 p-1.5 rounded-xl border-4 border-[#0c111d]">
                                     <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd"
                                             d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.64.304 1.24.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -53,7 +54,7 @@
                                     class="px-3 py-1 bg-pink-500/10 text-pink-500 border border-pink-500/20 rounded-xl text-xs font-bold uppercase tracking-tight">
                                     {{ $user->isSugarDaddy() ? '💎 Sugar Daddy' : '👶 Sugar Baby' }}
                                 </span>
-                                @if($user->is_premium)
+                                @if ($user->is_premium)
                                     <span
                                         class="px-3 py-1 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-xl text-xs font-bold uppercase tracking-tight italic">
                                         👑 Miembro Premium
@@ -99,7 +100,8 @@
                         @forelse($reports as $report)
                             <div class="p-6 hover:bg-white/[0.01] transition-colors flex items-center justify-between">
                                 <div class="space-y-1">
-                                    <p class="font-bold text-white">{{ ucfirst(str_replace('_', ' ', $report->reason)) }}</p>
+                                    <p class="font-bold text-white">{{ ucfirst(str_replace('_', ' ', $report->reason)) }}
+                                    </p>
                                     <div class="flex items-center gap-2 text-xs text-gray-500 font-medium">
                                         <span
                                             class="px-1.5 py-0.5 bg-rose-500/10 text-rose-500 rounded-md font-bold uppercase">{{ $report->status }}</span>
@@ -116,7 +118,7 @@
                             <div class="p-12 text-center text-gray-500 italic">No hay reportes para este usuario.</div>
                         @endforelse
                     </div>
-                    @if($reports->hasPages())
+                    @if ($reports->hasPages())
                         <div class="px-8 py-4 bg-white/[0.01] border-t border-white/5">
                             {{ $reports->links() }}
                         </div>
@@ -124,59 +126,58 @@
                 </div>
 
                 <!-- Photos Gallery -->
-                <div class="bg-[#0c111d] border border-white/5 rounded-3xl overflow-hidden" x-data="{ 
-                                                                            viewType: 'grid', 
-                                                                            isProcessing: null,
-                                                                            photoStatuses: {
-                                                                                @foreach($user->photos as $p)
-                                                                                    {{ $p->id }}: '{{ $p->moderation_status }}',
-                                                                                @endforeach
-                                                                            },
-                                                                            async moderatePhoto(photoId, action) {
-                                                                                if (this.isProcessing) return;
-
-                                                                                let reason = '';
-                                                                                if (action === 'reject') {
-                                                                                    reason = prompt('Indica el motivo del rechazo:');
-                                                                                    if (reason === null) return;
-                                                                                    if (reason.trim() === '') {
-                                                                                        alert('El motivo de rechazo es obligatorio para poder rechazar la imagen.');
-                                                                                        return;
-                                                                                    }
-                                                                                }
-
-                                                                                this.isProcessing = photoId;
-
-                                                                                try {
-                                                                                    const response = await fetch(`{{ url('/admin/moderation/photos') }}/${photoId}/${action}`, {
-                                                                                        method: 'POST',
-                                                                                        headers: {
-                                                                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                                                                            'Content-Type': 'application/json',
-                                                                                            'Accept': 'application/json'
-                                                                                        },
-                                                                                        body: JSON.stringify({ reason: reason })
-                                                                                    });
-
-                                                                                    const data = await response.json();
-
-                                                                                    if (!response.ok) {
-                                                                                        throw new Error(data.message || 'Error al procesar la solicitud');
-                                                                                    }
-
-                                                                                    if (data.success) {
-                                                                                        this.photoStatuses[photoId] = data.status;
-
-                                                                                        // La UI se actualizará automáticamente vía Alpine
-                                                                                    }
-                                                                                } catch (e) {
-                                                                                    console.error('Error in moderation:', e);
-                                                                                    alert('Ocurrió un problema: ' + e.message);
-                                                                                } finally {
-                                                                                    this.isProcessing = null;
-                                                                                }
-                                                                            }
-                                                                         }">
+                <div class="bg-[#0c111d] border border-white/5 rounded-3xl overflow-hidden" x-data="{
+                    viewType: 'grid',
+                    isProcessing: null,
+                    photoStatuses: {
+                        @foreach ($user->photos as $p)
+                                                                                    {{ $p->id }}: '{{ $p->moderation_status }}', @endforeach
+                    },
+                    async moderatePhoto(photoId, action) {
+                        if (this.isProcessing) return;
+                
+                        let reason = '';
+                        if (action === 'reject') {
+                            reason = prompt('Indica el motivo del rechazo:');
+                            if (reason === null) return;
+                            if (reason.trim() === '') {
+                                alert('El motivo de rechazo es obligatorio para poder rechazar la imagen.');
+                                return;
+                            }
+                        }
+                
+                        this.isProcessing = photoId;
+                
+                        try {
+                            const response = await fetch(`{{ url('/admin/moderation/photos') }}/${photoId}/${action}`, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({ reason: reason })
+                            });
+                
+                            const data = await response.json();
+                
+                            if (!response.ok) {
+                                throw new Error(data.message || 'Error al procesar la solicitud');
+                            }
+                
+                            if (data.success) {
+                                this.photoStatuses[photoId] = data.status;
+                
+                                // La UI se actualizará automáticamente vía Alpine
+                            }
+                        } catch (e) {
+                            console.error('Error in moderation:', e);
+                            alert('Ocurrió un problema: ' + e.message);
+                        } finally {
+                            this.isProcessing = null;
+                        }
+                    }
+                }">
                     <div class="px-8 py-6 border-b border-white/5 flex items-center justify-between">
                         <div>
                             <h4 class="font-outfit font-bold text-lg">Galería de Fotos</h4>
@@ -187,7 +188,8 @@
                         {{-- View Toggle Buttons --}}
                         <div class="flex bg-white/5 p-1 rounded-xl border border-white/10">
                             <button @click="viewType = 'grid'"
-                                :class="viewType === 'grid' ? 'bg-pink-500 text-white shadow-lg' : 'text-gray-400 hover:text-white'"
+                                :class="viewType === 'grid' ? 'bg-pink-500 text-white shadow-lg' :
+                                    'text-gray-400 hover:text-white'"
                                 class="p-2 rounded-lg transition-all duration-300">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -195,7 +197,8 @@
                                 </svg>
                             </button>
                             <button @click="viewType = 'list'"
-                                :class="viewType === 'list' ? 'bg-pink-500 text-white shadow-lg' : 'text-gray-400 hover:text-white'"
+                                :class="viewType === 'list' ? 'bg-pink-500 text-white shadow-lg' :
+                                    'text-gray-400 hover:text-white'"
                                 class="p-2 rounded-lg transition-all duration-300">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -213,7 +216,9 @@
                                     class="relative group aspect-[3/4] rounded-2xl overflow-hidden bg-white/5 border border-white/5 shadow-2xl transition-all hover:border-pink-500/30">
                                     <img src="{{ $photo->url }}" alt="Foto de {{ $user->name }}"
                                         class="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
-                                        :class="isProcessing === {{ $photo->id }} ? 'opacity-50 blur-sm' : (photoStatuses[{{ $photo->id }}] === 'rejected' ? 'blur-xl brightness-50 grayscale' : '')">
+                                        :class="isProcessing === {{ $photo->id }} ? 'opacity-50 blur-sm' : (photoStatuses[
+                                                {{ $photo->id }}] === 'rejected' ?
+                                            'blur-xl brightness-50 grayscale' : '')">
 
                                     {{-- Warning Overlay for Rejected --}}
                                     <div x-show="photoStatuses[{{ $photo->id }}] === 'rejected'"
@@ -237,16 +242,18 @@
 
                                     <!-- BADGES OVERLAY -->
                                     <div class="absolute top-2 left-2 right-2 flex justify-between items-start z-10">
-                                        @if($photo->is_primary)
+                                        @if ($photo->is_primary)
                                             <span
                                                 class="px-2 py-1 bg-amber-500 text-white text-[8px] font-black uppercase rounded-lg shadow-lg">Estrella</span>
                                         @endif
 
-                                        @if($photo->potential_nudity)
+                                        @if ($photo->potential_nudity)
                                             <div class="bg-amber-500 text-white p-1.5 rounded-xl border border-white/20 animate-pulse shadow-xl"
                                                 title="IA: Posible Desnudo">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2.5"
                                                         d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                                 </svg>
                                             </div>
@@ -255,13 +262,17 @@
 
                                     <!-- STATUS BADGE -->
                                     <div class="absolute bottom-14 left-2 z-10">
-                                        <span id="status-badge-{{ $photo->id }}" x-text="photoStatuses[{{ $photo->id }}]"
+                                        <span id="status-badge-{{ $photo->id }}"
+                                            x-text="photoStatuses[{{ $photo->id }}]"
                                             class="px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest"
                                             :class="{
-                                                                                                        'bg-emerald-500/20 text-emerald-500': photoStatuses[{{ $photo->id }}] === 'approved',
-                                                                                                        'bg-amber-500/20 text-amber-500': photoStatuses[{{ $photo->id }}] === 'pending',
-                                                                                                        'bg-rose-500/20 text-rose-500': photoStatuses[{{ $photo->id }}] === 'rejected'
-                                                                                                    }">
+                                                'bg-emerald-500/20 text-emerald-500': photoStatuses[
+                                                    {{ $photo->id }}] === 'approved',
+                                                'bg-amber-500/20 text-amber-500': photoStatuses[
+                                                    {{ $photo->id }}] === 'pending',
+                                                'bg-rose-500/20 text-rose-500': photoStatuses[
+                                                    {{ $photo->id }}] === 'rejected'
+                                            }">
                                         </span>
                                     </div>
 
@@ -271,12 +282,15 @@
                                         <div class="flex gap-2">
                                             <button @click="moderatePhoto({{ $photo->id }}, 'approve')"
                                                 class="flex-1 py-2 rounded-xl text-[10px] font-black uppercase transition-all shadow-lg ring-1 ring-emerald-400/20"
-                                                :class="photoStatuses[{{ $photo->id }}] === 'approved' ? 'bg-emerald-600 ring-2 ring-white/20' : 'bg-emerald-500 hover:bg-emerald-600'">
+                                                :class="photoStatuses[{{ $photo->id }}] === 'approved' ?
+                                                    'bg-emerald-600 ring-2 ring-white/20' :
+                                                    'bg-emerald-500 hover:bg-emerald-600'">
                                                 Aprobar
                                             </button>
                                             <button @click="moderatePhoto({{ $photo->id }}, 'reject')"
                                                 class="flex-1 py-2 rounded-xl text-[10px] font-black uppercase transition-all shadow-lg ring-1 ring-rose-400/20"
-                                                :class="photoStatuses[{{ $photo->id }}] === 'rejected' ? 'bg-rose-600 ring-2 ring-white/20' : 'bg-rose-500 hover:bg-rose-600'">
+                                                :class="photoStatuses[{{ $photo->id }}] === 'rejected' ?
+                                                    'bg-rose-600 ring-2 ring-white/20' : 'bg-rose-500 hover:bg-rose-600'">
                                                 Rechazar
                                             </button>
                                         </div>
@@ -294,14 +308,16 @@
                             @forelse($user->photos as $photo)
                                 <div
                                     class="flex items-center gap-6 p-4 bg-white/2 border border-white/5 rounded-2xl hover:bg-white/5 transition-all">
-                                    <div class="w-20 h-20 rounded-xl overflow-hidden shadow-lg border border-white/10 relative">
+                                    <div
+                                        class="w-20 h-20 rounded-xl overflow-hidden shadow-lg border border-white/10 relative">
                                         <img src="{{ $photo->url }}" class="w-full h-full object-cover"
-                                            :class="photoStatuses[{{ $photo->id }}] === 'rejected' ? 'blur-sm grayscale brightness-50' : ''">
+                                            :class="photoStatuses[{{ $photo->id }}] === 'rejected' ?
+                                                'blur-sm grayscale brightness-50' : ''">
 
                                         <div x-show="photoStatuses[{{ $photo->id }}] === 'rejected'"
                                             class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                            <svg class="w-6 h-6 text-rose-500 drop-shadow-lg" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
+                                            <svg class="w-6 h-6 text-rose-500 drop-shadow-lg" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                             </svg>
@@ -319,21 +335,27 @@
                                             <span x-text="photoStatuses[{{ $photo->id }}]"
                                                 class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
                                                 :class="{
-                                                                                                                    'bg-emerald-500/20 text-emerald-500': photoStatuses[{{ $photo->id }}] === 'approved',
-                                                                                                                    'bg-amber-500/20 text-amber-500': photoStatuses[{{ $photo->id }}] === 'pending',
-                                                                                                                    'bg-rose-500/20 text-rose-500': photoStatuses[{{ $photo->id }}] === 'rejected'
-                                                                                                                }"
+                                                    'bg-emerald-500/20 text-emerald-500': photoStatuses[
+                                                        {{ $photo->id }}] === 'approved',
+                                                    'bg-amber-500/20 text-amber-500': photoStatuses[
+                                                        {{ $photo->id }}] === 'pending',
+                                                    'bg-rose-500/20 text-rose-500': photoStatuses[
+                                                        {{ $photo->id }}] === 'rejected'
+                                                }"
                                                 id="list-status-badge-{{ $photo->id }}">
                                             </span>
-                                            @if($photo->is_primary)
-                                                <span class="text-[10px] text-amber-500 font-black uppercase tracking-widest">★
+                                            @if ($photo->is_primary)
+                                                <span
+                                                    class="text-[10px] text-amber-500 font-black uppercase tracking-widest">★
                                                     Principal</span>
                                             @endif
-                                            @if($photo->potential_nudity)
+                                            @if ($photo->potential_nudity)
                                                 <span
                                                     class="text-[10px] text-rose-500 font-black uppercase tracking-widest flex items-center gap-1">
-                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2.5"
                                                             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                                     </svg>
                                                     IA: Sospechosa
@@ -348,12 +370,16 @@
                                     <div class="flex items-center gap-3 mr-4">
                                         <button @click="moderatePhoto({{ $photo->id }}, 'approve')"
                                             class="px-4 py-2 border rounded-xl text-[10px] font-black uppercase transition-all"
-                                            :class="photoStatuses[{{ $photo->id }}] === 'approved' ? 'bg-emerald-500 text-white border-white/20' : 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white border-emerald-500/20'">
+                                            :class="photoStatuses[{{ $photo->id }}] === 'approved' ?
+                                                'bg-emerald-500 text-white border-white/20' :
+                                                'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white border-emerald-500/20'">
                                             Aprobar
                                         </button>
                                         <button @click="moderatePhoto({{ $photo->id }}, 'reject')"
                                             class="px-4 py-2 border rounded-xl text-[10px] font-black uppercase transition-all"
-                                            :class="photoStatuses[{{ $photo->id }}] === 'rejected' ? 'bg-rose-500 text-white border-white/20' : 'bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white border-rose-500/20'">
+                                            :class="photoStatuses[{{ $photo->id }}] === 'rejected' ?
+                                                'bg-rose-500 text-white border-white/20' :
+                                                'bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white border-rose-500/20'">
                                             Rechazar
                                         </button>
                                     </div>
@@ -396,7 +422,7 @@
                             </div>
                         </div>
 
-                        @if(!$user->is_premium)
+                        @if (!$user->is_premium)
                             <div class="space-y-2">
                                 <label class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Válido
                                     hasta (Opcional)</label>
@@ -447,28 +473,34 @@
                         </button>
                     </form>
 
-                    <!-- Private Profile Toggle -->
-                    <form action="{{ route('admin.moderation.users.toggle-private', $user) }}" method="POST">
-                        @csrf
-                        <button type="submit"
-                            class="w-full flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl transition-all group">
-                            <div class="text-left">
-                                <p
-                                    class="text-sm font-bold {{ ($user->profileDetail->is_private ?? false) ? 'text-gray-400' : 'text-purple-400' }}">
-                                    {{ ($user->profileDetail->is_private ?? false) ? 'Quitar Perfil Privado' : 'Hacer Perfil Privado' }}
-                                </p>
-                                <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-0.5 font-bold">Visibilidad
-                                    manual</p>
-                            </div>
-                            <div
-                                class="w-10 h-10 rounded-xl flex items-center justify-center {{ ($user->profileDetail->is_private ?? false) ? 'bg-purple-500/10 text-purple-500' : 'bg-gray-500/10 text-gray-500' }} group-hover:scale-110 transition-transform">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                                </svg>
-                            </div>
-                        </button>
+                    </button>
                     </form>
+
+                    <!-- Country Change -->
+                    <div class="space-y-3">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Cambiar País</p>
+                        <form action="{{ route('admin.moderation.users.change-country', $user) }}" method="POST"
+                            class="flex gap-2">
+                            @csrf
+                            <select name="country_id"
+                                class="flex-1 bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-xs font-bold focus:border-pink-500/50 focus:ring-0 appearance-none transition-all text-white">
+                                <option value="">Seleccionar País...</option>
+                                @foreach ($countries as $country)
+                                    <option value="{{ $country->id }}"
+                                        {{ $user->country_id == $country->id ? 'selected' : '' }}>
+                                        {{ $country->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="submit"
+                                class="p-2.5 bg-white/5 hover:bg-pink-500 text-gray-400 hover:text-white border border-white/10 rounded-xl transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
 
                     <!-- Role Change -->
                     <div class="space-y-3">
@@ -478,7 +510,8 @@
                             @csrf
                             <select name="user_type"
                                 class="flex-1 bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-xs font-bold focus:border-pink-500/50 focus:ring-0 appearance-none transition-all">
-                                <option value="sugar_daddy" {{ $user->user_type === 'sugar_daddy' ? 'selected' : '' }}>Sugar
+                                <option value="sugar_daddy" {{ $user->user_type === 'sugar_daddy' ? 'selected' : '' }}>
+                                    Sugar
                                     Daddy</option>
                                 <option value="sugar_baby" {{ $user->user_type === 'sugar_baby' ? 'selected' : '' }}>Sugar
                                     Baby</option>
@@ -511,7 +544,7 @@
                                 <option value="warn">⚠️ Advertencia</option>
                                 <option value="suspend">⏸️ Suspender Acceso</option>
                                 <option value="ban">🚫 Banear Permanentemente</option>
-                                @if($user->isBanned() || $user->isSuspended())
+                                @if ($user->isBanned() || $user->isSuspended())
                                     <option value="unban">🔓 Levantar Sanción</option>
                                 @endif
                             </select>
@@ -539,7 +572,7 @@
                     </form>
 
                     <script>
-                        document.querySelector('[name="action"]').addEventListener('change', function () {
+                        document.querySelector('[name="action"]').addEventListener('change', function() {
                             document.getElementById('days-container').style.display =
                                 this.value === 'suspend' ? 'block' : 'none';
                         });
