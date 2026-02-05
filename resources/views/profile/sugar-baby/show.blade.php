@@ -97,14 +97,12 @@
                                 <span class="text-2xl font-bold">{{ $user->age }} años</span>
                                 <span class="text-white/60">•</span>
                             @endif
-                            @if ($user->city)
+                            @if ($user->country)
                                 <span class="text-xl flex items-center gap-2">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    {{ $user->city }}
+                                    <img src="https://flagcdn.com/w40/{{ strtolower($user->country->iso_code) }}.png"
+                                        alt="{{ $user->country->name }}"
+                                        class="w-8 h-8 rounded-full object-cover border-2 border-white/40 shadow-sm">
+                                    {{ $user->country->name }}
                                 </span>
                             @endif
                         </div>
@@ -130,12 +128,13 @@
                             @endif
 
                             {{-- ✅ INSTAGRAM PREMIUM --}}
-                            @if($user->profileDetail->social_instagram)
-                                @if($canSeeInstagram || $isOwnProfile)
+                            @if ($user->profileDetail->social_instagram)
+                                @if ($canSeeInstagram || $isOwnProfile)
                                     <a href="https://instagram.com/{{ str_replace('@', '', $user->profileDetail->social_instagram) }}"
                                         target="_blank"
                                         class="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-lg border border-white/30 font-bold shadow-lg flex items-center gap-2 hover:bg-white/30 transition-all text-sm">
-                                        <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -146,7 +145,8 @@
                                 @else
                                     <div class="px-4 py-1.5 rounded-full bg-black/10 backdrop-blur-lg border border-white/10 text-white/60 text-xs flex items-center gap-2 cursor-help group relative"
                                         title="Suscríbete a Premium para ver Redes Sociales">
-                                        <svg class="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-5 h-5 text-white/40" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                         </svg>
@@ -159,8 +159,8 @@
                                 @endif
                             @endif
                             {{-- ✅ WHATSAPP PREMIUM (SOLO BABIES) --}}
-                            @if($user->profileDetail->social_whatsapp)
-                                @if($canSeeWhatsapp || $isOwnProfile)
+                            @if ($user->profileDetail->social_whatsapp)
+                                @if ($canSeeWhatsapp || $isOwnProfile)
                                     <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $user->profileDetail->social_whatsapp) }}"
                                         target="_blank"
                                         class="px-4 py-1.5 rounded-full bg-green-500/30 backdrop-blur-lg border border-green-400/50 font-bold shadow-lg flex items-center gap-2 hover:bg-green-500/50 transition-all text-sm">
@@ -173,7 +173,8 @@
                                 @else
                                     <div class="px-4 py-1.5 rounded-full bg-black/10 backdrop-blur-lg border border-white/10 text-white/60 text-xs flex items-center gap-2 cursor-help group relative"
                                         title="Suscríbete a Premium para ver WhatsApp">
-                                        <svg class="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-5 h-5 text-white/40" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                         </svg>
@@ -208,11 +209,13 @@
                         <form action="{{ $hasLiked ? route('discover.unlike', $user) : route('discover.like', $user) }}"
                             method="POST">
                             @csrf
-                            @if($hasLiked) @method('DELETE') @endif
+                            @if ($hasLiked)
+                                @method('DELETE')
+                            @endif
                             <button type="submit"
                                 class="px-8 py-4 {{ $hasLiked ? 'bg-pink-500/80' : 'bg-white/20' }} hover:bg-white/30 backdrop-blur-lg border border-white/30 rounded-2xl text-white font-bold transition-all duration-300 hover:scale-105 shadow-xl flex items-center gap-2">
-                                <svg class="w-6 h-6" fill="{{ $hasLiked ? 'currentColor' : 'none' }}" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                                <svg class="w-6 h-6" fill="{{ $hasLiked ? 'currentColor' : 'none' }}"
+                                    stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                 </svg>
@@ -245,7 +248,7 @@
     </div>
 
     {{-- Grid de secciones --}}
-    @if(!empty($isRestricted) && $isRestricted)
+    @if (!empty($isRestricted) && $isRestricted)
         {{-- VISTA RESTRINGIDA (Perfil Privado) --}}
         <div class="min-h-[50vh] flex flex-col items-center justify-center text-center p-8 bg-gray-50 rounded-3xl mt-8">
             <div class="bg-white rounded-3xl p-12 max-w-2xl w-full shadow-xl border border-gray-100">
@@ -261,7 +264,8 @@
                 <p class="text-gray-600 text-lg mb-8 leading-relaxed">
                     Este perfil es exclusivo y mantiene su información privada.
                     <br>
-                    <span class="font-semibold text-gray-800">Da Like o envía un mensaje</span>. Si hacen Match, tendrás acceso
+                    <span class="font-semibold text-gray-800">Da Like o envía un mensaje</span>. Si hacen Match, tendrás
+                    acceso
                     completo a su información y fotos.
                 </p>
 
@@ -302,7 +306,8 @@
                         ✨
                     </div>
                     <div>
-                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Sobre Mí</h2>
+                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Sobre Mí
+                        </h2>
                         <p class="text-sm text-gray-500">Información personal</p>
                     </div>
                 </div>
@@ -351,7 +356,8 @@
                         📚
                     </div>
                     <div>
-                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Educación</h2>
+                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Educación
+                        </h2>
                         <p class="text-sm text-gray-500">Formación y actividades</p>
                     </div>
                 </div>
@@ -401,7 +407,8 @@
                             💖
                         </div>
                         <div>
-                            <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis Intereses
+                            <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis
+                                Intereses
                             </h2>
                             <p class="text-sm text-gray-500">Lo que me apasiona</p>
                         </div>
@@ -428,12 +435,13 @@
                                 📸
                             </div>
                             <div>
-                                <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi Galería
+                                <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">
+                                    Mi Galería
                                 </h2>
                                 <p class="text-sm text-gray-500">{{ $user->photos->count() }} fotos</p>
                             </div>
                         </div>
-                        @if($isOwnProfile)
+                        @if ($isOwnProfile)
                             <a href="{{ route('profile.photos.index') }}"
                                 class="px-6 py-2.5 bg-pink-100 hover:bg-pink-200 text-pink-700 font-bold rounded-xl transition-colors duration-300">
                                 Ver todas →
@@ -494,7 +502,8 @@
                                 <button @click="closeLightbox"
                                     class="absolute top-4 right-4 z-50 p-3 bg-white/10 hover:bg-white/25 rounded-full transition-all duration-300 backdrop-blur-lg"
                                     aria-label="Cerrar galería">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M6 18L18 6M6 6l12 12" />
                                     </svg>
@@ -509,7 +518,8 @@
                                 {{-- Imagen Principal --}}
                                 <div class="flex items-center justify-center h-full">
                                     <template x-for="(photo, index) in photos" :key="index">
-                                        <div x-show="currentIndex === index" x-transition:enter="transition ease-out duration-300"
+                                        <div x-show="currentIndex === index"
+                                            x-transition:enter="transition ease-out duration-300"
                                             x-transition:enter-start="opacity-0 scale-95"
                                             x-transition:enter-end="opacity-100 scale-100"
                                             class="flex items-center justify-center h-full">
@@ -523,8 +533,10 @@
                                 <button @click.stop="prev" x-show="photos.length > 1"
                                     class="absolute left-4 top-1/2 -translate-y-1/2 p-4 bg-white/10 hover:bg-white/25 rounded-full transition-all duration-300 backdrop-blur-lg"
                                     aria-label="Imagen anterior">
-                                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
+                                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                            d="M15 19l-7-7 7-7" />
                                     </svg>
                                 </button>
 
@@ -532,8 +544,10 @@
                                 <button @click.stop="next" x-show="photos.length > 1"
                                     class="absolute right-4 top-1/2 -translate-y-1/2 p-4 bg-white/10 hover:bg-white/25 rounded-full transition-all duration-300 backdrop-blur-lg"
                                     aria-label="Imagen siguiente">
-                                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
+                                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                            d="M9 5l7 7-7 7" />
                                     </svg>
                                 </button>
 
@@ -541,8 +555,10 @@
                                 <div x-show="photos.length > 1"
                                     class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2">
                                     <template x-for="(photo, index) in photos" :key="index">
-                                        <button @click="currentIndex = index" class="h-2.5 rounded-full transition-all duration-300"
-                                            :class="index === currentIndex ? 'bg-white w-10' : 'bg-white/50 hover:bg-white/75 w-2.5'"
+                                        <button @click="currentIndex = index"
+                                            class="h-2.5 rounded-full transition-all duration-300"
+                                            :class="index === currentIndex ? 'bg-white w-10' :
+                                                'bg-white/50 hover:bg-white/75 w-2.5'"
                                             :aria-label="`Ir a imagen ${index + 1}`">
                                         </button>
                                     </template>
@@ -567,7 +583,8 @@
                         </svg>
                     </div>
                     <h3 class="text-3xl font-black mb-3" style="font-family: 'Outfit', sans-serif;">Sube tus fotos</h3>
-                    <p class="text-white/90 mb-8 text-lg">Las fotos aumentan significativamente tus posibilidades de conectar
+                    <p class="text-white/90 mb-8 text-lg">Las fotos aumentan significativamente tus posibilidades de
+                        conectar
                     </p>
                     <a href="{{ route('profile.photos.index') }}"
                         class="inline-block px-10 py-4 bg-white/20 hover:bg-white/30 backdrop-blur-lg border-2 border-white/40 rounded-2xl font-bold transition-all duration-300 hover:scale-105 shadow-2xl">
@@ -578,79 +595,81 @@
     @endif
 
 
-        {{-- Mis Aspiraciones --}}
-        @if ($user->profileDetail->aspirations)
-            <div
-                class="bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-3xl shadow-xl p-8 border-2 border-purple-200/50 hover:shadow-2xl transition-shadow duration-300 lg:col-span-2">
-                <div class="flex items-center gap-3 mb-6">
-                    <div
-                        class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white text-2xl shadow-lg">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis
-                            Aspiraciones</h2>
-                        <p class="text-sm text-gray-600">Sueños y metas</p>
-                    </div>
+    {{-- Mis Aspiraciones --}}
+    @if ($user->profileDetail->aspirations)
+        <div
+            class="bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-3xl shadow-xl p-8 border-2 border-purple-200/50 hover:shadow-2xl transition-shadow duration-300 lg:col-span-2">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white text-2xl shadow-lg">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
                 </div>
-
-                <p class="text-gray-800 leading-relaxed text-lg font-medium">
-                    {{ $user->profileDetail->aspirations }}
-                </p>
-            </div>
-        @endif
-
-        {{-- Mi Daddy Ideal --}}
-        @if ($user->profileDetail->ideal_daddy)
-            <div
-                class="bg-gradient-to-br from-pink-50 to-rose-100/50 rounded-3xl shadow-xl p-8 border-2 border-pink-200/50 hover:shadow-2xl transition-shadow duration-300 lg:col-span-2">
-                <div class="flex items-center gap-3 mb-6">
-                    <div
-                        class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center text-white text-2xl shadow-lg">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi Daddy Ideal
-                        </h2>
-                        <p class="text-sm text-gray-600">Lo que busco en una relación</p>
-                    </div>
+                <div>
+                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis
+                        Aspiraciones</h2>
+                    <p class="text-sm text-gray-600">Sueños y metas</p>
                 </div>
-
-                <p class="text-gray-800 leading-relaxed text-lg font-medium">
-                    {{ $user->profileDetail->ideal_daddy }}
-                </p>
             </div>
-        @endif
 
-        {{-- Qué busco (genérico) --}}
-        @if ($user->profileDetail->looking_for && !$user->profileDetail->ideal_daddy)
-            <div
-                class="bg-gradient-to-br from-pink-50 to-rose-100/50 rounded-3xl shadow-xl p-8 border-2 border-pink-200/50 hover:shadow-2xl transition-shadow duration-300 lg:col-span-2">
-                <div class="flex items-center gap-3 mb-6">
-                    <div
-                        class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center text-white text-2xl shadow-lg">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Qué Busco</h2>
-                        <p class="text-sm text-gray-600">Mi relación ideal</p>
-                    </div>
+            <p class="text-gray-800 leading-relaxed text-lg font-medium">
+                {{ $user->profileDetail->aspirations }}
+            </p>
+        </div>
+    @endif
+
+    {{-- Mi Daddy Ideal --}}
+    @if ($user->profileDetail->ideal_daddy)
+        <div
+            class="bg-gradient-to-br from-pink-50 to-rose-100/50 rounded-3xl shadow-xl p-8 border-2 border-pink-200/50 hover:shadow-2xl transition-shadow duration-300 lg:col-span-2">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center text-white text-2xl shadow-lg">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </svg>
                 </div>
-
-                <p class="text-gray-800 leading-relaxed text-lg font-medium">
-                    {{ $user->profileDetail->looking_for }}
-                </p>
+                <div>
+                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi Daddy
+                        Ideal
+                    </h2>
+                    <p class="text-sm text-gray-600">Lo que busco en una relación</p>
+                </div>
             </div>
-        @endif
+
+            <p class="text-gray-800 leading-relaxed text-lg font-medium">
+                {{ $user->profileDetail->ideal_daddy }}
+            </p>
+        </div>
+    @endif
+
+    {{-- Qué busco (genérico) --}}
+    @if ($user->profileDetail->looking_for && !$user->profileDetail->ideal_daddy)
+        <div
+            class="bg-gradient-to-br from-pink-50 to-rose-100/50 rounded-3xl shadow-xl p-8 border-2 border-pink-200/50 hover:shadow-2xl transition-shadow duration-300 lg:col-span-2">
+            <div class="flex items-center gap-3 mb-6">
+                <div
+                    class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center text-white text-2xl shadow-lg">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Qué Busco
+                    </h2>
+                    <p class="text-sm text-gray-600">Mi relación ideal</p>
+                </div>
+            </div>
+
+            <p class="text-gray-800 leading-relaxed text-lg font-medium">
+                {{ $user->profileDetail->looking_for }}
+            </p>
+        </div>
+    @endif
 
     </div>
 
@@ -667,7 +686,8 @@
             <div class="relative z-10">
                 <!-- Emoji animado -->
                 <div class="text-7xl mb-6 text-white/50">
-                    <svg class="w-24 h-24 mx-auto animate-float" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-24 h-24 mx-auto animate-float" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
                     </svg>
@@ -686,8 +706,8 @@
                     class="inline-block px-10 py-4 bg-white/20 hover:bg-white/30 backdrop-blur-lg border-2 border-white/40 hover:border-white/60 rounded-2xl text-white font-bold transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                     <span class="flex items-center gap-2">
                         Completar Perfil
-                        <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                             </path>
                         </svg>

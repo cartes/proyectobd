@@ -23,6 +23,16 @@ class SitemapController extends Controller
             // ['loc' => url('/guia-sugar-dating-chile'), 'priority' => '0.7', 'changefreq' => 'monthly'],
         ];
 
+        // Archives por País
+        $countries = \App\Models\Country::where('is_active', true)->get();
+        foreach ($countries as $country) {
+            $urls[] = [
+                'loc' => route('archive.country', $country->iso_code),
+                'priority' => '0.8',
+                'changefreq' => 'weekly',
+            ];
+        }
+
         $xml = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 

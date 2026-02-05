@@ -218,6 +218,9 @@ Route::prefix('blog')->name('blog.')->group(function () {
     Route::get('/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('show');
 });
 
+// Archives Públicos por País
+Route::get('/sugar-babies/{country:iso_code}', [\App\Http\Controllers\CountryArchiveController::class, 'index'])->name('archive.country');
+
 // Tracking de Engagement desde Email
 Route::get('/e/{token}', [App\Http\Controllers\EngagementController::class, 'track'])->name('engagement.track');
 
