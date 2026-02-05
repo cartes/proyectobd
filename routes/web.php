@@ -140,6 +140,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/moderation/users/{user}/action', [ModerationController::class, 'userAction'])->name('moderation.users.action');
     Route::post('/moderation/users/{user}/verify', [ModerationController::class, 'toggleVerification'])->name('moderation.users.verify');
     Route::post('/moderation/users/{user}/change-role', [ModerationController::class, 'changeRole'])->name('moderation.users.change-role');
+    Route::post('/moderation/users/{user}/change-country', [ModerationController::class, 'changeCountry'])->name('moderation.users.change-country');
     Route::post('/moderation/users/{user}/toggle-premium', [ModerationController::class, 'togglePremium'])->name('moderation.users.toggle-premium');
     Route::post('/moderation/users/{user}/toggle-private', [ModerationController::class, 'togglePrivateProfile'])->name('moderation.users.toggle-private');
 
