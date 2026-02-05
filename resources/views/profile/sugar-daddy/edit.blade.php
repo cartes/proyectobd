@@ -491,9 +491,6 @@
             <p class="text-gray-600 text-sm mt-2 font-medium" x-text="`${lookingFor.length}/500 caracteres`"></p>
         </div>
 
-        {{-- Seguridad --}}
-        @include('profile.partials.premium-password-form')
-
 
         {{-- Botones --}}
         <div class="flex items-center justify-between gap-4 sticky bottom-4">
@@ -513,6 +510,9 @@
         </div>
 
     </form>
+
+    {{-- Seguridad (formulario separado) --}}
+    @include('profile.partials.premium-password-form')
 
     @push('scripts')
         <script>
