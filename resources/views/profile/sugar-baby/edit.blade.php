@@ -88,7 +88,7 @@
                             d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
                     </svg>
                 </div>
-                <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Sobre Mí</h2>
+                <h2 class="text-2xl font-black !text-gray-900" style="font-family: 'Outfit', sans-serif;">Sobre Mí</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -99,7 +99,7 @@
                     <input type="text" name="city" value="{{ old('city', $user->city) }}" placeholder="Tu ciudad"
                         class="w-full px-5 py-3.5 bg-gradient-to-r from-pink-50 to-pink-100/50 border-2 border-pink-200 rounded-xl 
                                   focus:outline-none focus:ring-4 focus:ring-pink-200 focus:border-pink-400 
-                                  transition-all duration-200 font-medium text-gray-900 placeholder-gray-500">
+                                  transition-all duration-200 font-medium !text-gray-900 placeholder-gray-500">
                 </div>
 
                 {{-- Fecha de Nacimiento --}}
@@ -112,7 +112,7 @@
                         value="{{ old('birth_date', $user->birth_date ? $user->birth_date->format('Y-m-d') : '') }}"
                         class="w-full px-5 py-3.5 bg-gradient-to-r from-amber-50 to-amber-100/50 border-2 border-amber-200 rounded-xl 
                       focus:outline-none focus:ring-4 focus:ring-amber-200 focus:border-amber-400 
-                      transition-all duration-200 font-medium text-gray-900">
+                      transition-all duration-200 font-medium !text-gray-900">
                 </div>
 
                 {{-- Altura --}}
@@ -122,7 +122,7 @@
                         min="100" max="250" placeholder="Ej: 165"
                         class="w-full px-5 py-3.5 bg-gradient-to-r from-rose-50 to-rose-100/50 border-2 border-rose-200 rounded-xl 
                                   focus:outline-none focus:ring-4 focus:ring-rose-200 focus:border-rose-400 
-                                  transition-all duration-200 font-medium text-gray-900 placeholder-gray-500">
+                                  transition-all duration-200 font-medium !text-gray-900 placeholder-gray-500">
                 </div>
 
                 {{-- Tipo de cuerpo --}}
@@ -131,7 +131,7 @@
                     <select name="body_type"
                         class="w-full px-5 py-3.5 bg-gradient-to-r from-fuchsia-50 to-fuchsia-100/50 border-2 border-fuchsia-200 rounded-xl 
                                    focus:outline-none focus:ring-4 focus:ring-fuchsia-200 focus:border-fuchsia-400 
-                                   transition-all duration-200 font-medium text-gray-900">
+                                   transition-all duration-200 font-medium !text-gray-900">
                         <option value="">Seleccionar...</option>
                         @foreach ($bodyTypes as $key => $label)
                             <option value="{{ $key }}"
@@ -149,7 +149,7 @@
                     <select name="personal_style"
                         class="w-full px-5 py-3.5 bg-gradient-to-r from-purple-50 to-purple-100/50 border-2 border-purple-200 rounded-xl 
                                    focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-400 
-                                   transition-all duration-200 font-medium text-gray-900">
+                                   transition-all duration-200 font-medium !text-gray-900">
                         <option value="">Seleccionar...</option>
                         @foreach ($personalStyles as $key => $label)
                             <option value="{{ $key }}"
@@ -167,7 +167,7 @@
                     <select name="fitness_level"
                         class="w-full px-5 py-3.5 bg-gradient-to-r from-emerald-50 to-emerald-100/50 border-2 border-emerald-200 rounded-xl 
                                    focus:outline-none focus:ring-4 focus:ring-emerald-200 focus:border-emerald-400 
-                                   transition-all duration-200 font-medium text-gray-900">
+                                   transition-all duration-200 font-medium !text-gray-900">
                         <option value="">Seleccionar...</option>
                         @foreach ($fitnessLevels as $key => $label)
                             <option value="{{ $key }}"
@@ -184,7 +184,7 @@
                     <select name="relationship_status"
                         class="w-full px-5 py-3.5 bg-gradient-to-r from-cyan-50 to-cyan-100/50 border-2 border-cyan-200 rounded-xl 
                                    focus:outline-none focus:ring-4 focus:ring-cyan-200 focus:border-cyan-400 
-                                   transition-all duration-200 font-medium text-gray-900">
+                                   transition-all duration-200 font-medium !text-gray-900">
                         <option value="">Seleccionar...</option>
                         @foreach ($relationshipStatuses as $key => $label)
                             <option value="{{ $key }}"
@@ -201,7 +201,7 @@
                     <select name="children"
                         class="w-full px-5 py-3.5 bg-gradient-to-r from-sky-50 to-sky-100/50 border-2 border-sky-200 rounded-xl 
                                    focus:outline-none focus:ring-4 focus:ring-sky-200 focus:border-sky-400 
-                                   transition-all duration-200 font-medium text-gray-900">
+                                   transition-all duration-200 font-medium !text-gray-900">
                         <option value="">Seleccionar...</option>
                         @foreach ($childrenOptions as $key => $label)
                             <option value="{{ $key }}"
@@ -218,7 +218,7 @@
                     <select name="availability"
                         class="w-full px-5 py-3.5 bg-gradient-to-r from-teal-50 to-teal-100/50 border-2 border-teal-200 rounded-xl 
                                    focus:outline-none focus:ring-4 focus:ring-teal-200 focus:border-teal-400 
-                                   transition-all duration-200 font-medium text-gray-900">
+                                   transition-all duration-200 font-medium !text-gray-900">
                         <option value="">Seleccionar...</option>
                         @foreach ($availabilityOptions as $key => $label)
                             <option value="{{ $key }}"
@@ -240,7 +240,7 @@
                 <textarea name="bio" rows="5" maxlength="1000"
                     class="w-full px-5 py-4 bg-gradient-to-br from-violet-50 to-violet-100/50 border-2 border-violet-200 rounded-2xl 
                                  focus:outline-none focus:ring-4 focus:ring-violet-200 focus:border-violet-400 
-                                 transition-all duration-200 font-medium text-gray-900 placeholder-gray-500 resize-none"
+                                 transition-all duration-200 font-medium !text-gray-900 placeholder-gray-500 resize-none"
                     placeholder="Habla sobre tu personalidad, pasiones, qué te hace única y especial..." x-model="bio">{{ old('bio', $user->bio) }}</textarea>
                 <div class="flex justify-between items-center mt-2">
                     <p class="text-gray-500 text-sm font-medium" x-text="`${bio.length}/1000 caracteres`"></p>
@@ -266,7 +266,7 @@
                 <textarea name="appearance_details" rows="3" maxlength="500"
                     class="w-full px-5 py-4 bg-gradient-to-br from-pink-50 to-pink-100/50 border-2 border-pink-200 rounded-2xl 
                                  focus:outline-none focus:ring-4 focus:ring-pink-200 focus:border-pink-400 
-                                 transition-all duration-200 font-medium text-gray-900 placeholder-gray-500 resize-none"
+                                 transition-all duration-200 font-medium !text-gray-900 placeholder-gray-500 resize-none"
                     placeholder="Color de ojos, cabello, características únicas que te definen..." x-model="appearanceDetails">{{ old('appearance_details', $user->profileDetail->appearance_details) }}</textarea>
                 <p class="text-gray-500 text-sm mt-2 font-medium" x-text="`${appearanceDetails.length}/500 caracteres`">
                 </p>
@@ -281,7 +281,7 @@
                     class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-xl shadow-lg">
                     📚
                 </div>
-                <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Educación y
+                <h2 class="text-2xl font-black !text-gray-900" style="font-family: 'Outfit', sans-serif;">Educación y
                     Ocupación</h2>
             </div>
 
@@ -294,7 +294,7 @@
                     <select name="education"
                         class="w-full px-5 py-3.5 bg-gradient-to-r from-indigo-50 to-indigo-100/50 border-2 border-indigo-200 rounded-xl 
                                    focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:border-indigo-400 
-                                   transition-all duration-200 font-medium text-gray-900">
+                                   transition-all duration-200 font-medium !text-gray-900">
                         <option value="">Seleccionar...</option>
                         @foreach ($educationLevels as $key => $label)
                             <option value="{{ $key }}"
@@ -313,7 +313,7 @@
                         placeholder="Ej: Estudiante, Modelo, Empresaria"
                         class="w-full px-5 py-3.5 bg-gradient-to-r from-blue-50 to-blue-100/50 border-2 border-blue-200 rounded-xl 
                                   focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-400 
-                                  transition-all duration-200 font-medium text-gray-900 placeholder-gray-500">
+                                  transition-all duration-200 font-medium !text-gray-900 placeholder-gray-500">
                 </div>
 
             </div>
@@ -331,7 +331,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis
+                    <h2 class="text-2xl font-black !text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis
                         Aspiraciones y Metas</h2>
                     <p class="text-sm text-gray-600">Qué quieres lograr en la vida</p>
                 </div>
@@ -340,7 +340,7 @@
             <textarea name="aspirations" rows="5" maxlength="1000"
                 class="w-full px-5 py-4 bg-white border-2 border-purple-300 rounded-2xl 
                              focus:outline-none focus:ring-4 focus:ring-purple-200 focus:border-purple-500 
-                             transition-all duration-200 font-medium text-gray-900 placeholder-gray-500 resize-none"
+                             transition-all duration-200 font-medium !text-gray-900 placeholder-gray-500 resize-none"
                 placeholder="Tus sueños, metas profesionales, experiencias que quieres vivir, cómo quieres crecer..."
                 x-model="aspirations">{{ old('aspirations', $user->profileDetail->aspirations) }}</textarea>
             <p class="text-gray-600 text-sm mt-2 font-medium" x-text="`${aspirations.length}/1000 caracteres`"></p>
@@ -357,7 +357,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis Intereses
+                    <h2 class="text-2xl font-black !text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis Intereses
                     </h2>
                     <p class="text-sm text-gray-500">Selecciona lo que te apasiona (máximo 8)</p>
                 </div>
@@ -374,7 +374,7 @@
                             {{ in_array($key, old('interests', $user->profileDetail->interests ?? [])) ? 'checked' : '' }}
                             x-model="interests"
                             class="w-5 h-5 rounded-lg border-2 text-pink-600 focus:ring-4 focus:ring-pink-200">
-                        <span class="text-sm font-bold text-gray-900">{{ $label }}</span>
+                        <span class="text-sm font-bold !text-gray-900">{{ $label }}</span>
                         <svg x-show="interests.includes('{{ $key }}')"
                             class="absolute -top-2 -right-2 w-6 h-6 text-green-500 bg-white rounded-full shadow-lg"
                             fill="currentColor" viewBox="0 0 20 20">
@@ -399,7 +399,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi Sugar
+                    <h2 class="text-2xl font-black !text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi Sugar
                         Daddy Ideal</h2>
                     <p class="text-sm text-gray-600">Describe a tu pareja perfecta</p>
                 </div>
@@ -408,7 +408,7 @@
             <textarea name="ideal_daddy" rows="5" maxlength="500"
                 class="w-full px-5 py-4 bg-white border-2 border-pink-300 rounded-2xl 
                              focus:outline-none focus:ring-4 focus:ring-pink-200 focus:border-pink-500 
-                             transition-all duration-200 font-medium text-gray-900 placeholder-gray-500 resize-none"
+                             transition-all duration-200 font-medium !text-gray-900 placeholder-gray-500 resize-none"
                 placeholder="Cualidades, personalidad, estilo de vida, tipo de relación que buscas..." x-model="idealDaddy">{{ old('ideal_daddy', $user->profileDetail->ideal_daddy) }}</textarea>
             <p class="text-gray-600 text-sm mt-2 font-medium" x-text="`${idealDaddy.length}/500 caracteres`"></p>
         </div>
