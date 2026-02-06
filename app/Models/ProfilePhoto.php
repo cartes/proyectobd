@@ -15,6 +15,10 @@ class ProfilePhoto extends Model
     protected $fillable = [
         'user_id',
         'photo_path',
+        'thumbnail_path',
+        'medium_path',
+        'large_path',
+        'file_size',
         'is_primary',
         'is_verified',
         'moderation_status',
@@ -55,11 +59,45 @@ class ProfilePhoto extends Model
     }
 
     /**
-     * Obtener URL del thumbnail (puedes implementar thumbnails después)
+     * Get URL of thumbnail (150x150)
      */
     public function getThumbnailAttribute(): string
     {
-        return $this->url; // Por ahora retorna la misma foto
+        // Return optimized thumbnail if exists
+        if ($this->thumbnail_path && Storage::disk('public')->exists($this->thumbnail_path)) {
+            return Storage::url($this->thumbnail_path);
+        }
+
+        // Fallback to original
+        return $this->url;
+    }
+
+    /**
+     * Get URL of medium size (600x600)
+     */
+    public function getMediumAttribute(): string
+    {
+        // Return optimized medium if exists
+        if ($this->medium_path && Storage::disk('public')->exists($this->medium_path)) {
+            return Storage::url($this->medium_path);
+        }
+
+        // Fallback to original
+        return $this->url;
+    }
+
+    /**
+     * Get URL of large size (1200x1200)
+     */
+    public function getLargeAttribute(): string
+    {
+        // Return optimized large if exists
+        if ($this->large_path && Storage::disk('public')->exists($this->large_path)) {
+            return Storage::url($this->large_path);
+        }
+
+        // Fallback to original
+        return $this->url;
     }
 
     /**

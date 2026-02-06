@@ -151,7 +151,7 @@
                 <div class="flex-1 flex items-center justify-between">
                     <span class="font-medium">Fotos</span>
                     <span
-                        class="text-[10px] bg-amber-500/10 px-2 py-0.5 rounded-full text-amber-500">{{ \App\Models\ProfilePhoto::where('moderation_status', 'pending')->count() }}</span>
+                        class="text-[10px] bg-amber-500/10 px-2 py-0.5 rounded-full text-amber-500">{{ $adminStats['pending_photos_count'] ?? 0 }}</span>
                 </div>
             </a>
 

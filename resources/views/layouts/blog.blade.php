@@ -41,8 +41,8 @@
 
     {{-- Google Analytics --}}
     @php
-        $gaId = \App\Models\BlogSettings::get('google_analytics_id');
-        $gtmId = \App\Models\BlogSettings::get('google_tag_manager_id');
+        $gaId = $blogSettings['google_analytics_id'] ?? null;
+        $gtmId = $blogSettings['google_tag_manager_id'] ?? null;
     @endphp
 
     @if ($gaId)
@@ -81,7 +81,7 @@
 
     {{-- Custom Header Scripts --}}
     @php
-        $headerScripts = \App\Models\BlogSettings::get('header_scripts');
+        $headerScripts = $blogSettings['header_scripts'] ?? null;
     @endphp
     @if ($headerScripts)
         {!! $headerScripts !!}
@@ -218,7 +218,7 @@
 
     {{-- Custom Footer Scripts --}}
     @php
-        $footerScripts = \App\Models\BlogSettings::get('footer_scripts');
+        $footerScripts = $blogSettings['footer_scripts'] ?? null;
     @endphp
     @if ($footerScripts)
         {!! $footerScripts !!}
