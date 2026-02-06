@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProfilePhoto;
+use App\Services\ImageOptimizationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class ProfilePhotoController extends Controller
 {
-    public function store(\App\Http\Requests\StorePhotoRequest $request)
+    public function store(\App\Http\Requests\StorePhotoRequest $request, ImageOptimizationService $imageService)
     {
         $user = Auth::user();
 
@@ -23,16 +22,16 @@ class ProfilePhotoController extends Controller
                 throw new \Exception('El servidor no recibió el archivo de imagen. Es posible que el archivo exceda los límites permitidos.');
             }
 
-            // ✅ USAR extension() EN LUGAR DE getClientOriginalExtension() PARA MAYOR SEGURIDAD
-            $extension = $file->extension();
-            $filename = Str::uuid().'.'.$extension;
+            // ✅ OPTIMIZAR Y GENERAR THUMBNAILS
+            $paths = $imageService->optimizeAndStore($file, $user->getStoragePath());
 
-            // ✅ USAR RUTA OFUSCADA
-            $path = $file->storeAs($user->getStoragePath(), $filename, 'public');
-
-            // Crear registro
+            // Crear registro con todas las versiones optimizadas
             $photo = $user->photos()->create([
-                'photo_path' => $path,
+                'photo_path' => $paths['original'],
+                'thumbnail_path' => $paths['thumbnail_path'],
+                'medium_path' => $paths['medium_path'],
+                'large_path' => $paths['large_path'],
+                'file_size' => $paths['file_size'],
                 'order' => $user->photos()->count(),
                 'moderation_status' => 'approved', // Auto-aprobar por ahora
                 'potential_nudity' => $request->boolean('potential_nudity', false),
@@ -43,7 +42,7 @@ class ProfilePhotoController extends Controller
                 $photo->setAsPrimary();
             }
 
-            return back()->with('success', '¡Foto subida exitosamente! 📸');
+            return back()->with('success', '¡Foto subida y optimizada exitosamente! 📸');
 
         } catch (\Exception $e) {
             \Log::error('ProfilePhotoController@store: Exception caught', [
@@ -104,7 +103,7 @@ class ProfilePhotoController extends Controller
     /**
      * Eliminar foto
      */
-    public function destroy(ProfilePhoto $photo)
+    public function destroy(ProfilePhoto $photo, ImageOptimizationService $imageService)
     {
         $user = Auth::user();
 
@@ -114,12 +113,10 @@ class ProfilePhotoController extends Controller
         }
 
         try {
-            // Elminiar archivo fisico
-            if (Storage::disk('public')->exists($photo->photo_path)) {
-                Storage::disk('public')->delete($photo->photo_path);
-            }
+            // ✅ ELIMINAR TODAS LAS VERSIONES DE LA IMAGEN
+            $imageService->deleteImageVersions($photo->photo_path);
 
-            // Si erea la foto principal, establecer otra como principal
+            // Si era la foto principal, establecer otra como principal
             if ($photo->is_primary) {
                 $nextPhoto = $user->photos()->where('id', '!=', $photo->id)->first();
 
