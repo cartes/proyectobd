@@ -6,7 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Big-dad') }}</title>
+    <title>@yield('meta_title', config('app.name', 'Big-dad'))</title>
+    <meta name="description" content="@yield('meta_description', 'Big-dad - La plataforma líder de Sugar Dating en Latinoamérica')">
+    <meta name="keywords" content="@yield('meta_keywords', 'sugar dating, big-dad, citas exclusivas')">
+    <meta name="author" content="Big-dad">
+    <meta name="robots" content="@yield('meta_robots', 'index, follow')">
+    <link rel="canonical" href="@yield('canonical', url()->current())">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="@hasSection('og_title')
+@yield('og_title')@else@yield('meta_title', config('app.name'))
+@endif">
+    <meta property="og:description" content="@yield('og_description', 'Big-dad - La plataforma líder de Sugar Dating en Latinoam&#233;rica')">
+    <meta property="og:image" content="@yield('og_image', asset('images/og-image.jpg'))">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ url()->current() }}">
+    <meta property="twitter:title" content="@hasSection('twitter_title')
+@yield('twitter_title')@else@yield('meta_title', config('app.name'))
+@endif">
+    <meta property="twitter:description" content="@yield('twitter_description', 'Big-dad - La plataforma líder de Sugar Dating en Latinoam&#233;rica')">
+    <meta property="twitter:image" content="@yield('twitter_image', asset('images/og-image.jpg'))">
+
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
 

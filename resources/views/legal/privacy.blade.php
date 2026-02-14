@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Política de Privacidad - Big-Dad</title>
+    <meta name="description"
+        content="Conoce cómo Big-Dad protege tu privacidad y maneja tus datos personales. Política de privacidad completa de la plataforma líder de Sugar Dating.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ route('legal.privacy') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

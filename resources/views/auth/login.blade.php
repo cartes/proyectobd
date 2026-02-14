@@ -1,3 +1,8 @@
+@section('meta_title', 'Iniciar Sesión | Big-dad Sugar Dating')
+@section('meta_description', 'Accede a tu cuenta Big-dad y conecta con Sugar Babies y Sugar Daddies verificados en toda
+    Latinoamérica. Plataforma segura y discreta.')
+@section('meta_keywords', 'login sugar dating, ingresar big-dad, acceso plataforma sugar, iniciar sesión')
+
 <x-guest-layout>
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
