@@ -9,7 +9,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilePhotoController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StorageController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\WebhookController;
@@ -23,9 +22,19 @@ Route::get('/', function () {
 Route::get('/storage/profiles/{hash}/{file}', [StorageController::class, 'showProfilePhoto']);
 Route::get('/storage/{path}', [StorageController::class, 'showPublicFile'])->where('path', '.*');
 
-// SEO Sitemap
-Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
-Route::get('/sitemap-blog.xml', [SitemapController::class, 'blog'])->name('sitemap.blog');
+// SEO Sitemap (static file served directly)
+// Generate with: php artisan sitemap:generate
+Route::get('/sitemap.xml', function () {
+    $path = public_path('sitemap.xml');
+
+    if (! file_exists($path)) {
+        abort(404, 'Sitemap not found. Run: php artisan sitemap:generate');
+    }
+
+    return response()->file($path, [
+        'Content-Type' => 'application/xml',
+    ]);
+})->name('sitemap');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');

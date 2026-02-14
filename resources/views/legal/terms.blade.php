@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Términos y Condiciones - Big-Dad</title>
+    <meta name="description"
+        content="Lee los Términos y Condiciones de Big-Dad, la plataforma líder de Sugar Dating en Latinoamérica. Conoce tus derechos y responsabilidades.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ route('legal.terms') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
