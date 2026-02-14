@@ -29,13 +29,13 @@ class GenerateSitemap extends Command
 
         $urls = $this->collectUrls();
         $xml = $this->buildXml($urls);
-        
+
         $outputPath = $this->option('output');
         File::put(base_path($outputPath), $xml);
 
-        $this->info("✅ Sitemap generated successfully!");
+        $this->info('✅ Sitemap generated successfully!');
         $this->info("📍 Location: {$outputPath}");
-        $this->info("📊 Total URLs: " . count($urls));
+        $this->info('📊 Total URLs: '.count($urls));
 
         return Command::SUCCESS;
     }
@@ -147,7 +147,7 @@ class GenerateSitemap extends Command
                 'priority' => $page['priority'],
             ];
         }
-        $this->info("  ✓ Added 4 legal pages");
+        $this->info('  ✓ Added 4 legal pages');
 
         return $urls;
     }
@@ -157,16 +157,16 @@ class GenerateSitemap extends Command
      */
     protected function buildXml(array $urls): string
     {
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL;
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.PHP_EOL;
 
         foreach ($urls as $url) {
-            $xml .= '  <url>' . PHP_EOL;
-            $xml .= '    <loc>' . htmlspecialchars($url['loc'], ENT_XML1) . '</loc>' . PHP_EOL;
-            $xml .= '    <lastmod>' . $url['lastmod'] . '</lastmod>' . PHP_EOL;
-            $xml .= '    <changefreq>' . $url['changefreq'] . '</changefreq>' . PHP_EOL;
-            $xml .= '    <priority>' . $url['priority'] . '</priority>' . PHP_EOL;
-            $xml .= '  </url>' . PHP_EOL;
+            $xml .= '  <url>'.PHP_EOL;
+            $xml .= '    <loc>'.htmlspecialchars($url['loc'], ENT_XML1).'</loc>'.PHP_EOL;
+            $xml .= '    <lastmod>'.$url['lastmod'].'</lastmod>'.PHP_EOL;
+            $xml .= '    <changefreq>'.$url['changefreq'].'</changefreq>'.PHP_EOL;
+            $xml .= '    <priority>'.$url['priority'].'</priority>'.PHP_EOL;
+            $xml .= '  </url>'.PHP_EOL;
         }
 
         $xml .= '</urlset>';

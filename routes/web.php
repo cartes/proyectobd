@@ -14,7 +14,6 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
@@ -27,16 +26,15 @@ Route::get('/storage/{path}', [StorageController::class, 'showPublicFile'])->whe
 // Generate with: php artisan sitemap:generate
 Route::get('/sitemap.xml', function () {
     $path = public_path('sitemap.xml');
-    
-    if (!file_exists($path)) {
+
+    if (! file_exists($path)) {
         abort(404, 'Sitemap not found. Run: php artisan sitemap:generate');
     }
-    
+
     return response()->file($path, [
         'Content-Type' => 'application/xml',
     ]);
 })->name('sitemap');
-
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
