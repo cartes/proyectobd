@@ -39,10 +39,23 @@ class StorageController extends Controller
      */
     public function showPublicFile(string $path): BinaryFileResponse
     {
-        if (! Storage::disk('public')->exists($path)) {
-            abort(404);
+        // Try standard Laravel path first
+        if (Storage::disk('public')->exists($path)) {
+            return response()->file(Storage::disk('public')->path($path));
         }
 
-        return response()->file(Storage::disk('public')->path($path));
+        // Fallback 1: Directly in storage/ (Railway volumes sometimes mount here)
+        $fallback1 = storage_path($path);
+        if (file_exists($fallback1)) {
+            return response()->file($fallback1);
+        }
+
+        // Fallback 2: in storage/app/public/ (Standard Laravel structure)
+        $fallback2 = storage_path('app/public/'.$path);
+        if (file_exists($fallback2)) {
+            return response()->file($fallback2);
+        }
+
+        abort(404);
     }
 }
