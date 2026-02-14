@@ -91,6 +91,19 @@ class StorageController extends Controller
             return response()->file($fallback3);
         }
 
+        // Railway volume mount fallback (Railway mounts volumes at /storage not /app/storage)
+        $fallback4 = '/storage/app/public/'.$path;
+        \Log::info('StorageController: Trying fallback 4 (Railway volume /storage)', [
+            'path' => $fallback4,
+            'exists' => file_exists($fallback4),
+        ]);
+
+        if (file_exists($fallback4)) {
+            \Log::info('StorageController: File found in fallback 4 (Railway volume)');
+
+            return response()->file($fallback4);
+        }
+
         \Log::error('StorageController: File not found in any location', [
             'requested_path' => $path,
             'checked_paths' => [
@@ -98,6 +111,7 @@ class StorageController extends Controller
                 $fallback1,
                 $fallback2,
                 $fallback3,
+                $fallback4,
             ],
         ]);
 
