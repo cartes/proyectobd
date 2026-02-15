@@ -306,34 +306,34 @@
         {
           "@context": "https://schema.org",
           "@type": "BlogPosting",
-          "headline": "{{ $post->title }}",
-          "description": "{{ $post->excerpt }}",
+          "headline": {{ json_encode($post->title) }},
+          "description": {{ json_encode($post->excerpt ?? '') }},
           @if($post->featured_image)
-          "image": "{{ asset('app-media/' . $post->featured_image) }}",
+          "image": {{ json_encode(asset('app-media/' . $post->featured_image)) }},
           @endif
-          "datePublished": "{{ $post->published_at->toIso8601String() }}",
-          "dateModified": "{{ $post->updated_at->toIso8601String() }}",
+          "datePublished": {{ json_encode($post->published_at->toIso8601String()) }},
+          "dateModified": {{ json_encode($post->updated_at->toIso8601String()) }},
           "author": {
             "@type": "Person",
-            "name": "{{ $post->author->name ?? config('app.name') }}"
+            "name": {{ json_encode($post->author->name ?? config('app.name')) }}
           },
           "publisher": {
             "@type": "Organization",
-            "name": "{{ config('app.name') }}",
+            "name": {{ json_encode(config('app.name')) }},
             "logo": {
               "@type": "ImageObject",
-              "url": "{{ asset('favicon.png') }}"
+              "url": {{ json_encode(asset('favicon.png')) }}
             }
           },
           @if($post->category)
-          "articleSection": "{{ $post->category->name }}",
+          "articleSection": {{ json_encode($post->category->name) }},
           @endif
           "wordCount": {{ str_word_count(strip_tags($post->content)) }},
-          "timeRequired": "PT{{ $post->reading_time ?? 5 }}M",
-          "url": "{{ route('blog.show', $post->slug) }}",
+          "timeRequired": {{ json_encode('PT' . ($post->reading_time ?? 5) . 'M') }},
+          "url": {{ json_encode(route('blog.show', $post->slug)) }},
           "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": "{{ route('blog.show', $post->slug) }}"
+            "@id": {{ json_encode(route('blog.show', $post->slug)) }}
           }
         }
         </script>
@@ -343,8 +343,8 @@
             // Track article read event for analytics
             @if (config('services.google_analytics.id'))
                 gtag('event', 'article_read', {
-                    'article_title': '{{ $post->title }}',
-                    'article_category': '{{ $post->category ? $post->category->name : 'Uncategorized' }}'
+                    'article_title': {{ json_encode($post->title) }},
+                    'article_category': {{ json_encode($post->category ? $post->category->name : 'Uncategorized') }}
                 });
             @endif
         </script>
