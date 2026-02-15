@@ -130,7 +130,7 @@
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center">
-                                            <img src="{{ $report->reportedUser->getPrimaryPhotoUrlAttribute ?? '/images/default-avatar.png' }}"
+                                            <img src="{{ $report->reportedUser->primary_photo_url ?? '/images/default-avatar.png' }}"
                                                 class="w-10 h-10 rounded-full mr-3">
                                             <div>
                                                 <div class="font-medium text-gray-900">{{ $report->reportedUser->name }}

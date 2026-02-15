@@ -115,8 +115,13 @@
                                 <div class="flex items-center gap-4">
                                     <div class="relative">
                                         <div
-                                            class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500/20 to-purple-500/20 border border-white/10 flex items-center justify-center text-pink-500 font-black text-lg">
-                                            {{ substr($user->name, 0, 1) }}
+                                            class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500/20 to-purple-500/20 border border-white/10 flex items-center justify-center text-pink-500 font-black text-lg overflow-hidden">
+                                            @if ($user->primary_photo_url)
+                                                <img src="{{ $user->primary_photo_url }}" alt="{{ $user->name }}"
+                                                    class="w-full h-full object-cover">
+                                            @else
+                                                {{ substr($user->name, 0, 1) }}
+                                            @endif
                                         </div>
                                         @if ($user->is_premium)
                                             <div
