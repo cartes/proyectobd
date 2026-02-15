@@ -302,40 +302,54 @@
 
     @push('scripts')
         {{-- Schema.org JSON-LD for SEO --}}
-        <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          "headline": {{ json_encode($post->title) }},
-          "description": {{ json_encode($post->excerpt ?? '') }},
-          @if($post->featured_image)
-          "image": {{ json_encode(asset('app-media/' . $post->featured_image)) }},
-          @endif
-          "datePublished": {{ json_encode($post->published_at->toIso8601String()) }},
-          "dateModified": {{ json_encode($post->updated_at->toIso8601String()) }},
-          "author": {
-            "@type": "Person",
-            "name": {{ json_encode($post->author->name ?? config('app.name')) }}
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": {{ json_encode(config('app.name')) }},
-            "logo": {
-              "@type": "ImageObject",
-              "url": {{ json_encode(asset('favicon.png')) }}
+        @php
+            $schemaData = [
+                '@context' => 'https://schema.org',
+                '@type' => 'BlogPosting',
+                'headline' => $post->title,
+                'description' => $post->excerpt ?? '',
+                'datePublished' => $post->published_at->toIso8601String(),
+                'dateModified' => $post->updated_at->toIso8601String(),
+                'wordCount' => str_word_count(strip_tags($post->content)),
+                'timeRequired' => 'PT' . ($post->reading_time ?? 5) . 'M',
+                'url' => route('blog.show', $post->slug),
+                'mainEntityOfPage' => [
+                    '@type' => 'WebPage',
+                    '@id' => route('blog.show', $post->slug),
+                ],
+            ];
+
+            // Add featured image if available
+            if ($post->featured_image) {
+                $schemaData['image'] = asset('app-media/' . $post->featured_image);
             }
-          },
-          @if($post->category)
-          "articleSection": {{ json_encode($post->category->name) }},
-          @endif
-          "wordCount": {{ str_word_count(strip_tags($post->content)) }},
-          "timeRequired": {{ json_encode('PT' . ($post->reading_time ?? 5) . 'M') }},
-          "url": {{ json_encode(route('blog.show', $post->slug)) }},
-          "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": {{ json_encode(route('blog.show', $post->slug)) }}
-          }
-        }
+
+            // Add author if available
+            if ($post->author) {
+                $schemaData['author'] = [
+                    '@type' => 'Person',
+                    'name' => $post->author->name,
+                ];
+            }
+
+            // Add publisher
+            $schemaData['publisher'] = [
+                '@type' => 'Organization',
+                'name' => config('app.name'),
+                'logo' => [
+                    '@type' => 'ImageObject',
+                    'url' => asset('favicon.png'),
+                ],
+            ];
+
+            // Add category if available
+            if ($post->category) {
+                $schemaData['articleSection'] = $post->category->name;
+            }
+        @endphp
+
+        <script type="application/ld+json">
+        {!! json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
         </script>
 
         {{-- Google Analytics Event Tracking --}}
