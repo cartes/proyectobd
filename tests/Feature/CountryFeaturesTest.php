@@ -87,6 +87,6 @@ class CountryFeaturesTest extends TestCase
             'city' => 'Santiago',
         ]);
 
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect(route('verification.notice'));
     }
 }
