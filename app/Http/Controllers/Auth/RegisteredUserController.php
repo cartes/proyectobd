@@ -66,8 +66,11 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
+
+        // Log the user in so they can access the verification notice page
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Redirect to email verification notice instead of dashboard
+        return redirect()->route('verification.notice');
     }
 }
