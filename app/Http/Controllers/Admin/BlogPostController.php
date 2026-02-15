@@ -217,7 +217,7 @@ class BlogPostController extends Controller
         $path = $request->file('image')->store('blog/content-images', 'public');
 
         return response()->json([
-            'location' => Storage::url($path),
+            'location' => Storage::disk('public')->url($path),
         ]);
     }
 

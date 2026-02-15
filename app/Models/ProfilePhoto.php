@@ -55,7 +55,7 @@ class ProfilePhoto extends Model
         }
 
         // Si no, usar Storage
-        return Storage::url($this->photo_path);
+        return Storage::disk('public')->url($this->photo_path);
     }
 
     /**
@@ -65,7 +65,7 @@ class ProfilePhoto extends Model
     {
         // Return optimized thumbnail if exists
         if ($this->thumbnail_path && Storage::disk('public')->exists($this->thumbnail_path)) {
-            return Storage::url($this->thumbnail_path);
+            return Storage::disk('public')->url($this->thumbnail_path);
         }
 
         // Fallback to original
@@ -79,7 +79,7 @@ class ProfilePhoto extends Model
     {
         // Return optimized medium if exists
         if ($this->medium_path && Storage::disk('public')->exists($this->medium_path)) {
-            return Storage::url($this->medium_path);
+            return Storage::disk('public')->url($this->medium_path);
         }
 
         // Fallback to original
@@ -93,7 +93,7 @@ class ProfilePhoto extends Model
     {
         // Return optimized large if exists
         if ($this->large_path && Storage::disk('public')->exists($this->large_path)) {
-            return Storage::url($this->large_path);
+            return Storage::disk('public')->url($this->large_path);
         }
 
         // Fallback to original
