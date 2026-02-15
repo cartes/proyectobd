@@ -171,7 +171,7 @@
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
                                             @if ($post->featured_image)
-                                                <img src="{{ asset('storage/' . $post->featured_image) }}"
+                                                <img src="{{ asset('app-media/' . $post->featured_image) }}"
                                                     alt="{{ $post->title }}" class="w-12 h-12 rounded-lg object-cover">
                                             @else
                                                 <div

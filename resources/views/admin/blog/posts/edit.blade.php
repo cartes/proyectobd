@@ -156,7 +156,7 @@
                             @if ($post->featured_image)
                                 <div id="currentImage"
                                     class="aspect-video rounded-lg overflow-hidden bg-white/5 border border-white/10 relative group">
-                                    <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}"
+                                    <img src="{{ asset('app-media/' . $post->featured_image) }}" alt="{{ $post->title }}"
                                         class="w-full h-full object-cover">
                                     <button type="button"
                                         onclick="document.getElementById('currentImage').remove(); document.getElementById('removeImage').value = '1';"

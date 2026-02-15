@@ -9,13 +9,13 @@
 @section('og_title', $post->meta_title ?: $post->title)
 @section('og_description', $post->meta_description ?: $post->excerpt)
 @section('og_url', route('blog.show', $post->slug))
-@section('og_image', $post->og_image ? asset('storage/' . $post->og_image) : ($post->featured_image ? asset('storage/' .
+@section('og_image', $post->og_image ? asset('app-media/' . $post->og_image) : ($post->featured_image ? asset('app-media/' .
     $post->featured_image) : asset('images/og-default.jpg')))
 
 @section('twitter_title', $post->meta_title ?: $post->title)
 @section('twitter_description', $post->meta_description ?: $post->excerpt)
-@section('twitter_image', $post->og_image ? asset('storage/' . $post->og_image) : ($post->featured_image ?
-    asset('storage/' . $post->featured_image) : asset('images/og-default.jpg')))
+@section('twitter_image', $post->og_image ? asset('app-media/' . $post->og_image) : ($post->featured_image ?
+    asset('app-media/' . $post->featured_image) : asset('images/og-default.jpg')))
 
     @push('styles')
         <style>
@@ -27,7 +27,7 @@
             /* Hero Background */
             .hero-bg {
                 background-image: linear-gradient(135deg, rgba(236, 72, 153, 0.3) 0%, rgba(168, 85, 247, 0.3) 50%, rgba(251, 146, 60, 0.3) 100%),
-                    url('{{ $post->featured_image ? asset('storage/' . $post->featured_image) : '' }}');
+                    url('{{ $post->featured_image ? asset('app-media/' . $post->featured_image) : '' }}');
                 background-size: cover;
                 background-position: center;
                 background-attachment: fixed;
@@ -268,7 +268,7 @@
                                 @if ($related->featured_image)
                                     <a href="{{ route('blog.show', $related->slug) }}">
                                         <div class="aspect-video overflow-hidden relative">
-                                            <img src="{{ asset('storage/' . $related->featured_image) }}"
+                                            <img src="{{ asset('app-media/' . $related->featured_image) }}"
                                                 alt="{{ $related->title }}"
                                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                             <div

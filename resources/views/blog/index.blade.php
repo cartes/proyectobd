@@ -102,7 +102,7 @@
                             <!-- Background Image -->
                             <div class="absolute inset-0">
                                 @if ($post->featured_image)
-                                    <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}"
+                                    <img src="{{ asset('app-media/' . $post->featured_image) }}" alt="{{ $post->title }}"
                                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                 @else
                                     <div class="w-full h-full bg-gradient-to-br from-slate-800 to-slate-700"></div>

@@ -44,7 +44,7 @@
                             @if ($post->featured_image)
                                 <a href="{{ route('blog.show', $post->slug) }}" class="block">
                                     <div class="aspect-video overflow-hidden">
-                                        <img src="{{ asset('storage/' . $post->featured_image) }}" alt="{{ $post->title }}"
+                                        <img src="{{ asset('app-media/' . $post->featured_image) }}" alt="{{ $post->title }}"
                                             class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                                     </div>
                                 </a>
