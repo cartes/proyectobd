@@ -9,8 +9,8 @@
 @section('og_title', $post->meta_title ?: $post->title)
 @section('og_description', $post->meta_description ?: $post->excerpt)
 @section('og_url', route('blog.show', $post->slug))
-@section('og_image', $post->og_image ? asset('app-media/' . $post->og_image) : ($post->featured_image ? asset('app-media/' .
-    $post->featured_image) : asset('images/og-default.jpg')))
+@section('og_image', $post->og_image ? asset('app-media/' . $post->og_image) : ($post->featured_image ?
+    asset('app-media/' . $post->featured_image) : asset('images/og-default.jpg')))
 
 @section('twitter_title', $post->meta_title ?: $post->title)
 @section('twitter_description', $post->meta_description ?: $post->excerpt)
@@ -301,6 +301,44 @@
     </article>
 
     @push('scripts')
+        {{-- Schema.org JSON-LD for SEO --}}
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "headline": "{{ $post->title }}",
+          "description": "{{ $post->excerpt }}",
+          @if($post->featured_image)
+          "image": "{{ asset('app-media/' . $post->featured_image) }}",
+          @endif
+          "datePublished": "{{ $post->published_at->toIso8601String() }}",
+          "dateModified": "{{ $post->updated_at->toIso8601String() }}",
+          "author": {
+            "@type": "Person",
+            "name": "{{ $post->author->name ?? config('app.name') }}"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "{{ config('app.name') }}",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "{{ asset('favicon.png') }}"
+            }
+          },
+          @if($post->category)
+          "articleSection": "{{ $post->category->name }}",
+          @endif
+          "wordCount": {{ str_word_count(strip_tags($post->content)) }},
+          "timeRequired": "PT{{ $post->reading_time ?? 5 }}M",
+          "url": "{{ route('blog.show', $post->slug) }}",
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "{{ route('blog.show', $post->slug) }}"
+          }
+        }
+        </script>
+
+        {{-- Google Analytics Event Tracking --}}
         <script>
             // Track article read event for analytics
             @if (config('services.google_analytics.id'))
