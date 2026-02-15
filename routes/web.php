@@ -18,9 +18,9 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-// Controlled Storage Routes (Handling 403/405 and Privacy)
-Route::get('/storage/profiles/{hash}/{file}', [StorageController::class, 'showProfilePhoto']);
-Route::get('/storage/{path}', [StorageController::class, 'showPublicFile'])->where('path', '.*');
+// Controlled Media Routes (Bypassing reserved /storage path)
+Route::get('/app-media/profiles/{hash}/{file}', [StorageController::class, 'showProfilePhoto']);
+Route::get('/app-media/{path}', [StorageController::class, 'showPublicFile'])->where('path', '.*');
 
 // SEO Sitemap (static file served directly)
 // Generate with: php artisan sitemap:generate
