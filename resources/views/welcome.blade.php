@@ -64,6 +64,49 @@
 
 <body class="bg-slate-900 text-white antialiased overflow-x-hidden font-outfit" x-data="homePage()">
 
+    <!-- Modal de Verificación de Edad (Age Gate) -->
+    <div x-cloak x-show="showAgeGate" x-transition.opacity.duration.500ms
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-md">
+
+        <div class="relative w-full max-w-md p-8 mx-4 text-center border shadow-2xl bg-slate-800 border-slate-700 rounded-3xl overflow-hidden"
+            @click.outside.prevent>
+            <!-- Resplandor decorativo de fondo -->
+            <div class="absolute w-full h-full rounded-full -top-1/2 -left-1/2 bg-pink-500/10 blur-[80px]"></div>
+
+            <div class="relative z-10">
+                <!-- Logo -->
+                <div class="mb-6">
+                    <span class="text-3xl font-black tracking-tighter">
+                        BIG-<span class="text-pink-500">DAD</span>
+                    </span>
+                </div>
+
+                <!-- Título -->
+                <h2 class="mb-4 text-2xl font-bold text-white">Sitio exclusivo para mayores de 18 años</h2>
+
+                <!-- Texto Legal -->
+                <p class="mb-8 text-sm leading-relaxed text-white">
+                    Esta plataforma contiene contenido para adultos y está estrictamente restringida a personas mayores
+                    de 18 años o la mayoría de edad legal en su jurisdicción. Al ingresar, confirmas bajo tu
+                    responsabilidad que cumples con este requisito.
+                </p>
+
+                <!-- Botones -->
+                <div class="flex flex-col gap-4">
+                    <button @click="acceptAge"
+                        class="w-full px-6 py-3 font-bold text-white transition-all bg-gradient-to-r from-pink-500 to-rose-600 rounded-xl hover:shadow-lg hover:shadow-pink-500/30 hover:scale-[1.02]">
+                        Sí, soy mayor de 18 años y acepto los términos
+                    </button>
+
+                    <a href="https://www.google.com"
+                        class="w-full px-6 py-3 font-bold transition-all border text-slate-300 border-slate-600 rounded-xl hover:bg-slate-700 hover:text-white">
+                        No, salir del sitio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Sticky Navigation -->
     <nav x-ref="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300"
         :class="isScrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-lg py-4' : 'bg-transparent py-6'">
@@ -123,6 +166,12 @@
 
         <div class="relative z-10 container mx-auto px-6 text-center">
             <div class="relative inline-block animate-fade-in-up">
+                <!-- Badge +18 -->
+                <span
+                    class="inline-block px-4 py-1 mb-4 text-sm font-bold tracking-wider text-red-500 uppercase border rounded-full bg-red-500/10 border-red-500/30">
+                    🔞 +18 PLATAFORMA EXCLUSIVA PARA ADULTOS
+                </span>
+                <br>
                 <span
                     class="inline-block py-1 px-3 rounded-full bg-pink-500/10 border border-pink-500/30 text-pink-400 text-xs font-bold uppercase tracking-widest mb-6">
                     ✨ La comunidad #1 de Lifestyle en Latinoamérica
@@ -430,7 +479,16 @@
         function homePage() {
             return {
                 isScrolled: false,
+                showAgeGate: false,
+
                 init() {
+                    // Lógica del Modal Age Gate
+                    if (!localStorage.getItem('age_verified')) {
+                        this.showAgeGate = true;
+                        // Bloquear el scroll del body cuando el modal está abierto
+                        document.body.style.overflow = 'hidden';
+                    }
+
                     window.addEventListener('scroll', () => {
                         this.isScrolled = window.scrollY > 50;
                     });
@@ -440,12 +498,23 @@
                         document.body.style.setProperty('--x', e.clientX + 'px');
                         document.body.style.setProperty('--y', e.clientY + 'px');
                     });
+                },
+
+                // Función que se ejecuta al hacer clic en "Sí"
+                acceptAge() {
+                    localStorage.setItem('age_verified', 'true');
+                    this.showAgeGate = false;
+                    document.body.style.overflow = ''; // Restaurar el scroll
                 }
             }
         }
     </script>
 
     <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
         .animate-blob {
             animation: blob 7s infinite;
         }

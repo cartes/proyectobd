@@ -45,11 +45,11 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'user_type' => ['required', 'in:sugar_daddy,sugar_baby'],
             'gender' => ['required', 'in:male,female,other'],
-            'birth_date' => ['required', 'date', 'before:today'],
+            'birth_date' => ['required', 'date', 'before:-18 years'],
             'country_id' => ['required', 'exists:countries,id'],
             'city' => ['nullable', 'string', 'max:255'],
         ]);
