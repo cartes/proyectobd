@@ -10,5 +10,3 @@ Route::middleware(['auth', 'rate_limit'])->group(function () {
     Route::post('/refund', [PaymentController::class, 'refund'])
         ->name('payment.refund');
 });
-
-
