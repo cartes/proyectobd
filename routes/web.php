@@ -181,6 +181,19 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/marketing/promotions', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('marketing.promotions')->defaults('title', 'Promociones');
     Route::get('/marketing/notifications', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('marketing.notifications')->defaults('title', 'Notificaciones Push');
 
+    // Notificaciones de Admin (campana)
+    Route::post('/notifications/mark-all-read', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+
+        return back()->with('success', 'Notificaciones marcadas como leídas.');
+    })->name('notifications.mark-all-read');
+
+    Route::post('/notifications/{id}/mark-read', function (string $id) {
+        auth()->user()->notifications()->where('id', $id)->update(['read_at' => now()]);
+
+        return back();
+    })->name('notifications.mark-read');
+
     // Gestión de Países
     Route::prefix('countries')->name('countries.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\CountryController::class, 'index'])->name('index');

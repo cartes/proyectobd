@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use App\Notifications\AdminNewUserNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
@@ -11,13 +12,13 @@ class AdminNewUserNotificationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_is_notified_when_new_user_registers(): void
+    public function test_admin_is_notified_via_database_when_new_user_registers(): void
     {
         Notification::fake();
 
-        config(['app.admin_notification_email' => 'admin@bigdad.test']);
+        // Crear un admin en BD para recibir la notificación
+        $admin = User::factory()->create(['role' => 'admin']);
 
-        // We need an active country to pass validation
         $country = \App\Models\Country::create([
             'name' => 'Chile',
             'iso_code' => 'CL',
@@ -36,20 +37,17 @@ class AdminNewUserNotificationTest extends TestCase
             'city' => 'Santiago',
         ]);
 
-        Notification::assertSentOnDemand(
-            AdminNewUserNotification::class,
-            function ($notification, $channels, $notifiable) {
-                return $notifiable->routes['mail'] === 'admin@bigdad.test';
-            }
-        );
+        // La notificación debe haberse enviado al admin por canal 'database'
+        Notification::assertSentTo($admin, AdminNewUserNotification::class, function ($notification) {
+            return in_array('database', $notification->via($notification));
+        });
     }
 
-    public function test_no_notification_sent_when_admin_email_not_configured(): void
+    public function test_no_notification_sent_when_no_admins_exist(): void
     {
         Notification::fake();
 
-        config(['app.admin_notification_email' => null]);
-
+        // No hay admin en BD
         $country = \App\Models\Country::create([
             'name' => 'Chile',
             'iso_code' => 'CL',
@@ -68,6 +66,10 @@ class AdminNewUserNotificationTest extends TestCase
             'city' => 'Valparaíso',
         ]);
 
-        Notification::assertSentOnDemandTimes(AdminNewUserNotification::class, 0);
+        // Sin admins en BD, la notificación AdminNewUserNotification NO debe dispararse
+        $anyUser = User::all();
+        foreach ($anyUser as $u) {
+            Notification::assertNotSentTo($u, AdminNewUserNotification::class);
+        }
     }
 }

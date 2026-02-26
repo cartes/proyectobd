@@ -302,14 +302,103 @@
 
 
             <div class="flex items-center gap-4">
-                <button
-                    class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors relative">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                    <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-pink-500 rounded-full"></span>
-                </button>
+                {{-- Campana de Notificaciones --}}
+                @php $unreadNotifications = auth()->user()->unreadNotifications->take(10); @endphp
+                <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                    <button @click="open = !open"
+                        class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors relative"
+                        aria-label="Notificaciones">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        @if ($unreadNotifications->count() > 0)
+                            <span
+                                class="absolute top-2 right-2 min-w-[16px] h-4 bg-pink-500 rounded-full text-[9px] font-bold text-white flex items-center justify-center px-0.5">
+                                {{ $unreadNotifications->count() > 9 ? '9+' : $unreadNotifications->count() }}
+                            </span>
+                        @endif
+                    </button>
+
+                    {{-- Dropdown --}}
+                    <div x-show="open" x-transition:enter="transition ease-out duration-150"
+                        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-100"
+                        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                        class="absolute right-0 mt-2 w-96 bg-[#0c111d] border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden">
+
+                        {{-- Header --}}
+                        <div class="flex items-center justify-between px-5 py-4 border-b border-white/5">
+                            <div>
+                                <h3 class="text-sm font-bold text-white">Notificaciones</h3>
+                                @if ($unreadNotifications->count() > 0)
+                                    <p class="text-xs text-gray-500 mt-0.5">{{ $unreadNotifications->count() }} sin
+                                        leer</p>
+                                @endif
+                            </div>
+                            @if ($unreadNotifications->count() > 0)
+                                <form method="POST" action="{{ route('admin.notifications.mark-all-read') }}">
+                                    @csrf
+                                    <button type="submit"
+                                        class="text-xs text-pink-400 hover:text-pink-300 transition-colors font-medium">
+                                        Marcar todas leídas
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+
+                        {{-- Lista --}}
+                        <div class="max-h-80 overflow-y-auto divide-y divide-white/5">
+                            @forelse ($unreadNotifications as $notification)
+                                @php $data = $notification->data; @endphp
+                                <div class="flex items-start gap-3 px-5 py-3.5 hover:bg-white/5 transition-colors">
+                                    {{-- Avatar inicial --}}
+                                    <div
+                                        class="w-9 h-9 rounded-full bg-pink-500/20 text-pink-400 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                                        {{ mb_substr($data['user_name'] ?? '?', 0, 1) }}
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs text-white font-semibold truncate">
+                                            {{ $data['user_name'] ?? 'Nuevo usuario' }}
+                                            <span class="text-gray-500 font-normal ml-1">se registró</span>
+                                        </p>
+                                        <p class="text-[11px] text-gray-400 mt-0.5 truncate">
+                                            {{ $data['user_type'] === 'sugar_daddy' ? '💰 Sugar Daddy' : '🍬 Sugar Baby' }}
+                                            · {{ $data['user_email'] ?? '' }}
+                                        </p>
+                                        <p class="text-[10px] text-gray-600 mt-1">
+                                            {{ $notification->created_at->diffForHumans() }}</p>
+                                    </div>
+                                    <div class="flex items-center gap-2 flex-shrink-0 mt-1">
+                                        @if (isset($data['link']))
+                                            <a href="{{ $data['link'] }}"
+                                                class="text-[11px] text-pink-400 hover:text-pink-300 font-medium transition-colors">Ver</a>
+                                        @endif
+                                        <form method="POST"
+                                            action="{{ route('admin.notifications.mark-read', $notification->id) }}">
+                                            @csrf
+                                            <button type="submit"
+                                                class="text-gray-600 hover:text-gray-400 transition-colors"
+                                                title="Marcar como leída">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="px-5 py-8 text-center">
+                                    <p class="text-2xl mb-2">🎉</p>
+                                    <p class="text-sm text-gray-500">Todo al día, sin notificaciones nuevas.</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
                 <div class="h-6 w-px bg-white/10 mx-2"></div>
                 <a href="{{ url('/') }}"
                     class="px-4 py-2 bg-white/5 rounded-xl text-sm font-semibold hover:bg-white/10 transition-colors">Volver

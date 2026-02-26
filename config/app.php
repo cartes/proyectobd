@@ -169,7 +169,5 @@ return [
         ],
     ],
 
-    'admin_notification_email' => env('ADMIN_NOTIFICATION_EMAIL', null),
-
     'rate_limit_whitelist' => explode(',', env('RATE_LIMIT_WHITELIST', '')),
 ];
