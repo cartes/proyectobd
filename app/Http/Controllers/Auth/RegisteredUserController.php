@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -66,6 +68,20 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
+
+        // Notificar al administrador en segundo plano (ShouldQueue)
+        $adminEmail = config('app.admin_notification_email');
+        if ($adminEmail) {
+            try {
+                Notification::route('mail', $adminEmail)
+                    ->notify(new \App\Notifications\AdminNewUserNotification($user));
+            } catch (\Exception $e) {
+                Log::error('Failed to dispatch AdminNewUserNotification', [
+                    'error' => $e->getMessage(),
+                    'user_id' => $user->id,
+                ]);
+            }
+        }
 
         // Log the user in so they can access the verification notice page
         Auth::login($user);
