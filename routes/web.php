@@ -27,7 +27,7 @@ Route::get('/app-media/{path}', [StorageController::class, 'showPublicFile'])->w
 Route::get('/sitemap.xml', function () {
     $path = public_path('sitemap.xml');
 
-    if (! file_exists($path)) {
+    if (!file_exists($path)) {
         abort(404, 'Sitemap not found. Run: php artisan sitemap:generate');
     }
 
@@ -241,4 +241,17 @@ Route::get('/reglas-de-la-comunidad', [App\Http\Controllers\LegalController::cla
 Route::get('/seguridad', [App\Http\Controllers\LegalController::class, 'safety'])->name('legal.safety');
 Route::get('/planes', [App\Http\Controllers\SubscriptionController::class, 'index'])->name('plans.public');
 
-require __DIR__.'/auth.php';
+
+Route::get('/test-email', function () {
+    try {
+        \Illuminate\Support\Facades\Mail::raw('¡Hola! Si lees esto, Resend y Railway están conectados perfectamente en Big-Dad.', function ($message) {
+            $message->to('cristiancartesa@gmail.com') // Pon tu correo real aquí
+                ->subject('Prueba de Integración Resend');
+        });
+        return '¡Correo enviado con éxito! Revisa tu bandeja de entrada (y la de spam por si acaso).';
+    } catch (\Exception $e) {
+        return 'Error al enviar: ' . $e->getMessage();
+    }
+});
+
+require __DIR__ . '/auth.php';
