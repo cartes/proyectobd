@@ -124,7 +124,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // Webhook de Mercado Pago (sin auth)
-Route::post('/webhook/mercadopago', [WebhookController::class, 'handleMercadoPagoWebhook'])->name('webhook.mercadopago');
+Route::post('/webhook/mercadopago', [WebhookController::class, 'handleMercadoPagoWebhook'])
+    ->middleware('rate_limit')
+    ->name('webhook.mercadopago');
 
 /**
  * Rutas de administración
