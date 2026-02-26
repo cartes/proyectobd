@@ -27,7 +27,7 @@ Route::get('/app-media/{path}', [StorageController::class, 'showPublicFile'])->w
 Route::get('/sitemap.xml', function () {
     $path = public_path('sitemap.xml');
 
-    if (! file_exists($path)) {
+    if (!file_exists($path)) {
         abort(404, 'Sitemap not found. Run: php artisan sitemap:generate');
     }
 
@@ -256,17 +256,19 @@ Route::get('/reglas-de-la-comunidad', [App\Http\Controllers\LegalController::cla
 Route::get('/seguridad', [App\Http\Controllers\LegalController::class, 'safety'])->name('legal.safety');
 Route::get('/planes', [App\Http\Controllers\SubscriptionController::class, 'index'])->name('plans.public');
 
-Route::get('/test-email', function () {
-    try {
-        \Illuminate\Support\Facades\Mail::raw('¡Hola! Si lees esto, Resend y Railway están conectados perfectamente en Big-Dad.', function ($message) {
-            $message->to('cristiancartesa@gmail.com') // Pon tu correo real aquí
-                ->subject('Prueba de Integración Resend');
-        });
+// Ruta temporal de prueba
+Route::get('/test-payment', function () {
+    $service = app(App\Services\MercadoPagoService::class);
+    $user = Auth::user(); // Asegúrate de estar logueado
 
-        return '¡Correo enviado con éxito! Revisa tu bandeja de entrada (y la de spam por si acaso).';
-    } catch (\Exception $e) {
-        return 'Error al enviar: '.$e->getMessage();
+    // Simula la compra de un 'boost'
+    $result = $service->createPaymentPreference($user, 'boost', 5000.00);
+
+    if ($result['success']) {
+        return redirect($result['sandbox_init_point']); // USA EL LINK DE SANDBOX
     }
+
+    return $result['error'];
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
