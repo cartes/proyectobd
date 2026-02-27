@@ -27,7 +27,7 @@ Route::get('/app-media/{path}', [StorageController::class, 'showPublicFile'])->w
 Route::get('/sitemap.xml', function () {
     $path = public_path('sitemap.xml');
 
-    if (!file_exists($path)) {
+    if (! file_exists($path)) {
         abort(404, 'Sitemap not found. Run: php artisan sitemap:generate');
     }
 
@@ -272,4 +272,4 @@ Route::get('/test-payment', function () {
     return $result['error'];
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
