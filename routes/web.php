@@ -27,7 +27,7 @@ Route::get('/app-media/{path}', [StorageController::class, 'showPublicFile'])->w
 Route::get('/sitemap.xml', function () {
     $path = public_path('sitemap.xml');
 
-    if (! file_exists($path)) {
+    if (!file_exists($path)) {
         abort(404, 'Sitemap not found. Run: php artisan sitemap:generate');
     }
 
@@ -106,7 +106,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('subscription')->name('subscription.')->group(function () {
         Route::get('/plans', [SubscriptionController::class, 'index'])->name('plans');
         // ⚡ COMENTADO: Modo Lanzamiento - Webhooks MP en reparación
-        // Route::post('/checkout/{plan}', [SubscriptionController::class, 'createCheckout'])->name('checkout');
+        Route::post('/checkout/{plan}', [SubscriptionController::class, 'createCheckout'])->name('checkout');
         Route::get('/success', [SubscriptionController::class, 'returnSuccess'])->name('success');
         Route::get('/failure', [SubscriptionController::class, 'returnFailure'])->name('failure');
         Route::get('/pending', [SubscriptionController::class, 'returnPending'])->name('pending');
@@ -272,4 +272,4 @@ Route::get('/test-payment', function () {
     return $result['error'];
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

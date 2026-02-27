@@ -123,5 +123,6 @@ class PaymentCheckoutTest extends TestCase
                 'amount' => 99.99,
             ]);
 
+        $response->assertStatus(403);
     }
 }
