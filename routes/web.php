@@ -27,7 +27,7 @@ Route::get('/app-media/{path}', [StorageController::class, 'showPublicFile'])->w
 Route::get('/sitemap.xml', function () {
     $path = public_path('sitemap.xml');
 
-    if (!file_exists($path)) {
+    if (! file_exists($path)) {
         abort(404, 'Sitemap not found. Run: php artisan sitemap:generate');
     }
 
@@ -105,19 +105,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('subscription')->name('subscription.')->group(function () {
         Route::get('/plans', [SubscriptionController::class, 'index'])->name('plans');
-        Route::post('/checkout/{plan}', [SubscriptionController::class, 'createCheckout'])->name('checkout');
+        // ⚡ COMENTADO: Modo Lanzamiento - Webhooks MP en reparación
+        // Route::post('/checkout/{plan}', [SubscriptionController::class, 'createCheckout'])->name('checkout');
         Route::get('/success', [SubscriptionController::class, 'returnSuccess'])->name('success');
         Route::get('/failure', [SubscriptionController::class, 'returnFailure'])->name('failure');
         Route::get('/pending', [SubscriptionController::class, 'returnPending'])->name('pending');
-        Route::post('/cancel', [SubscriptionController::class, 'cancelSubscription'])->name('cancel');
+        // Route::post('/cancel', [SubscriptionController::class, 'cancelSubscription'])->name('cancel');
         Route::get('/{subscription}', [SubscriptionController::class, 'show'])->name('show');
     });
 
-    // Compras
-    Route::post('/purchase/boost', [PurchaseController::class, 'buyBoost'])->name('purchase.boost');
-    Route::post('/purchase/super-likes', [PurchaseController::class, 'buySuperLikes'])->name('purchase.super-likes');
-    Route::post('/purchase/verification', [PurchaseController::class, 'buyVerification'])->name('purchase.verification');
-    Route::post('/purchase/gift/{recipient}', [PurchaseController::class, 'buyGift'])->name('purchase.gift');
+    // Compras - ⚡ COMENTADO: Modo Lanzamiento - Webhooks MP en reparación
+    // Route::post('/purchase/boost', [PurchaseController::class, 'buyBoost'])->name('purchase.boost');
+    // Route::post('/purchase/super-likes', [PurchaseController::class, 'buySuperLikes'])->name('purchase.super-likes');
+    // Route::post('/purchase/verification', [PurchaseController::class, 'buyVerification'])->name('purchase.verification');
+    // Route::post('/purchase/gift/{recipient}', [PurchaseController::class, 'buyGift'])->name('purchase.gift');
     Route::get('/purchase/success', [PurchaseController::class, 'returnSuccess'])->name('purchase.success');
     Route::get('/purchase/failure', [PurchaseController::class, 'returnFailure'])->name('purchase.failure');
     Route::get('/purchase/pending', [PurchaseController::class, 'returnPending'])->name('purchase.pending');
@@ -271,4 +272,4 @@ Route::get('/test-payment', function () {
     return $result['error'];
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

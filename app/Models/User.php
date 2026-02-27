@@ -384,7 +384,9 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function hasSuperLikesAvailable(): bool
     {
-        return $this->super_likes_remaining > 0;
+        // ⚡ MODO LANZAMIENTO: Super Likes ilimitados
+        // TODO: Restaurar: return $this->super_likes_remaining > 0;
+        return true;
     }
 
     /**
@@ -435,20 +437,19 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isPremium(): bool
     {
-        // ✅ Obtener la suscripción activa
-        $activeSubscription = $this->activeSubscription()->first();
+        // ⚡ MODO LANZAMIENTO: Premium gratuito para todos
+        // TODO: Restaurar lógica original cuando webhooks de MP estén operativos
+        return true;
 
-        // ✅ Si tiene suscripción activa, es premium
-        if ($activeSubscription) {
-            return true;
-        }
-
-        // ✅ Si NO tiene suscripción activa pero is_premium=true, resetear a false
-        if ($this->is_premium) {
-            $this->update(['is_premium' => false]);
-        }
-
-        return false;
+        // ---- LÓGICA ORIGINAL (comentada temporalmente) ----
+        // $activeSubscription = $this->activeSubscription()->first();
+        // if ($activeSubscription) {
+        //     return true;
+        // }
+        // if ($this->is_premium) {
+        //     $this->update(['is_premium' => false]);
+        // }
+        // return false;
     }
 
     // ==================== MÉTODOS HELPER - PERFIL ====================
