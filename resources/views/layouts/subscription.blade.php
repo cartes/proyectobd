@@ -17,15 +17,27 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-G035SGF3GT"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'G-G035SGF3GT');
+    </script>
 </head>
+
 
 <body class="font-sans antialiased">
     @php
-        $sidebarHidden = $hideSidebar ?? false; 
+        $sidebarHidden = $hideSidebar ?? false;
     @endphp
 
     <div class="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
-        @if(!$sidebarHidden)
+        @if (!$sidebarHidden)
             <!-- Sidebar -->
             <div class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out md:translate-x-0"
                 :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'">
