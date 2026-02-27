@@ -44,7 +44,8 @@
                             <span class="text-yellow-300">Boosts</span> totalmente
                             <span class="underline decoration-wavy decoration-yellow-300">GRATIS</span>
                         </p>
-                        <div class="mt-6 inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
+                        <div
+                            class="mt-6 inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
                             <span class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></span>
                             <span class="text-white font-bold text-sm uppercase tracking-widest">Activo ahora mismo</span>
                         </div>
@@ -59,8 +60,10 @@
                         class="glass-card bg-emerald-500/10 border border-emerald-500/30 rounded-3xl p-6 flex items-center justify-between shadow-2xl">
                         <div class="flex items-center space-x-4">
                             <div class="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
-                                <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7">
+                                <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M5 13l4 4L19 7">
                                     </path>
                                 </svg>
                             </div>
@@ -69,7 +72,8 @@
                                 <p class="text-emerald-400 font-bold text-lg">{{ $activeSubscription->plan->name }}</p>
                             </div>
                         </div>
-                        <p class="text-gray-400 text-sm font-bold">Expira: {{ $activeSubscription->ends_at->format('d/m/Y') }}
+                        <p class="text-gray-400 text-sm font-bold">Expira:
+                            {{ $activeSubscription->ends_at->format('d/m/Y') }}
                         </p>
                     </div>
                 </div>
@@ -84,7 +88,8 @@
                         <div class="px-8 py-10 text-center relative overflow-hidden">
                             <div class="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity"
                                 style="background: var(--theme-gradient);"></div>
-                            <h3 class="text-2xl font-black text-white uppercase tracking-tight relative z-10">{{ $plan->name }}
+                            <h3 class="text-2xl font-black text-white uppercase tracking-tight relative z-10">
+                                {{ $plan->name }}
                             </h3>
                             <div class="mt-4 relative z-10">
                                 <span
@@ -111,8 +116,8 @@
                                     <li class="flex items-start text-gray-300 group/item">
                                         <div
                                             class="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center mr-3 mt-0.5 group-hover/item:bg-white/10 transition-colors">
-                                            <svg class="w-3.5 h-3.5" style="color: var(--theme-primary);" fill="currentColor"
-                                                viewBox="0 0 20 20">
+                                            <svg class="w-3.5 h-3.5" style="color: var(--theme-primary);"
+                                                fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                                     clip-rule="evenodd" />
@@ -135,6 +140,7 @@
                                 {{-- @else --}}
                                 {{--     <button id="checkout-btn-{{ $plan->id }}" ...>Suscribirse</button> --}}
                                 {{-- @endif --}}
+                            </div>
                         </div>
                     </div>
                 @endforeach
