@@ -40,7 +40,7 @@ return [
         'checkout_url' => env('MERCADO_PAGO_CHECKOUT_URL', '...'),
         'access_token' => env('MERCADO_PAGO_ACCESS_TOKEN'),
         'public_key' => env('MERCADO_PAGO_PUBLIC_KEY'),
-        'webhook_secret' => env('MERCADO_PAGO_WEBHOOK_SECRET'),
+        'webhook_secret' => env('MERCADOPAGO_WEBHOOK_SECRET'),
         'env' => env('MERCADO_PAGO_ENV', 'sandbox'),
         'currency' => env('MERCADO_PAGO_CURRENCY', 'USD'),
     ],
