@@ -1,19 +1,19 @@
 @extends('layouts.blog')
 
 @section('meta_title', $post->meta_title ?: $post->title . ' - ' . config('app.name'))
-@section('meta_description', $post->meta_description ?: $post->excerpt)
-@section('meta_keywords', $post->meta_keywords)
+@section('meta_description', $post->seo_description)
+@section('meta_keywords', $post->seo_keywords)
 @section('canonical_url', route('blog.show', $post->slug))
 
 @section('og_type', 'article')
 @section('og_title', $post->meta_title ?: $post->title)
-@section('og_description', $post->meta_description ?: $post->excerpt)
+@section('og_description', $post->seo_description)
 @section('og_url', route('blog.show', $post->slug))
 @section('og_image', $post->og_image ? asset('app-media/' . $post->og_image) : ($post->featured_image ?
     asset('app-media/' . $post->featured_image) : asset('images/og-default.jpg')))
 
 @section('twitter_title', $post->meta_title ?: $post->title)
-@section('twitter_description', $post->meta_description ?: $post->excerpt)
+@section('twitter_description', $post->seo_description)
 @section('twitter_image', $post->og_image ? asset('app-media/' . $post->og_image) : ($post->featured_image ?
     asset('app-media/' . $post->featured_image) : asset('images/og-default.jpg')))
 
@@ -307,7 +307,7 @@
                 '@context' => 'https://schema.org',
                 '@type' => 'BlogPosting',
                 'headline' => $post->title,
-                'description' => $post->excerpt ?? '',
+                'description' => $post->seo_description,
                 'datePublished' => $post->published_at->toIso8601String(),
                 'dateModified' => $post->updated_at->toIso8601String(),
                 'wordCount' => str_word_count(strip_tags($post->content)),
@@ -343,6 +343,9 @@
             ];
 
             // Add category if available
+            // Add keywords
+            $schemaData['keywords'] = $post->seo_keywords;
+
             if ($post->category) {
                 $schemaData['articleSection'] = $post->category->name;
             }
