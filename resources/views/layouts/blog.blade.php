@@ -221,6 +221,36 @@
                 </div>
             </div>
 
+            {{-- Contact & Sitios Amigos --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 pt-8 border-t border-gray-800">
+                <div>
+                    <h3 class="text-white font-semibold mb-3">Contacto</h3>
+                    <a href="mailto:hola@big-dad.com"
+                        class="text-gray-400 hover:text-amber-500 transition-colors flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        hola@big-dad.com
+                    </a>
+                </div>
+                <div>
+                    <h3 class="text-white font-semibold mb-3">Sitios Amigos</h3>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="https://tecnopatitas.com" target="_blank" rel="noopener"
+                                class="text-gray-400 hover:text-amber-500 transition-colors flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                tecnopatitas.com
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
             {{-- Copyright --}}
             <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
                 <p>&copy; {{ date('Y') }} {{ config('app.name') }}. Todos los derechos reservados.</p>
