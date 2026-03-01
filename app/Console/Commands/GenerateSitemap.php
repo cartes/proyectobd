@@ -27,6 +27,14 @@ class GenerateSitemap extends Command
     {
         $this->info('🗺️  Generating sitemap...');
 
+        // Prevenir que el sitemap se genere con dominios temporales de ngrok (ya sea por APP_URL o por contexto HTTP)
+        $currentUrl = url('/');
+        if (str_contains($currentUrl, 'ngrok') || str_contains(config('app.url'), 'ngrok')) {
+            $prodUrl = env('PROD_URL', 'https://big-dad.cl');
+            \Illuminate\Support\Facades\URL::forceRootUrl($prodUrl);
+            $this->info("⚠️  Ngrok detectado. Forzando URL base a: {$prodUrl}");
+        }
+
         $urls = $this->collectUrls();
         $xml = $this->buildXml($urls);
 
