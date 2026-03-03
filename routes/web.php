@@ -183,6 +183,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/marketing/promotions', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('marketing.promotions')->defaults('title', 'Promociones');
     Route::get('/marketing/notifications', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('marketing.notifications')->defaults('title', 'Notificaciones Push');
 
+    // Perfil del Super-Admin
+    Route::get('/profile', [App\Http\Controllers\Admin\AdminProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [App\Http\Controllers\Admin\AdminProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [App\Http\Controllers\Admin\AdminProfileController::class, 'updatePassword'])->name('profile.password');
+
     // Notificaciones de Admin (campana)
     Route::post('/notifications/mark-all-read', function () {
         auth()->user()->unreadNotifications->markAsRead();

@@ -270,17 +270,23 @@
         <!-- User Profile (Admin) -->
         <div class="p-6 border-t border-white/5">
             <div class="flex items-center gap-3 px-4 py-3">
-                <div
-                    class="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-500 font-bold">
-                    {{ substr(Auth::user()->name, 0, 1) }}
-                </div>
-                <div class="flex-1 overflow-hidden">
-                    <p class="text-sm font-bold truncate">{{ Auth::user()->name }}</p>
-                    <p class="text-xs text-gray-500 truncate">Super Admin</p>
-                </div>
+                <a href="{{ route('admin.profile.edit') }}"
+                   class="flex items-center gap-3 flex-1 min-w-0 rounded-xl hover:bg-white/5 transition-colors -mx-2 px-2 py-1
+                          {{ request()->routeIs('admin.profile.*') ? 'bg-white/5' : '' }}"
+                   title="Editar perfil">
+                    <div class="w-10 h-10 rounded-full flex-shrink-0
+                                {{ request()->routeIs('admin.profile.*') ? 'bg-pink-500/30 text-pink-400' : 'bg-pink-500/20 text-pink-500' }}
+                                flex items-center justify-center font-bold">
+                        {{ substr(Auth::user()->name, 0, 1) }}
+                    </div>
+                    <div class="flex-1 overflow-hidden">
+                        <p class="text-sm font-bold truncate">{{ Auth::user()->name }}</p>
+                        <p class="text-xs text-gray-500 truncate">Super Admin</p>
+                    </div>
+                </a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="text-gray-500 hover:text-white transition-colors">
+                    <button type="submit" class="text-gray-500 hover:text-white transition-colors flex-shrink-0" title="Cerrar sesión">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
