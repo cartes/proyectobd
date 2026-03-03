@@ -57,6 +57,23 @@
             "description": "Plataforma líder de Sugar Dating y citas exclusivas en Latinoamérica."
         }
     </script>
+    <script type="application/ld+json">
+        {
+            "@@context": "https://schema.org",
+            "@@type": "Organization",
+            "name": "Big-dad",
+            "url": "{{ url('/') }}",
+            "logo": "{{ asset('favicon.png') }}",
+            "sameAs": [
+                "https://www.instagram.com/big_dad.app/"
+            ],
+            "contactPoint": {
+                "@@type": "ContactPoint",
+                "email": "hola@big-dad.com",
+                "contactType": "customer support"
+            }
+        }
+    </script>
 
     @vite(['resources/css/app.css', 'resources/css/home.css', 'resources/js/app.js'])
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>

@@ -88,6 +88,7 @@
     @endif
 
     @stack('styles')
+    @if (!$gaId)
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-G035SGF3GT"></script>
     <script>
@@ -99,6 +100,7 @@
         gtag('js', new Date());
         gtag('config', 'G-G035SGF3GT');
     </script>
+    @endif
 </head>
 
 
