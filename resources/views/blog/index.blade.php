@@ -41,7 +41,7 @@
     <script type="application/ld+json">
     {
         "@@context": "https://schema.org",
-        "@@type": "Blog",
+        "@type": "Blog",
         "name": "Blog Big-dad",
         "description": "Artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica.",
         "url": "{{ route('blog.index') }}",
