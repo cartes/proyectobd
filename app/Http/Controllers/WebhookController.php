@@ -375,9 +375,9 @@ class WebhookController extends Controller
         // Actualizar estado de suscripción o compra a failed
         if (strpos($externalReference, 'USER_') === 0) {
             preg_match('/USER_(\d+)_PLAN_(\d+)/', $externalReference, $matches);
-            if (isset($matches) && isset($matches)) {
-                $subscription = Subscription::where('user_id', $matches)
-                    ->where('plan_id', $matches)
+            if (isset($matches[1]) && isset($matches[2])) {
+                $subscription = Subscription::where('user_id', $matches[1])
+                    ->where('plan_id', $matches[2])
                     ->where('status', 'pending')
                     ->first();
 

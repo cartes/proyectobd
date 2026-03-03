@@ -1,6 +1,7 @@
 @extends('layouts.mobile-app')
 
 @section('page-title', 'Sugar Babies en ' . $country->name)
+@section('meta_robots', 'index, follow')
 
 @section('content')
     <div class="min-h-screen" style="background: var(--theme-gradient-deep);">
