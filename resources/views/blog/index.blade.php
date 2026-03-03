@@ -14,7 +14,8 @@
     <title>Blog Big-dad: Lifestyle, Consejos y Relaciones Exclusivas</title>
     <meta name="description"
         content="Descubre artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica." />
-    <meta name="keywords" content="sugar dating blog, lifestyle premium, relaciones sugar, sugar daddy latinoamerica, sugar baby consejos" />
+    <meta name="keywords"
+        content="sugar dating blog, lifestyle premium, relaciones sugar, sugar daddy latinoamerica, sugar baby consejos" />
     <meta name="author" content="Big-dad" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="{{ route('blog.index') }}" />
@@ -23,7 +24,8 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ route('blog.index') }}" />
     <meta property="og:title" content="Blog Big-dad: Lifestyle, Consejos y Relaciones Exclusivas" />
-    <meta property="og:description" content="Descubre artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica." />
+    <meta property="og:description"
+        content="Descubre artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica." />
     <meta property="og:image" content="{{ asset('images/og-image.jpg') }}" />
     <meta property="og:site_name" content="{{ config('app.name') }}" />
 
@@ -31,7 +33,8 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="{{ route('blog.index') }}" />
     <meta name="twitter:title" content="Blog Big-dad: Lifestyle, Consejos y Relaciones Exclusivas" />
-    <meta name="twitter:description" content="Descubre artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica." />
+    <meta name="twitter:description"
+        content="Descubre artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica." />
     <meta name="twitter:image" content="{{ asset('images/og-image.jpg') }}" />
 
     <!-- JSON-LD Structured Data -->
@@ -43,11 +46,11 @@
         "description": "Artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica.",
         "url": "{{ route('blog.index') }}",
         "publisher": {
-            "@type": "Organization",
+            "@@type": "Organization",
             "name": "Big-dad",
             "url": "{{ url('/') }}",
             "logo": {
-                "@type": "ImageObject",
+                "@@type": "ImageObject",
                 "url": "{{ asset('favicon.png') }}"
             }
         }
