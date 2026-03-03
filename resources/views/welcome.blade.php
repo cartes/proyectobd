@@ -49,12 +49,17 @@
             "@@type": "WebSite",
             "name": "Big-dad Latinoamérica",
             "url": "{{ url('/') }}",
+            "inLanguage": "es-CL",
+            "description": "Plataforma líder de Sugar Dating y citas exclusivas en Latinoamérica.",
+            "keywords": "sugar daddy latinoamerica, sugar baby, citas exclusivas, dating de lujo, relaciones mutuamente beneficiosas, buscar pareja con dinero, sugar dating internacional",
             "potentialAction": {
                 "@@type": "SearchAction",
-                "target": "{{ url('/') }}/search?q={search_term_string}",
+                "target": {
+                    "@@type": "EntryPoint",
+                    "urlTemplate": "{{ url('/') }}/search?q={search_term_string}"
+                },
                 "query-input": "required name=search_term_string"
-            },
-            "description": "Plataforma líder de Sugar Dating y citas exclusivas en Latinoamérica."
+            }
         }
     </script>
     <script type="application/ld+json">
@@ -63,15 +68,45 @@
             "@@type": "Organization",
             "name": "Big-dad",
             "url": "{{ url('/') }}",
-            "logo": "{{ asset('favicon.png') }}",
+            "description": "Plataforma de Sugar Dating exclusiva que conecta Sugar Daddies y Sugar Babies en Latinoamérica.",
+            "keywords": "sugar daddy, sugar baby, citas exclusivas, dating de lujo, sugar dating latinoamerica",
+            "logo": {
+                "@@type": "ImageObject",
+                "url": "{{ asset('favicon.png') }}",
+                "caption": "Big-dad Logo"
+            },
             "sameAs": [
                 "https://www.instagram.com/big_dad.app/"
             ],
             "contactPoint": {
                 "@@type": "ContactPoint",
                 "email": "hola@big-dad.com",
-                "contactType": "customer support"
+                "contactType": "customer support",
+                "availableLanguage": "Spanish"
             }
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+            "@@context": "https://schema.org",
+            "@@type": "WebPage",
+            "@@id": "{{ url('/') }}",
+            "url": "{{ url('/') }}",
+            "name": "Big-dad: #1 Sugar Dating en Latinoamérica | Citas Exclusivas y Lujos",
+            "description": "Únete a Big-dad, la comunidad de élite para Sugar Daddies y Sugar Babies en Latinoamérica. Encuentra tu compañero de lujo para viajes, cenas y conexiones exclusivas.",
+            "keywords": "sugar daddy latinoamerica, sugar baby, citas exclusivas, dating de lujo, relaciones mutuamente beneficiosas, buscar pareja con dinero, sugar dating internacional",
+            "inLanguage": "es-CL",
+            "isPartOf": {
+                "@@type": "WebSite",
+                "name": "Big-dad Latinoamérica",
+                "url": "{{ url('/') }}"
+            },
+            "publisher": {
+                "@@type": "Organization",
+                "name": "Big-dad",
+                "url": "{{ url('/') }}"
+            },
+            "image": "{{ asset('images/og-image.jpg') }}"
         }
     </script>
 
