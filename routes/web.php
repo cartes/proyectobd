@@ -155,6 +155,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/moderation/users/{user}/change-country', [ModerationController::class, 'changeCountry'])->name('moderation.users.change-country');
     Route::post('/moderation/users/{user}/toggle-premium', [ModerationController::class, 'togglePremium'])->name('moderation.users.toggle-premium');
     Route::post('/moderation/users/{user}/toggle-private', [ModerationController::class, 'togglePrivateProfile'])->name('moderation.users.toggle-private');
+    Route::post('/moderation/users/{user}/update-profile', [ModerationController::class, 'updateUserProfile'])->name('moderation.users.update-profile');
 
     // Gestión de Planes (Precios y Ofertas)
     Route::get('/plans', [App\Http\Controllers\Admin\PlanController::class, 'index'])->name('plans.index');

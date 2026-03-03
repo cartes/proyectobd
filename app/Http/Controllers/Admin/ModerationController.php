@@ -218,6 +218,7 @@ class ModerationController extends Controller
             'photos' => function ($q) {
                 $q->orderBy('order', 'asc');
             },
+            'profileDetail',
         ]);
 
         $reports = $user->reports()->with('reporter')->latest()->paginate(5);
@@ -378,5 +379,49 @@ class ModerationController extends Controller
         $status = $isPrivate ? 'privado' : 'público';
 
         return redirect()->back()->with('success', "Perfil marcado como {$status} exitosamente.");
+    }
+
+    // Update user profile data (admin override)
+    public function updateUserProfile(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'bio' => 'nullable|string|max:500',
+            'city' => 'nullable|string|max:100',
+            'birth_date' => [$user->birth_date ? 'required' : 'nullable', 'date', 'before:-18 years'],
+            'gender' => 'nullable|in:male,female,other',
+            'occupation' => 'nullable|string|max:100',
+            'education' => 'nullable|string',
+            'income_range' => 'nullable|string',
+            'availability' => 'nullable|string',
+        ]);
+
+        $oldValues = $user->only(['name', 'bio', 'city', 'birth_date', 'gender']);
+
+        $userFields = array_intersect_key($validated, array_flip(['name', 'bio', 'city', 'birth_date', 'gender']));
+        $detailFields = array_diff_key($validated, $userFields);
+
+        $user->update($userFields);
+
+        if (! empty($detailFields)) {
+            $user->load('profileDetail');
+            if (! $user->profileDetail) {
+                $user->profileDetail()->create($detailFields);
+            } else {
+                $user->profileDetail->update($detailFields);
+            }
+        }
+
+        \App\Models\AdminAuditLog::create([
+            'admin_id' => auth()->id(),
+            'action_type' => 'update_profile',
+            'auditable_id' => $user->id,
+            'auditable_type' => User::class,
+            'old_values' => $oldValues,
+            'new_values' => $validated,
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()->back()->with('success', 'Perfil del usuario actualizado correctamente.');
     }
 }
