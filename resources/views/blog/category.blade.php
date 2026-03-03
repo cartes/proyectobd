@@ -44,7 +44,8 @@
                             @if ($post->featured_image)
                                 <a href="{{ route('blog.show', $post->slug) }}" class="block">
                                     <div class="aspect-video overflow-hidden">
-                                        <img src="{{ asset('app-media/' . $post->featured_image) }}" alt="{{ $post->title }}"
+                                        <img src="{{ asset('app-media/' . $post->featured_image) }}"
+                                            alt="{{ $post->title }}"
                                             class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                                     </div>
                                 </a>
@@ -66,7 +67,7 @@
                                 {{-- Date --}}
                                 <div class="mb-3">
                                     <span class="text-xs text-gray-500">
-                                        {{ $post->published_at->format('d M Y') }}
+                                        {{ $post->published_at?->format('d M Y') ?? '' }}
                                     </span>
                                 </div>
 
@@ -90,9 +91,9 @@
                                     <div class="flex items-center gap-2">
                                         <div
                                             class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
-                                            {{ substr($post->author->name, 0, 1) }}
+                                            {{ substr($post->author?->name ?? 'BD', 0, 1) }}
                                         </div>
-                                        <span class="text-sm text-gray-600">{{ $post->author->name }}</span>
+                                        <span class="text-sm text-gray-600">{{ $post->author?->name ?? 'Big-Dad' }}</span>
                                     </div>
                                     @if ($post->reading_time)
                                         <span class="text-xs text-gray-500">

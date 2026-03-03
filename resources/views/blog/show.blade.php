@@ -165,7 +165,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <span class="text-sm font-medium">{{ $post->published_at->format('d M Y') }}</span>
+                    <span class="text-sm font-medium">{{ $post->published_at?->format('d M Y') ?? '' }}</span>
                 </div>
 
                 {{-- Reading Time --}}
@@ -289,7 +289,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
-                                        {{ $related->published_at->format('d M Y') }}
+                                        {{ $related->published_at?->format('d M Y') ?? '' }}
                                     </p>
                                 </div>
                             </article>
@@ -308,7 +308,7 @@
                 '@type' => 'BlogPosting',
                 'headline' => $post->title,
                 'description' => $post->seo_description,
-                'datePublished' => $post->published_at->toIso8601String(),
+                'datePublished' => $post->published_at?->toIso8601String(),
                 'dateModified' => $post->updated_at->toIso8601String(),
                 'wordCount' => str_word_count(strip_tags($post->content)),
                 'timeRequired' => 'PT' . ($post->reading_time ?? 5) . 'M',

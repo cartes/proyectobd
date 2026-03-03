@@ -177,11 +177,11 @@
                                     <div class="flex items-center gap-2">
                                         <div
                                             class="w-6 h-6 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white">
-                                            {{ substr($post->author->name, 0, 1) }}
+                                            {{ substr($post->author?->name ?? 'BD', 0, 1) }}
                                         </div>
-                                        <span>{{ $post->author->name }}</span>
+                                        <span>{{ $post->author?->name ?? 'Big-Dad' }}</span>
                                     </div>
-                                    <span>{{ $post->published_at->format('d M') }}</span>
+                                    <span>{{ $post->published_at?->format('d M') ?? '' }}</span>
                                 </div>
                             </div>
 
