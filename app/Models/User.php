@@ -431,25 +431,73 @@ class User extends Authenticatable implements MustVerifyEmail
         ]);
     }
 
+    /** Límites del plan gratuito para Sugar Daddies */
+    const FREE_DADDY_MATCH_LIMIT = 3;
+
+    const FREE_DADDY_CONVERSATION_LIMIT = 1;
+
     /**
-     * Verificar si usuario es premium
-     * Usa la suscripción activa si existe, sino verifica el atributo legacy is_premium
+     * Verificar si usuario es premium (suscripción activa o campo legacy)
      */
     public function isPremium(): bool
     {
-        // ⚡ MODO LANZAMIENTO: Premium gratuito para todos
-        // TODO: Restaurar lógica original cuando webhooks de MP estén operativos
-        return true;
+        if ($this->activeSubscription()->exists()) {
+            return true;
+        }
 
-        // ---- LÓGICA ORIGINAL (comentada temporalmente) ----
-        // $activeSubscription = $this->activeSubscription()->first();
-        // if ($activeSubscription) {
-        //     return true;
-        // }
-        // if ($this->is_premium) {
-        //     $this->update(['is_premium' => false]);
-        // }
-        // return false;
+        if ($this->is_premium && $this->premium_until && $this->premium_until->isFuture()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * ¿El daddy free puede dar like a más babies?
+     * Bloquea si ya alcanzó 3 matches mutuos con babies.
+     */
+    public function canLikeMoreBabies(): bool
+    {
+        if (! $this->isSugarDaddy()) {
+            return true;
+        }
+
+        if ($this->isPremium()) {
+            return true;
+        }
+
+        return $this->matches()->where('user_type', 'sugar_baby')->count() < self::FREE_DADDY_MATCH_LIMIT;
+    }
+
+    /**
+     * ¿El daddy free puede iniciar una nueva conversación?
+     * Bloquea si ya tiene 1 conversación activa con una baby.
+     */
+    public function canStartConversation(): bool
+    {
+        if (! $this->isSugarDaddy()) {
+            return true;
+        }
+
+        if ($this->isPremium()) {
+            return true;
+        }
+
+        return $this->conversationsWithBabiesCount() < self::FREE_DADDY_CONVERSATION_LIMIT;
+    }
+
+    /**
+     * Contar conversaciones activas con Sugar Babies
+     */
+    public function conversationsWithBabiesCount(): int
+    {
+        return Conversation::where(function ($q) {
+            $q->where('user_one_id', $this->id)
+                ->whereHas('userTwo', fn ($q2) => $q2->where('user_type', 'sugar_baby'));
+        })->orWhere(function ($q) {
+            $q->where('user_two_id', $this->id)
+                ->whereHas('userOne', fn ($q2) => $q2->where('user_type', 'sugar_baby'));
+        })->count();
     }
 
     // ==================== MÉTODOS HELPER - PERFIL ====================

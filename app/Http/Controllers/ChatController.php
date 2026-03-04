@@ -157,14 +157,21 @@ class ChatController extends Controller
                 ->with('error', '❌ Necesitas hacer match con este usuario para poder chatear.');
         }
 
-        // Buscar conversación existente (en cualquier orden)
-        $conversation = Conversation::where(function ($query) use ($user, $currentUser) {
+        // ⛔ Límite de conversaciones para Sugar Daddies free
+        $existingConversation = Conversation::where(function ($query) use ($user, $currentUser) {
             $query->where('user_one_id', $currentUser->id)
                 ->where('user_two_id', $user->id);
         })->orWhere(function ($query) use ($user, $currentUser) {
             $query->where('user_one_id', $user->id)
                 ->where('user_two_id', $currentUser->id);
         })->first();
+
+        if (! $existingConversation && ! $currentUser->canStartConversation()) {
+            return redirect()->route('matches.index')
+                ->with('limit', '🔒 Con el plan gratuito solo puedes chatear con '.\App\Models\User::FREE_DADDY_CONVERSATION_LIMIT.' Sugar Baby. ¡Hazte Premium para mensajes ilimitados!');
+        }
+
+        $conversation = $existingConversation;
 
         // Crear nueva conversación si no existe
         if (! $conversation) {

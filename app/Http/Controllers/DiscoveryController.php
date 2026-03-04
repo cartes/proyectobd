@@ -80,6 +80,11 @@ class DiscoveryController extends Controller
             return back()->with('info', '¡Ya le habías dado like a este perfil!');
         }
 
+        // ⛔ Límite de matches para Sugar Daddies free
+        if (! $currentUser->canLikeMoreBabies()) {
+            return back()->with('limit', '🔒 Los Daddies free solo pueden conectar con '.\App\Models\User::FREE_DADDY_MATCH_LIMIT.' Sugar Babies. ¡Hazte Premium para matches ilimitados!');
+        }
+
         // Agregar like
         $currentUser->likes()->attach($user->id);
 
