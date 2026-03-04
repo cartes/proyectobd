@@ -8,6 +8,7 @@
 
     <title>{{ config('app.name', 'Big-dad') }} - Dashboard</title>
     <meta name="robots" content="noindex, nofollow">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
 

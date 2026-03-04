@@ -28,6 +28,7 @@
     <meta name="twitter:image" content="@yield('twitter_image', asset('images/og-default.jpg'))">
 
     {{-- Favicon --}}
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
 

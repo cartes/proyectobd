@@ -8,6 +8,7 @@
 
     <title>@yield('page-title', 'Big-Dad') - {{ config('app.name') }}</title>
     <meta name="robots" content="@yield('meta_robots', 'noindex, nofollow')">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
 

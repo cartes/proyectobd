@@ -31,6 +31,7 @@
     <meta property="twitter:description" content="@yield('twitter_description', 'Big-dad - La plataforma líder de Sugar Dating en Latinoam&#233;rica')">
     <meta property="twitter:image" content="@yield('twitter_image', asset('images/og-image.jpg'))">
 
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
 
