@@ -26,6 +26,9 @@
     <meta property="og:description"
         content="¿Buscas un estilo de vida premium? Conecta con personas que comparten tus mismos gustos y ambiciones. La red social exclusiva para Sugar Dating en Latinoamérica." />
     <meta property="og:image" content="{{ asset('images/og-image.jpg') }}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
