@@ -21,7 +21,7 @@
                     Categoría
                 </div>
                 <h1 class="text-5xl md:text-6xl font-black text-gray-900 mb-4"
-                    style="font-family: 'Playfair Display', serif;">
+                    style="font-family: 'Montserrat', sans-serif;">
                     {{ $category->name }}
                 </h1>
                 @if ($category->description)

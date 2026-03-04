@@ -153,7 +153,7 @@
 
             {{-- Title --}}
             <h1 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight"
-                style="font-family: 'Outfit', sans-serif;">
+               >
                 {{ $post->title }}
             </h1>
 

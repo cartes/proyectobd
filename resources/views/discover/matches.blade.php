@@ -18,7 +18,7 @@
                 </div>
                 <div>
                     <h1 class="text-4xl md:text-5xl font-black uppercase tracking-tighter drop-shadow-xl leading-none mb-1"
-                        style="font-family: 'Outfit', sans-serif;">
+                       >
                         Mis Matches
                     </h1>
                     <p class="text-white/80 font-black uppercase tracking-widest text-sm italic">{{ $matches->total() }}
@@ -158,7 +158,7 @@
                 <div class="p-8 flex justify-center items-center min-h-[50vh]">
                     <div class="bg-white/20 backdrop-blur-xl rounded-3xl p-12 shadow-2xl max-w-lg text-center border border-white/30">
                         <div class="text-7xl mb-6 drop-shadow-lg">✨</div>
-                        <h3 class="text-3xl font-black text-white mb-4 uppercase tracking-tighter" style="font-family: 'Outfit', sans-serif;">
+                        <h3 class="text-3xl font-black text-white mb-4 uppercase tracking-tighter">
                             Tu próxima conexión te espera
                         </h3>
                         <p class="text-pink-50 font-bold mb-8 uppercase tracking-widest text-xs opacity-90 italic">

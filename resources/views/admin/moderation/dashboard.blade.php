@@ -6,7 +6,7 @@
 
             <!-- Header -->
             <div class="mb-8">
-                <h1 class="text-4xl font-bold text-red-600" style="font-family: 'Playfair Display', serif;">
+                <h1 class="text-4xl font-bold text-red-600" style="font-family: 'Montserrat', sans-serif;">
                     🛡️ Panel de Moderación
                 </h1>
                 <p class="text-gray-600 mt-2">Sistema de administración y seguridad</p>

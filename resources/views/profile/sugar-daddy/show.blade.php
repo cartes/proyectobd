@@ -70,7 +70,7 @@
 
                     {{-- Info ejecutiva --}}
                     <div>
-                        <h1 class="text-5xl font-playfair font-bold text-white mb-3 tracking-tight">
+                        <h1 class="text-5xl font-montserrat font-bold text-white mb-3 tracking-tight">
                             {{ $user->name }}
                         </h1>
                         @if ($user->profileDetail->occupation || $user->profileDetail->industry)
@@ -259,7 +259,7 @@
                         💼
                     </div>
                     <div>
-                        <h2 class="text-2xl font-playfair font-bold text-gray-900">Perfil Profesional</h2>
+                        <h2 class="text-2xl font-montserrat font-bold text-gray-900">Perfil Profesional</h2>
                         <p class="text-sm text-gray-500">Carrera y logros</p>
                     </div>
                 </div>
@@ -308,7 +308,7 @@
                         ✈️
                     </div>
                     <div>
-                        <h2 class="text-2xl font-playfair font-bold text-gray-900">Estilo de Vida</h2>
+                        <h2 class="text-2xl font-montserrat font-bold text-gray-900">Estilo de Vida</h2>
                         <p class="text-sm text-gray-500">Intereses y actividades</p>
                     </div>
                 </div>
@@ -359,7 +359,7 @@
                             🎁
                         </div>
                         <div>
-                            <h2 class="text-2xl font-playfair font-bold text-gray-900">Qué Puedo Ofrecer</h2>
+                            <h2 class="text-2xl font-montserrat font-bold text-gray-900">Qué Puedo Ofrecer</h2>
                             <p class="text-sm text-gray-600">Generosidad y experiencias</p>
                         </div>
                     </div>
@@ -380,7 +380,7 @@
                             🏆
                         </div>
                         <div>
-                            <h2 class="text-2xl font-playfair font-bold text-gray-900">Mentoría</h2>
+                            <h2 class="text-2xl font-montserrat font-bold text-gray-900">Mentoría</h2>
                             <p class="text-sm text-gray-500">Áreas de experiencia</p>
                         </div>
                     </div>
@@ -406,7 +406,7 @@
                             ❤️
                         </div>
                         <div>
-                            <h2 class="text-2xl font-playfair font-bold text-gray-900">Mis Intereses</h2>
+                            <h2 class="text-2xl font-montserrat font-bold text-gray-900">Mis Intereses</h2>
                             <p class="text-sm text-gray-500">Pasiones y hobbies</p>
                         </div>
                     </div>
@@ -433,7 +433,7 @@
                                 📸
                             </div>
                             <div>
-                                <h2 class="text-2xl font-playfair font-bold text-gray-900">Mi Galería</h2>
+                                <h2 class="text-2xl font-montserrat font-bold text-gray-900">Mi Galería</h2>
                                 <p class="text-sm text-gray-500">{{ $user->photos->count() }} fotos</p>
                             </div>
                         </div>
@@ -576,7 +576,7 @@
                                 d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </div>
-                    <h3 class="text-3xl font-playfair font-bold mb-3">Sube tus fotos</h3>
+                    <h3 class="text-3xl font-montserrat font-bold mb-3">Sube tus fotos</h3>
                     <p class="text-white/90 mb-8 text-lg">Las fotos aumentan significativamente tus posibilidades de
                         conectar
                     </p>
@@ -597,7 +597,7 @@
                             💫
                         </div>
                         <div>
-                            <h2 class="text-2xl font-playfair font-bold text-gray-900">Qué Busco</h2>
+                            <h2 class="text-2xl font-montserrat font-bold text-gray-900">Qué Busco</h2>
                             <p class="text-sm text-gray-600">Mi ideal de relación</p>
                         </div>
                     </div>
@@ -627,7 +627,7 @@
                             d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </div>
-                <h3 class="text-3xl font-playfair font-bold text-white mb-3">
+                <h3 class="text-3xl font-montserrat font-bold text-white mb-3">
                     Destaca tu perfil profesional
                 </h3>
                 <p class="text-white/90 mb-8 text-lg">

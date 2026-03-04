@@ -14,7 +14,7 @@
 
     <!-- Fonts -->
     <link
-        href="https://fonts.bunny.net/css?family=playfair-display:400,700,900|inter:400,500,600,700,800,900|outfit:400,500,600,700,800,900&display=swap"
+        href="https://fonts.bunny.net/css?family=figtree:300,400,500,600,700,800,900|montserrat:300,400,500,600,700,800&display=swap"
         rel="stylesheet" />
 
     <!-- Scripts -->
@@ -55,7 +55,7 @@
                         </svg>
                     </div>
                     <div class="text-2xl font-black bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent"
-                        style="font-family: 'Outfit', sans-serif;">
+                       >
                         Big-Dad
                     </div>
                 </a>

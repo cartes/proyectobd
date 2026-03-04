@@ -89,7 +89,7 @@
                     {{-- Info personal destacada --}}
                     <div>
                         <h1 class="text-5xl md:text-6xl font-black text-white mb-3 tracking-tight drop-shadow-lg"
-                            style="font-family: 'Outfit', sans-serif;">
+                           >
                             {{ $user->name }}
                         </h1>
                         <div class="flex items-center gap-3 text-white flex-wrap mb-3">
@@ -318,7 +318,7 @@
                         ✨
                     </div>
                     <div>
-                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Sobre Mí
+                        <h2 class="text-2xl font-black text-gray-900">Sobre Mí
                         </h2>
                         <p class="text-sm text-gray-500">Información personal</p>
                     </div>
@@ -368,7 +368,7 @@
                         📚
                     </div>
                     <div>
-                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Educación
+                        <h2 class="text-2xl font-black text-gray-900">Educación
                         </h2>
                         <p class="text-sm text-gray-500">Formación y actividades</p>
                     </div>
@@ -419,7 +419,7 @@
                             💖
                         </div>
                         <div>
-                            <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis
+                            <h2 class="text-2xl font-black text-gray-900">Mis
                                 Intereses
                             </h2>
                             <p class="text-sm text-gray-500">Lo que me apasiona</p>
@@ -447,7 +447,7 @@
                                 📸
                             </div>
                             <div>
-                                <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">
+                                <h2 class="text-2xl font-black text-gray-900">
                                     Mi Galería
                                 </h2>
                                 <p class="text-sm text-gray-500">{{ $user->photos->count() }} fotos</p>
@@ -594,7 +594,7 @@
                                 d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </div>
-                    <h3 class="text-3xl font-black mb-3" style="font-family: 'Outfit', sans-serif;">Sube tus fotos</h3>
+                    <h3 class="text-3xl font-black mb-3">Sube tus fotos</h3>
                     <p class="text-white/90 mb-8 text-lg">Las fotos aumentan significativamente tus posibilidades de
                         conectar
                     </p>
@@ -620,7 +620,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis
+                    <h2 class="text-2xl font-black text-gray-900">Mis
                         Aspiraciones</h2>
                     <p class="text-sm text-gray-600">Sueños y metas</p>
                 </div>
@@ -645,7 +645,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi Daddy
+                    <h2 class="text-2xl font-black text-gray-900">Mi Daddy
                         Ideal
                     </h2>
                     <p class="text-sm text-gray-600">Lo que busco en una relación</p>
@@ -671,7 +671,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Qué Busco
+                    <h2 class="text-2xl font-black text-gray-900">Qué Busco
                     </h2>
                     <p class="text-sm text-gray-600">Mi relación ideal</p>
                 </div>
@@ -706,7 +706,7 @@
                 </div>
 
                 <!-- Contenido -->
-                <h3 class="text-3xl font-black text-white mb-3" style="font-family: 'Outfit', sans-serif;">
+                <h3 class="text-3xl font-black text-white mb-3">
                     Haz tu perfil más atractivo
                 </h3>
                 <p class="text-white/90 mb-8 text-lg leading-relaxed">

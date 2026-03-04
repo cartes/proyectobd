@@ -19,7 +19,7 @@
 
                 {{-- Title --}}
                 <div class="text-center">
-                    <h1 class="text-3xl font-black text-gray-900 mb-2" style="font-family: 'Outfit', sans-serif;">
+                    <h1 class="text-3xl font-black text-gray-900 mb-2">
                         Verifica tu Email
                     </h1>
                     <p class="text-gray-600">

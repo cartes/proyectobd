@@ -5,7 +5,7 @@
             🔒
         </div>
         <div>
-            <h2 class="text-2xl font-playfair font-bold text-gray-900">Seguridad</h2>
+            <h2 class="text-2xl font-montserrat font-bold text-gray-900">Seguridad</h2>
             <p class="text-gray-600 text-sm">Actualiza tu contraseña</p>
         </div>
     </div>

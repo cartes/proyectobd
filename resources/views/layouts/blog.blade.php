@@ -34,7 +34,7 @@
 
     {{-- Fonts --}}
     <link
-        href="https://fonts.bunny.net/css?family=playfair-display:400,700,900|inter:400,500,600,700,800,900|outfit:400,500,600,700,800,900&display=swap"
+        href="https://fonts.bunny.net/css?family=figtree:300,400,500,600,700,800,900|montserrat:300,400,500,600,700,800&display=swap"
         rel="stylesheet" />
 
     {{-- Scripts --}}
@@ -178,7 +178,7 @@
                                     d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
                             </svg>
                         </div>
-                        <div class="text-2xl font-black text-white" style="font-family: 'Outfit', sans-serif;">
+                        <div class="text-2xl font-black text-white">
                             Big-Dad
                         </div>
                     </div>

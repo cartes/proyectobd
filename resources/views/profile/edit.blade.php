@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="mb-8">
-        <h1 class="text-4xl font-playfair font-bold bg-gradient-to-r {{ Auth::user()->user_type === 'sugar_daddy' ? 'from-purple-600 to-purple-800' : 'from-pink-600 to-pink-800' }} bg-clip-text text-transparent mb-3">
+        <h1 class="text-4xl font-montserrat font-bold bg-gradient-to-r {{ Auth::user()->user_type === 'sugar_daddy' ? 'from-purple-600 to-purple-800' : 'from-pink-600 to-pink-800' }} bg-clip-text text-transparent mb-3">
             ✏️ Editar Perfil
         </h1>
         <p class="text-gray-600 text-lg">Completa tu información para destacar en Big-dad</p>
@@ -20,7 +20,7 @@
                 <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xl shadow-lg">
                     📋
                 </div>
-                <h2 class="text-2xl font-playfair font-bold text-gray-900">Información Básica</h2>
+                <h2 class="text-2xl font-montserrat font-bold text-gray-900">Información Básica</h2>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -214,7 +214,7 @@
                     ❤️
                 </div>
                 <div>
-                    <h2 class="text-2xl font-playfair font-bold text-gray-900">Intereses</h2>
+                    <h2 class="text-2xl font-montserrat font-bold text-gray-900">Intereses</h2>
                     <p class="text-gray-600 text-sm">Selecciona tus intereses (máximo 8)</p>
                 </div>
             </div>
