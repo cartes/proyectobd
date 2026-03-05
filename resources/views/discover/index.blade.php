@@ -61,6 +61,45 @@
                     </button>
                 </div>
 
+                {{-- 🤖 Barra de Búsqueda IA --}}
+                <div class="max-w-7xl mx-auto pt-4">
+                    @if(request('ai_query'))
+                        <div class="mb-3 flex items-center gap-2 px-1">
+                            <span class="text-white/60 text-xs font-bold uppercase tracking-widest">Búsqueda IA:</span>
+                            <span class="text-white/90 text-sm font-bold italic">"{{ request('ai_query') }}"</span>
+                            <a href="{{ route('discover.index') }}" class="text-white/40 hover:text-white/80 text-xs ml-auto">✕ limpiar</a>
+                        </div>
+                    @endif
+                    <form method="POST" action="{{ route('discover.ai-search') }}" 
+                          x-data="{ loading: false }" @submit="loading = true"
+                          class="flex gap-3 items-center bg-white/5 border border-white/10 rounded-[2rem] px-5 py-3 backdrop-blur-md focus-within:border-purple-400/40 focus-within:bg-white/10 transition-all">
+                        @csrf
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                             style="background: linear-gradient(135deg, #7c3aed, #ec4899);">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <input type="text" name="query" 
+                               placeholder="Describe con IA lo que buscas… ej: 'chica joven de Buenos Aires que le guste viajar'"
+                               class="flex-1 bg-transparent text-white placeholder-white/30 text-sm font-medium focus:outline-none"
+                               required maxlength="300">
+                        <button type="submit" :disabled="loading"
+                                class="flex-shrink-0 px-5 py-2 rounded-2xl text-white text-xs font-black uppercase tracking-widest transition-all"
+                                style="background: linear-gradient(135deg, #7c3aed, #ec4899);"
+                                :class="loading ? 'opacity-60 cursor-not-allowed' : 'hover:opacity-90 active:scale-95'">
+                            <span x-show="!loading">✨ Buscar</span>
+                            <span x-show="loading" class="flex items-center gap-1">
+                                <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                </svg>
+                                Analizando…
+                            </span>
+                        </button>
+                    </form>
+                </div>
+
                 {{-- Panel de Filtros --}}
                 <div x-show="showFilters" x-transition:enter="transition ease-out duration-300"
                     x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"

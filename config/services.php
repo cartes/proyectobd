@@ -35,6 +35,12 @@ return [
         ],
     ],
 
+    'openai' => [
+        'api_key' => env('OPENAI_API_KEY'),
+        'organization' => env('OPENAI_ORGANIZATION'),
+        'request_timeout' => env('OPENAI_REQUEST_TIMEOUT', 30),
+    ],
+
     'mercadopago' => [
         'api_url' => env('MERCADO_PAGO_API_URL', 'https://api.mercadopago.com'),
         'checkout_url' => env('MERCADO_PAGO_CHECKOUT_URL', '...'),

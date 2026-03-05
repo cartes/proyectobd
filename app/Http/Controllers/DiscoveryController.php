@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProfileDetail;
 use App\Models\User;
+use App\Services\AiSearchService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -64,6 +65,26 @@ class DiscoveryController extends Controller
         $interestsOptions = ProfileDetail::interestsOptions();
 
         return view('discover.index', compact('users', 'cities', 'interestsOptions', 'targetUserType'));
+    }
+
+    /**
+     * AI-powered natural language search: parses query and redirects to discover with filters.
+     */
+    public function aiSearch(Request $request, AiSearchService $aiSearch)
+    {
+        $request->validate(['query' => 'required|string|max:300']);
+
+        $filters = $aiSearch->parseQuery($request->input('query'));
+
+        $params = array_filter([
+            'city' => $filters['city'],
+            'age_min' => $filters['age_min'],
+            'age_max' => $filters['age_max'],
+            'interests' => $filters['interests'] ?: null,
+            'ai_query' => $request->input('query'),
+        ]);
+
+        return redirect()->route('discover.index', $params);
     }
 
     public function like(User $user, \App\Services\NotificationService $notificationService)

@@ -70,6 +70,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
      * Discovery system
      */
     Route::get('/discover', [DiscoveryController::class, 'index'])->name('discover.index');
+    Route::post('/discover/ai-search', [DiscoveryController::class, 'aiSearch'])->name('discover.ai-search');
     Route::post('/like/{user}', [DiscoveryController::class, 'like'])->name('discover.like');
     Route::delete('/unlike/{user}', [DiscoveryController::class, 'unlike'])->name('discover.unlike');
     Route::get('/favoritos', [DiscoveryController::class, 'favorites'])->name('discover.favorites');
