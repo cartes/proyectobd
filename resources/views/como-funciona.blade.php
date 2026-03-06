@@ -317,42 +317,39 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <!-- HEADER / NAV -->
     <!-- ═══════════════════════════════════════════════════════ -->
-    <header class="border-b border-white/5 bg-[#0a0f1e]/90 backdrop-blur-xl sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <a href="{{ route('welcome') }}" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/30">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z"/>
-                    </svg>
-                </div>
-                <span class="text-2xl font-black gradient-text-amber">Big-Dad</span>
+    <nav class="fixed top-0 left-0 w-full z-50 bg-slate-900/90 backdrop-blur-md shadow-lg py-4 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+            <a href="{{ route('welcome') }}" class="text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
+                BIG-<span class="text-pink-500">DAD</span>
             </a>
 
             <!-- Desktop Nav -->
-            <nav class="hidden md:flex items-center gap-7 text-sm font-bold uppercase tracking-widest text-slate-300">
+            <div class="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-300">
                 <a href="{{ route('plans.public') }}" class="hover:text-pink-400 transition-colors">Planes</a>
                 <a href="{{ route('blog.index') }}" class="hover:text-pink-400 transition-colors">Blog</a>
-                <a href="{{ route('como-funciona') }}" class="text-pink-400 border-b border-pink-400 pb-0.5">Cómo Funciona</a>
-            </nav>
+                <a href="{{ route('como-funciona') }}" class="text-pink-400 transition-colors">Cómo Funciona</a>
+                <a href="/#beneficios" class="hover:text-pink-400 transition-colors">Beneficios</a>
+            </div>
 
             <!-- CTA -->
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-4">
                 @if (auth()->check())
                     <a href="{{ route('dashboard') }}"
-                        class="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full text-sm font-bold shadow-lg shadow-pink-500/30 hover:opacity-90 transition-all">
+                        class="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-rose-600 rounded-full text-sm font-bold shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 transition-all">
                         Mi Panel VIP
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="text-sm font-bold hover:text-pink-400 transition-colors hidden sm:block">Ingresar</a>
+                    <a href="{{ route('login') }}" class="text-sm font-bold hover:text-pink-400 transition-colors">Ingresar</a>
                     <a href="{{ route('register') }}"
-                        class="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-pink-500/30">
+                        class="px-5 py-2.5 bg-white text-pink-600 rounded-full text-sm font-bold hover:bg-gray-100 transition-all shadow-lg">
                         Únete Gratis
                     </a>
                 @endif
             </div>
         </div>
-    </header>
+    </nav>
+    <!-- Spacer for fixed nav -->
+    <div class="h-16"></div>
 
     <!-- ═══════════════════════════════════════════════════════ -->
     <!-- BREADCRUMB (visible + semántico) -->
@@ -895,14 +892,8 @@
     <footer class="border-t border-white/5 bg-[#060a14] py-12">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                <a href="{{ route('welcome') }}" class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z"/>
-                        </svg>
-                    </div>
-                    <span class="text-xl font-black gradient-text-amber">Big-Dad</span>
+                <a href="{{ route('welcome') }}" class="text-xl font-black tracking-tighter hover:scale-105 transition-transform">
+                    BIG-<span class="text-pink-500">DAD</span>
                 </a>
 
                 <nav class="flex flex-wrap justify-center gap-5 text-sm text-slate-500">

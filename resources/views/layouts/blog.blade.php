@@ -171,15 +171,8 @@
                 {{-- About --}}
                 <div class="col-span-1 md:col-span-2">
                     <div class="flex items-center gap-3 mb-4">
-                        <div
-                            class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
-                            </svg>
-                        </div>
-                        <div class="text-2xl font-black text-white">
-                            Big-Dad
+                        <div class="text-2xl font-black text-white tracking-tighter">
+                            BIG-<span class="text-pink-500">DAD</span>
                         </div>
                     </div>
                     <p class="text-gray-400 mb-6">

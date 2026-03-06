@@ -24,16 +24,8 @@
         <div class="max-w-7xl mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
                 <a href="{{ route('welcome') }}" class="flex items-center space-x-3">
-                    <div
-                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
-                        </svg>
-                    </div>
-                    <span
-                        class="text-2xl font-black bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
-                        Big-Dad
+                    <span class="text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
+                        BIG-<span class="text-pink-500">DAD</span>
                     </span>
                 </a>
 
