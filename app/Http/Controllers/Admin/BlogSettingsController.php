@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\BlogSettings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
 class BlogSettingsController extends Controller
 {
@@ -79,5 +80,21 @@ class BlogSettingsController extends Controller
         ]);
 
         return view('admin.blog.settings.scripts', compact('settings'));
+    }
+
+    /**
+     * Regenera el sitemap.xml ejecutando el comando artisan
+     */
+    public function regenerateSitemap()
+    {
+        try {
+            Artisan::call('sitemap:generate');
+
+            return redirect()->back()
+                ->with('success', '✅ Sitemap regenerado exitosamente en public/sitemap.xml');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', '❌ Error al regenerar el sitemap: '.$e->getMessage());
+        }
     }
 }

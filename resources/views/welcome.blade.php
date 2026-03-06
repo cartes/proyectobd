@@ -115,6 +115,7 @@
 
     @vite(['resources/css/app.css', 'resources/css/home.css', 'resources/js/app.js'])
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-G035SGF3GT"></script>
     <script>
@@ -298,52 +299,84 @@
         </div>
     </header>
 
-    <!-- How It Works Section -->
-    <section id="como-funciona" class="py-24 bg-slate-900 relative">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-5xl font-black mb-4"><span class="text-pink-500">Desbloquea</span> Tu
-                    Nuevo
-                    Estilo de Vida</h2>
-                <p class="text-slate-400 max-w-2xl mx-auto">En Big-dad, simplificamos las reglas del juego. Conecta con
-                    personas de élite en toda Latinoamérica.</p>
+    <!-- How It Works Section — Three.js Enhanced -->
+    <section id="como-funciona" class="relative overflow-hidden" style="background:#0f172a; min-height:100vh;">
+
+        <!-- Three.js canvas (background) -->
+        <canvas id="hiw-canvas" class="absolute inset-0 w-full h-full" style="pointer-events:none;"></canvas>
+
+        <!-- Content -->
+        <div class="relative z-10 py-28 container mx-auto px-6">
+
+            <!-- Header -->
+            <div class="text-center mb-24 hiw-reveal">
+                <span class="inline-block text-pink-500 font-bold tracking-[.25em] uppercase text-xs mb-5 px-4 py-1.5 rounded-full border border-pink-500/30 bg-pink-500/10">
+                    El Proceso
+                </span>
+                <h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">Desbloquea</span>
+                    Tu<br class="hidden md:block"> Nuevo Estilo de Vida
+                </h2>
+                <p class="text-slate-400 max-w-xl mx-auto text-lg">
+                    En Big-dad, simplificamos las reglas del juego. Conecta con personas de élite en toda Latinoamérica.
+                </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Steps Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto items-start">
+
                 <!-- Step 1 -->
-                <div
-                    class="bg-slate-800/50 p-8 rounded-3xl border border-slate-700 hover:border-pink-500/50 transition-all group">
-                    <div
-                        class="w-16 h-16 bg-pink-500/20 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
-                        📝</div>
-                    <h3 class="text-xl font-bold mb-3">1. Crea tu Perfil VIP</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">Sube tus mejores fotos (¡o mantenlas privadas!) y
-                        define qué buscas con claridad. Sé directo y auténtico.</p>
+                <div class="hiw-reveal hiw-card group relative" style="--hiw-delay:0ms">
+                    <div class="absolute -inset-px rounded-3xl bg-gradient-to-b from-pink-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    <div class="relative h-full bg-slate-900/70 backdrop-blur-xl p-10 rounded-3xl border border-slate-700/60 group-hover:border-pink-500/60 transition-all duration-500">
+                        <span class="absolute top-5 right-7 text-8xl font-black text-pink-500/8 select-none leading-none">01</span>
+                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center text-4xl mb-8 shadow-xl shadow-pink-500/30 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">📝</div>
+                        <h3 class="text-2xl font-bold mb-4">Crea tu Perfil VIP</h3>
+                        <p class="text-slate-400 leading-relaxed text-sm">Sube tus mejores fotos y define qué buscas con claridad. Sé directo y auténtico — tu perfil es tu carta de presentación al mundo de élite.</p>
+                        <div class="mt-8 h-px bg-gradient-to-r from-pink-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full"></div>
+                    </div>
                 </div>
 
-                <!-- Step 2 -->
-                <div
-                    class="bg-slate-800/50 p-8 rounded-3xl border border-slate-700 hover:border-purple-500/50 transition-all group">
-                    <div
-                        class="w-16 h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
-                        🔍</div>
-                    <h3 class="text-xl font-bold mb-3">2. Descubre la Elite</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">Usa nuestros filtros premium para encontrar
-                        personas exitosas en tu ciudad o en toda Latinoamérica.</p>
+                <!-- Step 2 — destacado -->
+                <div class="hiw-reveal hiw-card group relative md:-mt-6" style="--hiw-delay:120ms">
+                    <div class="absolute -inset-px rounded-3xl bg-gradient-to-b from-purple-500 via-pink-500 to-transparent opacity-40 pointer-events-none"></div>
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-5 py-1.5 rounded-full shadow-lg shadow-purple-500/40">
+                        ⭐ Paso Clave
+                    </div>
+                    <div class="relative h-full bg-slate-900/80 backdrop-blur-xl p-10 rounded-3xl border border-purple-500/50">
+                        <span class="absolute top-5 right-7 text-8xl font-black text-purple-500/8 select-none leading-none">02</span>
+                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-4xl mb-8 shadow-xl shadow-purple-500/30 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">🔍</div>
+                        <h3 class="text-2xl font-bold mb-4">Descubre la Elite</h3>
+                        <p class="text-slate-400 leading-relaxed text-sm">Usa nuestros filtros premium para encontrar personas exitosas en tu ciudad o en toda Latinoamérica. Total discreción garantizada.</p>
+                        <div class="mt-8 h-px bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                    </div>
                 </div>
 
                 <!-- Step 3 -->
-                <div
-                    class="bg-slate-800/50 p-8 rounded-3xl border border-slate-700 hover:border-indigo-500/50 transition-all group">
-                    <div
-                        class="w-16 h-16 bg-indigo-500/20 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
-                        🥂</div>
-                    <h3 class="text-xl font-bold mb-3">3. Vive la Experiencia</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">Conecta, chatea y acuerda esa primera cita
-                        soñada.
-                        Cenas, viajes o simplemente buena compañía.</p>
+                <div class="hiw-reveal hiw-card group relative" style="--hiw-delay:240ms">
+                    <div class="absolute -inset-px rounded-3xl bg-gradient-to-b from-indigo-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    <div class="relative h-full bg-slate-900/70 backdrop-blur-xl p-10 rounded-3xl border border-slate-700/60 group-hover:border-indigo-500/60 transition-all duration-500">
+                        <span class="absolute top-5 right-7 text-8xl font-black text-indigo-500/8 select-none leading-none">03</span>
+                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-700 flex items-center justify-center text-4xl mb-8 shadow-xl shadow-indigo-500/30 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">🥂</div>
+                        <h3 class="text-2xl font-bold mb-4">Vive la Experiencia</h3>
+                        <p class="text-slate-400 leading-relaxed text-sm">Conecta, chatea y acuerda esa primera cita soñada. Cenas exclusivas, viajes de lujo o simplemente la mejor compañía de tu vida.</p>
+                        <div class="mt-8 h-px bg-gradient-to-r from-indigo-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full"></div>
+                    </div>
                 </div>
             </div>
+
+            <!-- CTA -->
+            <div class="text-center mt-24 hiw-reveal" style="--hiw-delay:360ms">
+                <p class="text-slate-400 mb-6 text-base tracking-wide uppercase text-xs font-semibold">¿Listo para comenzar?</p>
+                <a href="{{ route('register') }}"
+                   class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold py-4 px-12 rounded-full text-lg hover:opacity-90 hover:scale-105 transition-all duration-300 shadow-2xl shadow-pink-500/30">
+                    Únete Gratis
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    </svg>
+                </a>
+            </div>
+
         </div>
     </section>
 
@@ -611,6 +644,164 @@
                 }
             }
         }
+    </script>
+
+    <!-- ═══════════════════════════════════════════════
+         Three.js — Sección Cómo Funciona
+    ═══════════════════════════════════════════════ -->
+    <script>
+    (function () {
+        'use strict';
+
+        /* ── Esperar a que Three.js y el DOM estén listos ── */
+        function init() {
+            if (typeof THREE === 'undefined') return;
+
+            const section = document.getElementById('como-funciona');
+            const canvas  = document.getElementById('hiw-canvas');
+            if (!section || !canvas) return;
+
+            /* ── Renderer ── */
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+            renderer.setClearColor(0x0f172a, 1);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            /* ── Scene & Camera ── */
+            const scene  = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(65, 1, 0.1, 200);
+            camera.position.z = 22;
+
+            /* ── Particle field ── */
+            const COUNT = 340;
+            const pos   = new Float32Array(COUNT * 3);
+            const col   = new Float32Array(COUNT * 3);
+            const palette = [
+                new THREE.Color(0xec4899), // pink-500
+                new THREE.Color(0xa855f7), // purple-500
+                new THREE.Color(0x6366f1), // indigo-500
+                new THREE.Color(0xf59e0b), // gold
+                new THREE.Color(0xfb7185), // rose
+            ];
+            for (let i = 0; i < COUNT; i++) {
+                pos[i * 3]     = (Math.random() - 0.5) * 70;
+                pos[i * 3 + 1] = (Math.random() - 0.5) * 45;
+                pos[i * 3 + 2] = (Math.random() - 0.5) * 25;
+                const c = palette[Math.floor(Math.random() * palette.length)];
+                col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
+            }
+            const pGeo = new THREE.BufferGeometry();
+            pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            pGeo.setAttribute('color',    new THREE.BufferAttribute(col, 3));
+            const pMat = new THREE.PointsMaterial({ size: 0.13, vertexColors: true, transparent: true, opacity: 0.65, sizeAttenuation: true });
+            scene.add(new THREE.Points(pGeo, pMat));
+
+            /* ── Floating wireframe shapes ── */
+            const shapeDefs = [
+                { geo: new THREE.OctahedronGeometry(1.4, 0), color: 0xec4899, x: -16, y:  6, z: -6,  rs: 0.006 },
+                { geo: new THREE.OctahedronGeometry(0.7, 0), color: 0xf59e0b, x:  12, y: -4, z: -4,  rs: 0.008 },
+                { geo: new THREE.TorusGeometry(2.2, 0.4, 8, 32),              color: 0xa855f7, x:  14, y:  7, z: -9,  rs: 0.005 },
+                { geo: new THREE.OctahedronGeometry(0.5, 0), color: 0x6366f1, x:  -9, y: -6, z: -5,  rs: 0.010 },
+                { geo: new THREE.TorusGeometry(1.3, 0.3, 8, 20),              color: 0xec4899, x: -19, y: -2, z: -7,  rs: 0.007 },
+                { geo: new THREE.TetrahedronGeometry(1.0),                    color: 0xf59e0b, x:  19, y:  1, z: -5,  rs: 0.006 },
+                { geo: new THREE.OctahedronGeometry(0.6, 0), color: 0xfb7185, x:   4, y: -8, z: -3,  rs: 0.009 },
+                { geo: new THREE.TorusGeometry(0.9, 0.25, 6, 18),             color: 0x6366f1, x: -5,  y:  8, z: -8,  rs: 0.007 },
+            ];
+            const shapes = shapeDefs.map(d => {
+                const mat  = new THREE.MeshBasicMaterial({ color: d.color, wireframe: true, transparent: true, opacity: 0.28 });
+                const mesh = new THREE.Mesh(d.geo, mat);
+                mesh.position.set(d.x, d.y, d.z);
+                mesh.userData = { rs: d.rs, iy: d.y, fs: 0.4 + Math.random() * 0.6, fa: 0.4 + Math.random() * 0.6 };
+                scene.add(mesh);
+                return mesh;
+            });
+
+            /* ── Soft ambient glow (large semi-transparent sphere) ── */
+            const glowMat  = new THREE.MeshBasicMaterial({ color: 0x7c3aed, transparent: true, opacity: 0.04 });
+            const glowMesh = new THREE.Mesh(new THREE.SphereGeometry(14, 24, 24), glowMat);
+            glowMesh.position.set(0, 0, -10);
+            scene.add(glowMesh);
+
+            /* ── Mouse parallax ── */
+            let mx = 0, my = 0;
+            document.addEventListener('mousemove', e => {
+                mx = (e.clientX / window.innerWidth  - 0.5) * 2;
+                my = (e.clientY / window.innerHeight - 0.5) * 2;
+            });
+
+            /* ── Resize helper ── */
+            function resize() {
+                const w = section.offsetWidth;
+                const h = section.offsetHeight || window.innerHeight;
+                renderer.setSize(w, h);
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+            }
+            resize();
+            const ro = new ResizeObserver(resize);
+            ro.observe(section);
+
+            /* ── Animation loop ── */
+            let t = 0;
+            function tick() {
+                requestAnimationFrame(tick);
+                t += 0.008;
+
+                /* Particle drift */
+                pGeo.attributes.position.array.forEach((_, idx) => {
+                    if (idx % 3 === 1) {
+                        pGeo.attributes.position.array[idx] += Math.sin(t + idx) * 0.002;
+                    }
+                });
+                pGeo.attributes.position.needsUpdate = true;
+
+                /* Shape rotation + float */
+                shapes.forEach(m => {
+                    m.rotation.x += m.userData.rs;
+                    m.rotation.y += m.userData.rs * 1.6;
+                    m.position.y  = m.userData.iy + Math.sin(t * m.userData.fs) * m.userData.fa;
+                });
+
+                /* Camera parallax */
+                camera.position.x += (mx * 2.5 - camera.position.x) * 0.025;
+                camera.position.y += (-my * 1.8 - camera.position.y) * 0.025;
+                camera.lookAt(scene.position);
+
+                renderer.render(scene, camera);
+            }
+            tick();
+        }
+
+        /* ── Scroll-reveal for cards ── */
+        function initReveal() {
+            const els = document.querySelectorAll('.hiw-reveal');
+            if (!els.length) return;
+            const obs = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const delay = el.style.getPropertyValue('--hiw-delay') || '0ms';
+                        setTimeout(() => {
+                            el.style.opacity    = '1';
+                            el.style.transform  = 'translateY(0)';
+                        }, parseInt(delay));
+                        obs.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.15 });
+            els.forEach(el => {
+                el.style.opacity   = '0';
+                el.style.transform = 'translateY(40px)';
+                el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                obs.observe(el);
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => { init(); initReveal(); });
+        } else {
+            init(); initReveal();
+        }
+    })();
     </script>
 
     <style>

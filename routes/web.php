@@ -240,6 +240,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
             Route::get('/seo', [\App\Http\Controllers\Admin\BlogSettingsController::class, 'seo'])->name('seo');
             Route::get('/analytics', [\App\Http\Controllers\Admin\BlogSettingsController::class, 'analytics'])->name('analytics');
             Route::get('/scripts', [\App\Http\Controllers\Admin\BlogSettingsController::class, 'scripts'])->name('scripts');
+            Route::post('/sitemap/regenerate', [\App\Http\Controllers\Admin\BlogSettingsController::class, 'regenerateSitemap'])->name('sitemap.regenerate');
         });
     });
 });
