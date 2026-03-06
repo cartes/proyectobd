@@ -1,16 +1,16 @@
 @extends('layouts.mobile-app')
 
 @php
-    $pageTitle = 'Sugar Babies en ' . $country->name . ' | Conoce chicas de ' . $country->name;
-    $metaDescription = 'Conoce ' . $users->total() . ' Sugar Babies de ' . $country->name . ' en Big-Dad. Perfiles verificados de chicas que buscan conexiones especiales con Sugar Daddies. ¡Únete gratis!';
-    $canonicalUrl = route('archive.country', $country->iso_code) . ($users->currentPage() > 1 ? '?page=' . $users->currentPage() : '');
+    $pageTitle = 'Sugar Babies en ' . $city->name . ', ' . $country->name . ' | Big-Dad';
+    $metaDescription = 'Conoce ' . $users->total() . ' Sugar Babies de ' . $city->name . ', ' . $country->name . ' en Big-Dad. Perfiles verificados buscando conexiones especiales. ¡Únete gratis!';
+    $canonicalUrl = route('archive.city', [$country->iso_code, $city->slug]) . ($users->currentPage() > 1 ? '?page=' . $users->currentPage() : '');
     $ogImage = $users->isNotEmpty() && $users->first()->primaryPhoto ? $users->first()->primaryPhoto->url : asset('favicon.png');
 @endphp
 
 @section('page-title', $pageTitle)
 @section('meta_robots', 'index, follow')
 @section('meta_description', $metaDescription)
-@section('canonical_url', route('archive.country', $country->iso_code))
+@section('canonical_url', route('archive.city', [$country->iso_code, $city->slug]))
 @section('og_title', $pageTitle)
 @section('og_description', $metaDescription)
 @section('og_url', $canonicalUrl)
@@ -42,6 +42,12 @@
                     "position": 3,
                     "name": "{{ $country->name }}",
                     "item": "{{ route('archive.country', $country->iso_code) }}"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 4,
+                    "name": "{{ $city->name }}",
+                    "item": "{{ route('archive.city', [$country->iso_code, $city->slug]) }}"
                 }
             ]
         },
@@ -49,12 +55,12 @@
             "@type": "CollectionPage",
             "name": "{{ $pageTitle }}",
             "description": "{{ $metaDescription }}",
-            "url": "{{ route('archive.country', $country->iso_code) }}",
+            "url": "{{ route('archive.city', [$country->iso_code, $city->slug]) }}",
             "inLanguage": "es",
             "numberOfItems": {{ $users->total() }},
             "mainEntity": {
                 "@type": "ItemList",
-                "name": "Sugar Babies en {{ $country->name }}",
+                "name": "Sugar Babies en {{ $city->name }}",
                 "numberOfItems": {{ $users->total() }},
                 "itemListElement": [
                     @foreach ($users as $index => $profile)
@@ -62,23 +68,10 @@
                         "@type": "ListItem",
                         "position": {{ (($users->currentPage() - 1) * $users->perPage()) + $loop->index + 1 }},
                         "url": "{{ url('/profile/' . $profile->id) }}",
-                        "name": "{{ $profile->name }}, {{ $profile->age }} años – {{ $profile->city ?? $country->name }}"
+                        "name": "{{ $profile->name }}, {{ $profile->age }} años – {{ $city->name }}"
                     }{{ !$loop->last ? ',' : '' }}
                     @endforeach
                 ]
-            }
-        },
-        {
-            "@type": "WebSite",
-            "name": "Big-Dad",
-            "url": "{{ url('/') }}",
-            "potentialAction": {
-                "@type": "SearchAction",
-                "target": {
-                    "@type": "EntryPoint",
-                    "urlTemplate": "{{ url('/sugar-babies') }}/{country}"
-                },
-                "query-input": "required name=country"
             }
         }
     ]
@@ -93,17 +86,18 @@
             <div class="px-6 py-12 backdrop-blur-xl border-b border-white/10 shadow-2xl relative overflow-hidden"
                 style="background: rgba(var(--primary-rgb, 219, 39, 119), 0.2);">
 
-                {{-- Decoración de fondo --}}
                 <div class="absolute -top-24 -right-24 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl"></div>
                 <div class="absolute top-1/2 -left-12 w-48 h-48 bg-fuchsia-500/10 rounded-full blur-2xl"></div>
 
                 <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
-                    {{-- Bandera Gigante y Redonda --}}
+                    {{-- Bandera con icono de ciudad --}}
                     <div class="relative">
                         <div
-                            class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white/30 shadow-2xl ring-8 ring-white/10 animate-float">
+                            class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white/30 shadow-2xl ring-8 ring-white/10 animate-float flex items-center justify-center"
+                            style="background: rgba(var(--primary-rgb, 219, 39, 119), 0.3);">
                             <img src="https://flagcdn.com/w160/{{ strtolower($country->iso_code) }}.png"
-                                alt="{{ $country->name }}" class="w-full h-full object-cover">
+                                alt="{{ $country->name }}" class="w-full h-full object-cover opacity-60">
+                            <div class="absolute inset-0 flex items-center justify-center text-5xl">🏙️</div>
                         </div>
                         <div class="absolute -bottom-2 -right-2 bg-white rounded-full p-2 shadow-lg border border-pink-100">
                             <span class="text-2xl">✨</span>
@@ -111,12 +105,21 @@
                     </div>
 
                     <div class="text-center md:text-left">
+                        {{-- Breadcrumb --}}
+                        <div class="flex items-center gap-2 text-white/50 text-xs font-bold uppercase tracking-widest mb-3">
+                            <a href="{{ route('archive.country', $country->iso_code) }}" class="hover:text-white/80 transition-colors">
+                                {{ $country->name }}
+                            </a>
+                            <span>›</span>
+                            <span class="text-pink-400">{{ $city->name }}</span>
+                        </div>
                         <h1
                             class="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter drop-shadow-2xl leading-tight">
                             Sugar Babies <br>
                             <span
-                                class="text-pink-400 drop-shadow-[0_0_15px_rgba(244,114,182,0.4)]">{{ $country->name }}</span>
+                                class="text-pink-400 drop-shadow-[0_0_15px_rgba(244,114,182,0.4)]">{{ $city->name }}</span>
                         </h1>
+                        <p class="text-white/60 text-sm font-bold mt-2 uppercase tracking-widest">{{ $country->name }}</p>
                         <p
                             class="text-white/80 text-lg font-black mt-4 uppercase tracking-[0.2em] flex items-center justify-center md:justify-start gap-3">
                             <span class="w-8 h-[2px] bg-pink-500"></span>
@@ -182,7 +185,7 @@
                                                 d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
                                                 clip-rule="evenodd" />
                                         </svg>
-                                        {{ $profile->city ?? $country->name }}
+                                        {{ $city->name }}
                                     </p>
 
                                     @if ($profile->profileDetail && $profile->profileDetail->interests)
@@ -218,21 +221,6 @@
                         </a>
                     </div>
                 @endif
-
-                {{-- Ciudades disponibles --}}
-                @if($countryCities->count() > 0)
-                <div class="px-6 pb-16 max-w-7xl mx-auto">
-                    <h2 class="text-white/60 text-xs font-black uppercase tracking-widest mb-6">Buscar por ciudad</h2>
-                    <div class="flex flex-wrap gap-3">
-                        @foreach($countryCities as $cityItem)
-                            <a href="{{ route('archive.city', [$country->iso_code, $cityItem->slug]) }}"
-                               class="px-4 py-2 glass-card rounded-full text-white/70 text-xs font-bold border border-white/10 hover:border-pink-500/50 hover:text-white transition-all">
-                                {{ $cityItem->name }}
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
-                @endif
             @else
                 {{-- Empty State --}}
                 <div class="min-h-[60vh] flex items-center justify-center p-8">
@@ -245,8 +233,14 @@
                         </div>
                         <h3 class="text-3xl font-black text-white uppercase tracking-tighter mb-4">Próximamente</h3>
                         <p class="text-white/60 font-bold mb-10 leading-relaxed">Aún no tenemos Sugar Babies públicas
-                            registradas en {{ $country->name }}. ¡Sé la primera en unirte!</p>
-                        <a href="{{ route('register') }}" class="theme-btn px-10">Crear mi Perfil</a>
+                            registradas en {{ $city->name }}. ¡Sé la primera en unirte!</p>
+                        <div class="flex flex-col gap-3 items-center">
+                            <a href="{{ route('register') }}" class="theme-btn px-10">Crear mi Perfil</a>
+                            <a href="{{ route('archive.country', $country->iso_code) }}"
+                               class="text-white/50 text-sm hover:text-white/80 transition-colors font-bold">
+                                ← Ver todas en {{ $country->name }}
+                            </a>
+                        </div>
                     </div>
                 </div>
             @endif

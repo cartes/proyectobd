@@ -8,6 +8,37 @@
 
     <title>@yield('page-title', 'Big-Dad') - {{ config('app.name') }}</title>
     <meta name="robots" content="@yield('meta_robots', 'noindex, nofollow')">
+
+    {{-- SEO: Description & Canonical --}}
+    @hasSection('meta_description')
+        <meta name="description" content="@yield('meta_description')">
+    @endif
+    @hasSection('canonical_url')
+        <link rel="canonical" href="@yield('canonical_url')">
+    @endif
+
+    {{-- Open Graph --}}
+    @hasSection('og_title')
+        <meta property="og:type" content="@yield('og_type', 'website')">
+        <meta property="og:site_name" content="{{ config('app.name') }}">
+        <meta property="og:title" content="@yield('og_title')">
+        <meta property="og:description" content="@yield('og_description', '')">
+        <meta property="og:url" content="@yield('og_url', request()->url())">
+        <meta property="og:image" content="@yield('og_image', asset('favicon.png'))">
+        <meta property="og:locale" content="es_ES">
+    @endif
+
+    {{-- Twitter Card --}}
+    @hasSection('og_title')
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="@yield('og_title')">
+        <meta name="twitter:description" content="@yield('og_description', '')">
+        <meta name="twitter:image" content="@yield('og_image', asset('favicon.png'))">
+    @endif
+
+    {{-- JSON-LD Schema Markup --}}
+    @stack('schema_markup')
+
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">

@@ -258,6 +258,7 @@ Route::prefix('blog')->name('blog.')->group(function () {
 
 // Archives Públicos por País
 Route::get('/sugar-babies/{country:iso_code}', [\App\Http\Controllers\CountryArchiveController::class, 'index'])->name('archive.country');
+Route::get('/sugar-babies/{country:iso_code}/{city:slug}', [\App\Http\Controllers\CityArchiveController::class, 'index'])->name('archive.city');
 
 // Tracking de Engagement desde Email
 Route::get('/e/{token}', [App\Http\Controllers\EngagementController::class, 'track'])->name('engagement.track');

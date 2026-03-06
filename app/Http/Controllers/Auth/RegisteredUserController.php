@@ -52,6 +52,7 @@ class RegisteredUserController extends Controller
             'gender' => ['required', 'in:male,female,other'],
             'birth_date' => ['required', 'date', 'before:-18 years'],
             'country_id' => ['required', 'exists:countries,id'],
+            'city_id' => ['nullable', 'exists:cities,id'],
             'city' => ['nullable', 'string', 'max:255'],
         ]);
 
@@ -61,6 +62,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'user_type' => $request->user_type,
             'country_id' => $request->country_id,
+            'city_id' => $request->city_id,
             'city' => $request->city,
             'gender' => $request->gender,
             'birth_date' => $request->birth_date,

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Country extends Model
 {
@@ -21,5 +22,10 @@ class Country extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function cities(): HasMany
+    {
+        return $this->hasMany(City::class);
     }
 }

@@ -48,6 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_email_interaction_at',
         'engagement_score',
         'country_id',
+        'city_id',
     ];
 
     /**
@@ -91,6 +92,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
+    }
+
+    public function cityModel(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\City::class, 'city_id');
     }
 
     /**
@@ -622,6 +628,7 @@ class User extends Authenticatable implements MustVerifyEmail
         // 1. Actualizar datos base en la tabla 'users'
         $this->update([
             'city' => $data['city'] ?? $this->city,
+            'city_id' => array_key_exists('city_id', $data) ? $data['city_id'] : $this->city_id,
             'birth_date' => $data['birth_date'] ?? $this->birth_date,
             'bio' => $data['bio'] ?? $this->bio,
         ]);

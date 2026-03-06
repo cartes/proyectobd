@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\City;
 use App\Models\Country;
 use App\Models\ProfileDetail;
 use App\Models\User;
@@ -13,7 +14,6 @@ class CountryArchiveController extends Controller
      */
     public function index(Country $country)
     {
-        // Query only public and active Sugar Babies from the given country
         $users = User::where('user_type', 'sugar_baby')
             ->where('country_id', $country->id)
             ->where('is_active', true)
@@ -26,6 +26,14 @@ class CountryArchiveController extends Controller
 
         $interestsOptions = ProfileDetail::interestsOptions();
 
-        return view('archive.index', compact('users', 'country', 'interestsOptions'));
+        $countryCities = City::where('country_id', $country->id)
+            ->active()
+            ->whereHas('users', fn ($q) => $q->where('user_type', 'sugar_baby')
+                ->where('is_active', true)
+                ->whereHas('profileDetail', fn ($q2) => $q2->where('is_private', false)))
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug']);
+
+        return view('archive.index', compact('users', 'country', 'interestsOptions', 'countryCities'));
     }
 }

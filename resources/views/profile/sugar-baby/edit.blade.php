@@ -94,12 +94,46 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 {{-- Ciudad --}}
-                <div>
+                <div x-data="{
+                    selectedCountryId: '{{ $user->country_id ?? '' }}',
+                    cities: [],
+                    loadingCities: false,
+                    selectedCityId: '{{ old('city_id', $user->city_id ? $user->city_id : ($user->city ? 'other' : '')) }}',
+                    otherCity: '{{ old('city', $user->city ?? '') }}',
+                    async init() {
+                        if (this.selectedCountryId) await this.loadCities(this.selectedCountryId);
+                    },
+                    async loadCities(countryId) {
+                        if (!countryId) { this.cities = []; return; }
+                        this.loadingCities = true;
+                        try {
+                            const res = await fetch(`/api/countries/${countryId}/cities`);
+                            this.cities = await res.json();
+                        } catch(e) { this.cities = []; }
+                        this.loadingCities = false;
+                    }
+                }">
                     <label class="block text-gray-700 font-bold mb-3 text-sm uppercase tracking-wide">Ciudad</label>
-                    <input type="text" name="city" value="{{ old('city', $user->city) }}" placeholder="Tu ciudad"
+                    <input type="hidden" name="city_id" :value="selectedCityId === 'other' ? '' : selectedCityId">
+                    <select x-model="selectedCityId"
                         class="w-full px-5 py-3.5 bg-gradient-to-r from-pink-50 to-pink-100/50 border-2 border-pink-200 rounded-xl 
                                   focus:outline-none focus:ring-4 focus:ring-pink-200 focus:border-pink-400 
-                                  transition-all duration-200 font-medium !text-gray-900 placeholder-gray-500">
+                                  transition-all duration-200 font-medium !text-gray-900"
+                        :disabled="loadingCities">
+                        <option value="" x-text="loadingCities ? 'Cargando...' : 'Selecciona tu ciudad (opcional)'"></option>
+                        <template x-for="city in cities" :key="city.id">
+                            <option :value="city.id" x-text="city.name" :selected="city.id == selectedCityId"></option>
+                        </template>
+                        <option value="other">✏️ Otra ciudad</option>
+                    </select>
+                    <div x-show="selectedCityId === 'other'" x-transition class="mt-2">
+                        <input type="text" name="city" x-model="otherCity" maxlength="100"
+                            placeholder="Escribe tu ciudad..."
+                            class="w-full px-5 py-3 bg-white border-2 border-pink-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 font-medium text-gray-900 text-sm">
+                    </div>
+                    @error('city_id')
+                        <p class="text-red-500 text-sm mt-2 font-medium">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Fecha de Nacimiento --}}
