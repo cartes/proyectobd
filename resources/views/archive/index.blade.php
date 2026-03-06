@@ -20,25 +20,25 @@
 @push('schema_markup')
 <script type="application/ld+json">
 {
-    "@context": "https://schema.org",
-    "@graph": [
+    "@@context": "https://schema.org",
+    "@@graph": [
         {
-            "@type": "BreadcrumbList",
+            "@@type": "BreadcrumbList",
             "itemListElement": [
                 {
-                    "@type": "ListItem",
+                    "@@type": "ListItem",
                     "position": 1,
                     "name": "Big-Dad",
                     "item": "{{ url('/') }}"
                 },
                 {
-                    "@type": "ListItem",
+                    "@@type": "ListItem",
                     "position": 2,
                     "name": "Sugar Babies",
                     "item": "{{ url('/sugar-babies') }}"
                 },
                 {
-                    "@type": "ListItem",
+                    "@@type": "ListItem",
                     "position": 3,
                     "name": "{{ $country->name }}",
                     "item": "{{ route('archive.country', $country->iso_code) }}"
@@ -46,20 +46,20 @@
             ]
         },
         {
-            "@type": "CollectionPage",
+            "@@type": "CollectionPage",
             "name": "{{ $pageTitle }}",
             "description": "{{ $metaDescription }}",
             "url": "{{ route('archive.country', $country->iso_code) }}",
             "inLanguage": "es",
             "numberOfItems": {{ $users->total() }},
             "mainEntity": {
-                "@type": "ItemList",
+                "@@type": "ItemList",
                 "name": "Sugar Babies en {{ $country->name }}",
                 "numberOfItems": {{ $users->total() }},
                 "itemListElement": [
                     @foreach ($users as $index => $profile)
                     {
-                        "@type": "ListItem",
+                        "@@type": "ListItem",
                         "position": {{ (($users->currentPage() - 1) * $users->perPage()) + $loop->index + 1 }},
                         "url": "{{ url('/profile/' . $profile->id) }}",
                         "name": "{{ $profile->name }}, {{ $profile->age }} años – {{ $profile->city ?? $country->name }}"
@@ -69,13 +69,13 @@
             }
         },
         {
-            "@type": "WebSite",
+            "@@type": "WebSite",
             "name": "Big-Dad",
             "url": "{{ url('/') }}",
             "potentialAction": {
-                "@type": "SearchAction",
+                "@@type": "SearchAction",
                 "target": {
-                    "@type": "EntryPoint",
+                    "@@type": "EntryPoint",
                     "urlTemplate": "{{ url('/sugar-babies') }}/{country}"
                 },
                 "query-input": "required name=country"
