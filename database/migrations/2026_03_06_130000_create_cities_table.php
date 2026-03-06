@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Migración para crear la tabla de ciudades
+     */
     public function up(): void
     {
         Schema::create('cities', function (Blueprint $table) {
