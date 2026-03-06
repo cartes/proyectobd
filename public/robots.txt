@@ -8,4 +8,4 @@ Disallow: /profile/edit
 Disallow: /discover
 Disallow: /subscription
 
-Sitemap: https://big-dad.cl/sitemap.xml
+Sitemap: https://big-dad.com/sitemap.xml
