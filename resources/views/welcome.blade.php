@@ -186,7 +186,7 @@
             <div class="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-300">
                 <a href="{{ route('plans.public') }}" class="hover:text-pink-400 transition-colors">Planes</a>
                 <a href="{{ route('blog.index') }}" class="hover:text-pink-400 transition-colors">Blog</a>
-                <a href="#como-funciona" class="hover:text-pink-400 transition-colors">Cómo Funciona</a>
+                <a href="{{ route('como-funciona') }}" class="hover:text-pink-400 transition-colors">Cómo Funciona</a>
                 <a href="#beneficios" class="hover:text-pink-400 transition-colors">Beneficios</a>
             </div>
 

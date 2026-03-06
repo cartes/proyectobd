@@ -18,6 +18,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+Route::get('/como-funciona', function () {
+    return view('como-funciona');
+})->name('como-funciona');
+
 // Controlled Media Routes (Bypassing reserved /storage path)
 Route::get('/app-media/profiles/{hash}/{file}', [StorageController::class, 'showProfilePhoto']);
 Route::get('/app-media/{path}', [StorageController::class, 'showPublicFile'])->where('path', '.*');

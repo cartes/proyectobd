@@ -86,6 +86,14 @@ class GenerateSitemap extends Command
             'priority' => '0.8',
         ];
 
+        // Cómo Funciona page
+        $urls[] = [
+            'loc' => route('como-funciona'),
+            'lastmod' => now()->toDateString(),
+            'changefreq' => 'monthly',
+            'priority' => '0.8',
+        ];
+
         // Blog index
         $urls[] = [
             'loc' => route('blog.index'),
