@@ -43,17 +43,17 @@
     <!-- JSON-LD: BreadcrumbList -->
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
+        "@@context": "https://schema.org",
+        "@@type": "BreadcrumbList",
         "itemListElement": [
             {
-                "@type": "ListItem",
+                "@@type": "ListItem",
                 "position": 1,
                 "name": "Inicio",
                 "item": "{{ url('/') }}"
             },
             {
-                "@type": "ListItem",
+                "@@type": "ListItem",
                 "position": 2,
                 "name": "Cómo Funciona",
                 "item": "{{ url('/como-funciona') }}"
@@ -65,32 +65,32 @@
     <!-- JSON-LD: WebPage -->
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "@id": "{{ url('/como-funciona') }}",
+        "@@context": "https://schema.org",
+        "@@type": "WebPage",
+        "@@id": "{{ url('/como-funciona') }}",
         "url": "{{ url('/como-funciona') }}",
         "name": "Cómo Funciona Big-dad | Sugar Dating Exclusivo en Latinoamérica",
         "description": "Descubre el proceso simple y seguro de Big-dad: crea tu perfil VIP, conecta con Sugar Daddies o Sugar Babies de élite y vive experiencias de lujo en Latinoamérica.",
         "inLanguage": "es-CL",
         "isPartOf": {
-            "@type": "WebSite",
+            "@@type": "WebSite",
             "name": "Big-dad Latinoamérica",
             "url": "{{ url('/') }}"
         },
         "publisher": {
-            "@type": "Organization",
+            "@@type": "Organization",
             "name": "Big-dad",
             "url": "{{ url('/') }}",
             "logo": {
-                "@type": "ImageObject",
+                "@@type": "ImageObject",
                 "url": "{{ asset('favicon.png') }}"
             }
         },
         "breadcrumb": {
-            "@type": "BreadcrumbList",
+            "@@type": "BreadcrumbList",
             "itemListElement": [
-                { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "{{ url('/') }}" },
-                { "@type": "ListItem", "position": 2, "name": "Cómo Funciona", "item": "{{ url('/como-funciona') }}" }
+                { "@@type": "ListItem", "position": 1, "name": "Inicio", "item": "{{ url('/') }}" },
+                { "@@type": "ListItem", "position": 2, "name": "Cómo Funciona", "item": "{{ url('/como-funciona') }}" }
             ]
         }
     }
@@ -99,30 +99,30 @@
     <!-- JSON-LD: HowTo -->
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org",
-        "@type": "HowTo",
+        "@@context": "https://schema.org",
+        "@@type": "HowTo",
         "name": "Cómo usar Big-dad para Sugar Dating exclusivo",
         "description": "Guía paso a paso para comenzar en Big-dad, la plataforma de Sugar Dating #1 en Latinoamérica. Conecta con Sugar Daddies y Sugar Babies de élite de forma segura y discreta.",
         "image": "{{ asset('images/og-image.jpg') }}",
         "totalTime": "PT5M",
         "estimatedCost": {
-            "@type": "MonetaryAmount",
+            "@@type": "MonetaryAmount",
             "currency": "USD",
             "value": "0"
         },
         "supply": [
             {
-                "@type": "HowToSupply",
+                "@@type": "HowToSupply",
                 "name": "Correo electrónico válido"
             },
             {
-                "@type": "HowToSupply",
+                "@@type": "HowToSupply",
                 "name": "Foto de perfil reciente"
             }
         ],
         "step": [
             {
-                "@type": "HowToStep",
+                "@@type": "HowToStep",
                 "position": 1,
                 "name": "Crea tu Perfil VIP",
                 "text": "Regístrate gratis en Big-dad, sube tus mejores fotos y completa tu perfil con total autenticidad. Define claramente qué buscas: ¿eres un Sugar Daddy generoso o una Sugar Baby ambiciosa? Tu perfil es tu carta de presentación al mundo de élite.",
@@ -130,7 +130,7 @@
                 "image": "{{ asset('favicon.png') }}"
             },
             {
-                "@type": "HowToStep",
+                "@@type": "HowToStep",
                 "position": 2,
                 "name": "Descubre la Élite",
                 "text": "Usa nuestros filtros premium para encontrar perfiles verificados en tu ciudad o en toda Latinoamérica. Explora Sugar Daddies exitosos o Sugar Babies sofisticadas con total discreción garantizada.",
@@ -138,7 +138,7 @@
                 "image": "{{ asset('favicon.png') }}"
             },
             {
-                "@type": "HowToStep",
+                "@@type": "HowToStep",
                 "position": 3,
                 "name": "Conecta y Haz Match",
                 "text": "Cuando el interés es mutuo, se habilita el chat privado. Conversa de forma segura dentro de la plataforma y establece los términos de tu relación con transparencia y respeto.",
@@ -146,7 +146,7 @@
                 "image": "{{ asset('favicon.png') }}"
             },
             {
-                "@type": "HowToStep",
+                "@@type": "HowToStep",
                 "position": 4,
                 "name": "Vive la Experiencia",
                 "text": "Acuerda esa primera cita soñada: cenas de lujo, viajes exclusivos o simplemente la mejor compañía. Big-dad te conecta con personas que comparten tus ambiciones y nivel de vida.",
@@ -160,62 +160,62 @@
     <!-- JSON-LD: FAQPage -->
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
+        "@@context": "https://schema.org",
+        "@@type": "FAQPage",
         "mainEntity": [
             {
-                "@type": "Question",
+                "@@type": "Question",
                 "name": "¿Es gratis registrarse en Big-dad?",
                 "acceptedAnswer": {
-                    "@type": "Answer",
+                    "@@type": "Answer",
                     "text": "Sí, el registro en Big-dad es completamente gratuito. Puedes crear tu perfil y explorar la plataforma sin costo. Contamos con planes Premium opcionales que desbloquean funciones exclusivas como filtros avanzados, mensajes ilimitados y mayor visibilidad."
                 }
             },
             {
-                "@type": "Question",
+                "@@type": "Question",
                 "name": "¿Qué es un Sugar Daddy?",
                 "acceptedAnswer": {
-                    "@type": "Answer",
+                    "@@type": "Answer",
                     "text": "Un Sugar Daddy es generalmente un hombre exitoso, maduro y financieramente estable que busca relaciones mutuamente beneficiosas. Ofrece experiencias de lujo, viajes, cenas exclusivas y apoyo económico a cambio de compañía, conexión genuina y momentos de calidad."
                 }
             },
             {
-                "@type": "Question",
+                "@@type": "Question",
                 "name": "¿Qué es una Sugar Baby?",
                 "acceptedAnswer": {
-                    "@type": "Answer",
+                    "@@type": "Answer",
                     "text": "Una Sugar Baby es una persona joven, ambiciosa y sofisticada que busca relaciones con hombres o mujeres de alto nivel. Valora las experiencias premium, el estilo de vida de lujo y las conexiones genuinas con personas exitosas y establecidas."
                 }
             },
             {
-                "@type": "Question",
+                "@@type": "Question",
                 "name": "¿Es seguro usar Big-dad?",
                 "acceptedAnswer": {
-                    "@type": "Answer",
+                    "@@type": "Answer",
                     "text": "Sí. La seguridad es nuestra prioridad #1. Todos los perfiles pasan por verificación manual, las fotos son moderadas por nuestro equipo, y los chats solo se habilitan cuando hay un match mutuo. Además, contamos con sistema de reportes y bloqueo para proteger a nuestra comunidad."
                 }
             },
             {
-                "@type": "Question",
+                "@@type": "Question",
                 "name": "¿Es confidencial mi información en Big-dad?",
                 "acceptedAnswer": {
-                    "@type": "Answer",
+                    "@@type": "Answer",
                     "text": "Absolutamente. Big-dad utiliza rutas de almacenamiento ofuscadas para las fotos, cifrado de datos y jamás comparte tu información personal con terceros. Puedes configurar tu nivel de privacidad y qué información mostrar en tu perfil público."
                 }
             },
             {
-                "@type": "Question",
+                "@@type": "Question",
                 "name": "¿En qué países está disponible Big-dad?",
                 "acceptedAnswer": {
-                    "@type": "Answer",
+                    "@@type": "Answer",
                     "text": "Big-dad está disponible en toda Latinoamérica, con mayor presencia en Chile, Argentina, Colombia, México, Perú y Brasil. Puedes conectar con personas de tu ciudad o explorar matches en toda la región."
                 }
             },
             {
-                "@type": "Question",
+                "@@type": "Question",
                 "name": "¿Cuánto tiempo tarda en aprobarse mi perfil?",
                 "acceptedAnswer": {
-                    "@type": "Answer",
+                    "@@type": "Answer",
                     "text": "El proceso de revisión de fotos y propuesta de perfil toma generalmente entre 1 y 24 horas. Nuestro equipo de moderación trabaja para garantizar la calidad y seguridad de todos los perfiles de la comunidad."
                 }
             }
@@ -226,19 +226,19 @@
     <!-- JSON-LD: Organization -->
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org",
-        "@type": "Organization",
+        "@@context": "https://schema.org",
+        "@@type": "Organization",
         "name": "Big-dad",
         "url": "{{ url('/') }}",
         "logo": {
-            "@type": "ImageObject",
+            "@@type": "ImageObject",
             "url": "{{ asset('favicon.png') }}",
             "caption": "Big-dad Logo"
         },
         "description": "Plataforma de Sugar Dating exclusiva #1 en Latinoamérica.",
         "sameAs": ["https://www.instagram.com/big_dad.app/"],
         "contactPoint": {
-            "@type": "ContactPoint",
+            "@@type": "ContactPoint",
             "email": "hola@big-dad.com",
             "contactType": "customer support",
             "availableLanguage": "Spanish"
