@@ -887,31 +887,7 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════════ -->
-    <!-- FOOTER -->
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <footer class="border-t border-white/5 bg-[#060a14] py-12">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                <a href="{{ route('welcome') }}" class="text-xl font-black tracking-tighter hover:scale-105 transition-transform">
-                    BIG-<span class="text-pink-500">DAD</span>
-                </a>
-
-                <nav class="flex flex-wrap justify-center gap-5 text-sm text-slate-500">
-                    <a href="{{ route('como-funciona') }}" class="hover:text-white transition-colors">Cómo Funciona</a>
-                    <a href="{{ route('plans.public') }}" class="hover:text-white transition-colors">Planes</a>
-                    <a href="{{ route('blog.index') }}" class="hover:text-white transition-colors">Blog</a>
-                    <a href="{{ route('legal.terms') }}" class="hover:text-white transition-colors">Términos</a>
-                    <a href="{{ route('legal.privacy') }}" class="hover:text-white transition-colors">Privacidad</a>
-                    <a href="{{ route('legal.rules') }}" class="hover:text-white transition-colors">Reglas</a>
-                    <a href="{{ route('legal.safety') }}" class="hover:text-white transition-colors">Seguridad</a>
-                </nav>
-
-                <p class="text-slate-600 text-xs text-center">
-                    © {{ date('Y') }} Big-dad · Solo para mayores de 18 años
-                </p>
-            </div>
-        </div>
-    </footer>
+    @include('partials.footer')
 
 </body>
 </html>

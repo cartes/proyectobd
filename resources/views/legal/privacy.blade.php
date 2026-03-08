@@ -102,43 +102,7 @@
         </div>
     </main>
 
-    <footer class="border-t border-white/5 mt-24">
-        <div class="max-w-7xl mx-auto px-6 py-12">
-            <div class="text-center space-y-4">
-                <div class="flex items-center justify-center space-x-6 text-sm text-gray-400">
-                    <a href="{{ route('legal.terms') }}" class="hover:text-amber-400 transition-colors">
-                        Términos y Condiciones
-                    </a>
-                    <span>•</span>
-                    <a href="{{ route('legal.privacy') }}" class="hover:text-amber-400 transition-colors">
-                        Política de Privacidad
-                    </a>
-                    <span>•</span>
-                    <a href="{{ route('welcome') }}" class="hover:text-amber-400 transition-colors">
-                        Inicio
-                    </a>
-                    <span>•</span>
-                    <a href="mailto:hola@big-dad.com" class="hover:text-amber-400 transition-colors">
-                        Contacto
-                    </a>
-                </div>
-                <div class="flex flex-col items-center space-y-2 mt-4">
-                    <span class="text-sm font-bold text-gray-500 uppercase tracking-wider">Sitios Amigos</span>
-                    <a href="https://tecnopatitas.com" target="_blank" rel="noopener"
-                        class="text-sm text-gray-400 hover:text-amber-400 transition-colors flex items-center justify-center gap-1">
-                        tecnopatitas.com
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
-                    </a>
-                </div>
-                <p class="text-gray-500 text-sm">
-                    © {{ date('Y') }} Big-Dad. Todos los derechos reservados.
-                </p>
-            </div>
-        </div>
-    </footer>
+    @include('partials.footer')
 </body>
 
 </html>
