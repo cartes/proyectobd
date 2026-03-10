@@ -3,6 +3,17 @@
 @section('meta_title', $category->meta_title ?: $category->name . ' - Blog - ' . config('app.name'))
 @section('meta_description', $category->meta_description ?: $category->description)
 
+@section('canonical_url', $posts->url($posts->currentPage()))
+
+@section('seo_links')
+    @if ($posts->previousPageUrl())
+        <link rel="prev" href="{{ $posts->previousPageUrl() }}" />
+    @endif
+    @if ($posts->nextPageUrl())
+        <link rel="next" href="{{ $posts->nextPageUrl() }}" />
+    @endif
+@endsection
+
 @section('content')
     <div class="bg-gradient-to-br from-amber-50 via-orange-50 to-pink-50 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -108,7 +119,7 @@
 
                 {{-- Pagination --}}
                 <div class="mt-12">
-                    {{ $posts->links() }}
+                    {{ $posts->links('vendor.pagination.blog', ['theme' => 'light']) }}
                 </div>
             @else
                 {{-- Empty State --}}

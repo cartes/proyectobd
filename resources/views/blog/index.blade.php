@@ -18,7 +18,14 @@
         content="sugar dating blog, lifestyle premium, relaciones sugar, sugar daddy latinoamerica, sugar baby consejos" />
     <meta name="author" content="Big-dad" />
     <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="{{ route('blog.index') }}" />
+    <link rel="canonical" href="{{ $posts->url($posts->currentPage()) }}" />
+
+    @if ($posts->previousPageUrl())
+        <link rel="prev" href="{{ $posts->previousPageUrl() }}" />
+    @endif
+    @if ($posts->nextPageUrl())
+        <link rel="next" href="{{ $posts->nextPageUrl() }}" />
+    @endif
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -196,7 +203,7 @@
                 </div>
 
                 <div class="mt-16">
-                    {{ $posts->links() }}
+                    {{ $posts->links('vendor.pagination.blog', ['theme' => 'dark']) }}
                 </div>
             @else
                 <div class="text-center py-20 bg-slate-800/30 rounded-3xl border border-white/5">

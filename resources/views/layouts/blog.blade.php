@@ -12,6 +12,7 @@
     <meta name="keywords" content="@yield('meta_keywords', 'blog, artículos, noticias')">
     <meta name="author" content="@yield('author', config('app.name'))">
     <link rel="canonical" href="@yield('canonical_url', url()->current())">
+    @yield('seo_links')
 
     {{-- Open Graph Meta Tags --}}
     <meta property="og:type" content="@yield('og_type', 'website')">
