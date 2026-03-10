@@ -71,24 +71,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     /**
-     * Discovery system
+     * Discovery system (requiere al menos 1 foto)
      */
-    Route::get('/discover', [DiscoveryController::class, 'index'])->name('discover.index');
-    Route::post('/discover/ai-search', [DiscoveryController::class, 'aiSearch'])->name('discover.ai-search');
-    Route::post('/like/{user}', [DiscoveryController::class, 'like'])->name('discover.like');
-    Route::delete('/unlike/{user}', [DiscoveryController::class, 'unlike'])->name('discover.unlike');
-    Route::get('/favoritos', [DiscoveryController::class, 'favorites'])->name('discover.favorites');
+    Route::middleware('has_photo')->group(function () {
+        Route::get('/discover', [DiscoveryController::class, 'index'])->name('discover.index');
+        Route::post('/discover/ai-search', [DiscoveryController::class, 'aiSearch'])->name('discover.ai-search');
+        Route::post('/like/{user}', [DiscoveryController::class, 'like'])->name('discover.like');
+        Route::delete('/unlike/{user}', [DiscoveryController::class, 'unlike'])->name('discover.unlike');
+        Route::get('/favoritos', [DiscoveryController::class, 'favorites'])->name('discover.favorites');
+    });
 
     /**
-     * Matches management
+     * Matches management (requiere al menos 1 foto)
      */
-    Route::get('/matches', [MatchController::class, 'index'])->name('matches.index');
-    Route::delete('/matches/{user}', [MatchController::class, 'unmatch'])->name('matches.unmatch');
+    Route::middleware('has_photo')->group(function () {
+        Route::get('/matches', [MatchController::class, 'index'])->name('matches.index');
+        Route::delete('/matches/{user}', [MatchController::class, 'unmatch'])->name('matches.unmatch');
+    });
 
     /**
-     * Prefijo chats
+     * Prefijo chats (requiere al menos 1 foto)
      */
-    Route::prefix('chat')->name('chat.')->group(function () {
+    Route::middleware('has_photo')->prefix('chat')->name('chat.')->group(function () {
         Route::get('/', action: [ChatController::class, 'index'])->name('index');
         Route::get('/with/{user}', [ChatController::class, 'createOrFind'])->name('create');
         Route::get('/{conversation}', [ChatController::class, 'show'])->name('show');

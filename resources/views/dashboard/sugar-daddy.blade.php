@@ -45,6 +45,37 @@
             </div>
         </div>
 
+        {{-- 🔥 Banner: Sube fotos para generar confianza --}}
+        @if ($user->photos()->count() === 0)
+            <a href="{{ route('profile.photos.index') }}"
+               class="block mb-8 rounded-3xl overflow-hidden shadow-2xl relative group hover:scale-[1.01] transition-all duration-500">
+                <div class="absolute inset-0 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-amber-600 via-orange-600 to-rose-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="absolute -right-10 -top-5 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+                <div class="absolute -left-10 -bottom-5 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+                <div class="relative px-8 py-6 flex items-center gap-6">
+                    <div class="flex-shrink-0">
+                        <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-3xl border border-white/30 shadow-lg group-hover:rotate-6 transition-transform">
+                            👑
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-xl font-black text-white mb-1 tracking-tight">
+                            Las Babies quieren ver quién eres 🔥
+                        </h3>
+                        <p class="text-white/85 text-sm font-medium">
+                            Un Daddy sin foto no genera confianza. Sube tu foto y recibe <span class="font-black text-amber-100">matches más rápido</span>. Las mejores Sugar Babies solo responden a perfiles completos.
+                        </p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="bg-white text-orange-600 px-6 py-3 rounded-2xl font-black text-sm shadow-xl group-hover:shadow-white/20 transition-all uppercase tracking-tight">
+                            Subir Fotos →
+                        </div>
+                    </div>
+                </div>
+            </a>
+        @endif
+
         <!-- Quick Stats -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <!-- Profile Views -->
