@@ -7,7 +7,7 @@
         <!-- Header -->
         <div class="mb-8 flex items-center justify-between">
             <div>
-                <h1 class="text-4xl font-bold text-red-600" style="font-family: 'Playfair Display', serif;">
+                <h1 class="text-4xl font-bold text-red-600" style="font-family: 'Montserrat', sans-serif;">
                     🚫 Palabras Bloqueadas
                 </h1>
                 <p class="text-gray-600 mt-2">Total: {{ $words->total() }} palabras</p>

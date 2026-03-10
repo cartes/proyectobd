@@ -31,17 +31,30 @@
     <meta property="twitter:description" content="@yield('twitter_description', 'Big-dad - La plataforma líder de Sugar Dating en Latinoam&#233;rica')">
     <meta property="twitter:image" content="@yield('twitter_image', asset('images/og-image.jpg'))">
 
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=outfit:400,500,600,700,800,900|inter:400,500,600,700&display=swap"
+    <link href="https://fonts.bunny.net/css?family=figtree:300,400,500,600,700,800,900|montserrat:300,400,500,600,700,800&display=swap"
         rel="stylesheet" />
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-G035SGF3GT"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'G-G035SGF3GT');
+    </script>
 </head>
+
 
 <body class="font-sans text-gray-900 antialiased">
     <div
@@ -84,7 +97,7 @@
                             </svg>
                         </div>
                         <h1 class="text-4xl font-black bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent"
-                            style="font-family: 'Outfit', sans-serif;">
+                           >
                             Big-Dad
                         </h1>
                     </a>
@@ -138,7 +151,7 @@
 
         /* Tipografía elegante para la marca */
         .brand-logo {
-            font-family: 'Playfair Display', cursive;
+            font-family: 'Montserrat', sans-serif;
             letter-spacing: 2px;
         }
 

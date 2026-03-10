@@ -42,6 +42,37 @@
             </div>
         </div>
 
+        {{-- 🔥 Banner: Sube fotos para atraer Daddies --}}
+        @if ($user->photos()->count() === 0)
+            <a href="{{ route('profile.photos.index') }}"
+               class="block mb-8 rounded-3xl overflow-hidden shadow-2xl relative group hover:scale-[1.01] transition-all duration-500">
+                <div class="absolute inset-0 bg-gradient-to-r from-rose-500 via-pink-500 to-fuchsia-500"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-rose-600 via-pink-600 to-fuchsia-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="absolute -right-10 -top-5 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+                <div class="absolute -left-10 -bottom-5 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+                <div class="relative px-8 py-6 flex items-center gap-6">
+                    <div class="flex-shrink-0">
+                        <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-3xl border border-white/30 shadow-lg group-hover:rotate-6 transition-transform">
+                            📸
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-xl font-black text-white mb-1 tracking-tight">
+                            ¡Haz que los Daddies se fijen en ti! ✨
+                        </h3>
+                        <p class="text-white/85 text-sm font-medium">
+                            Tu perfil sin fotos es invisible. Sube tu mejor foto y recibe <span class="font-black text-amber-200">10x más likes</span> esta semana. ¡Los Daddies Premium están buscando!
+                        </p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="bg-white text-pink-600 px-6 py-3 rounded-2xl font-black text-sm shadow-xl group-hover:shadow-white/20 transition-all uppercase tracking-tight">
+                            Subir Fotos →
+                        </div>
+                    </div>
+                </div>
+            </a>
+        @endif
+
         <!-- Profile Completion & Quick Stats -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <!-- Profile Completion -->

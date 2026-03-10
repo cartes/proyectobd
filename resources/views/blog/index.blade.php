@@ -14,12 +14,61 @@
     <title>Blog Big-dad: Lifestyle, Consejos y Relaciones Exclusivas</title>
     <meta name="description"
         content="Descubre artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica." />
+    <meta name="keywords"
+        content="sugar dating blog, lifestyle premium, relaciones sugar, sugar daddy latinoamerica, sugar baby consejos" />
+    <meta name="author" content="Big-dad" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="{{ $posts->url($posts->currentPage()) }}" />
+
+    @if ($posts->previousPageUrl())
+        <link rel="prev" href="{{ $posts->previousPageUrl() }}" />
+    @endif
+    @if ($posts->nextPageUrl())
+        <link rel="next" href="{{ $posts->nextPageUrl() }}" />
+    @endif
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ route('blog.index') }}" />
+    <meta property="og:title" content="Blog Big-dad: Lifestyle, Consejos y Relaciones Exclusivas" />
+    <meta property="og:description"
+        content="Descubre artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica." />
+    <meta property="og:image" content="{{ asset('images/og-image.jpg') }}" />
+    <meta property="og:site_name" content="{{ config('app.name') }}" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="{{ route('blog.index') }}" />
+    <meta name="twitter:title" content="Blog Big-dad: Lifestyle, Consejos y Relaciones Exclusivas" />
+    <meta name="twitter:description"
+        content="Descubre artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica." />
+    <meta name="twitter:image" content="{{ asset('images/og-image.jpg') }}" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "Blog Big-dad",
+        "description": "Artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica.",
+        "url": "{{ route('blog.index') }}",
+        "publisher": {
+            "@@type": "Organization",
+            "name": "Big-dad",
+            "url": "{{ url('/') }}",
+            "logo": {
+                "@@type": "ImageObject",
+                "url": "{{ asset('favicon.png') }}"
+            }
+        }
+    }
+    </script>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&family=Playfair+Display:ital,wght@0,600;1,600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap"
         rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/css/home.css', 'resources/js/app.js'])
@@ -102,7 +151,8 @@
                             <!-- Background Image -->
                             <div class="absolute inset-0">
                                 @if ($post->featured_image)
-                                    <img src="{{ asset('app-media/' . $post->featured_image) }}" alt="{{ $post->title }}"
+                                    <img src="{{ asset('app-media/' . $post->featured_image) }}"
+                                        alt="{{ $post->title }}"
                                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                 @else
                                     <div class="w-full h-full bg-gradient-to-br from-slate-800 to-slate-700"></div>
@@ -137,11 +187,11 @@
                                     <div class="flex items-center gap-2">
                                         <div
                                             class="w-6 h-6 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white">
-                                            {{ substr($post->author->name, 0, 1) }}
+                                            {{ substr($post->author?->name ?? 'BD', 0, 1) }}
                                         </div>
-                                        <span>{{ $post->author->name }}</span>
+                                        <span>{{ $post->author?->name ?? 'Big-Dad' }}</span>
                                     </div>
-                                    <span>{{ $post->published_at->format('d M') }}</span>
+                                    <span>{{ $post->published_at?->format('d M') ?? '' }}</span>
                                 </div>
                             </div>
 
@@ -153,7 +203,7 @@
                 </div>
 
                 <div class="mt-16">
-                    {{ $posts->links() }}
+                    {{ $posts->links('vendor.pagination.blog', ['theme' => 'dark']) }}
                 </div>
             @else
                 <div class="text-center py-20 bg-slate-800/30 rounded-3xl border border-white/5">
@@ -165,54 +215,7 @@
         </div>
     </section>
 
-    <!-- Footer (Copied from welcome) -->
-    <footer class="bg-slate-950 py-16 border-t border-white/5 text-sm text-slate-400 mt-20">
-        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div>
-                <a href="/" class="text-2xl font-black text-white block mb-6">
-                    BIG-<span class="text-pink-500">DAD</span>
-                </a>
-                <p class="leading-relaxed mb-6">
-                    La plataforma líder de Sugar Dating en Latinoamérica. Conectando ambición con éxito desde 2024.
-                </p>
-            </div>
-
-            <div>
-                <h4 class="text-white font-bold mb-6 uppercase tracking-wider">Descubrir</h4>
-                <ul class="space-y-3">
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Sugar Babies Premium</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Sugar Daddies Verificados</a>
-                    </li>
-                    <li><a href="{{ route('blog.index') }}" class="hover:text-pink-500 transition-colors">Blog de
-                            Estilo de Vida</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="text-white font-bold mb-6 uppercase tracking-wider">Legal</h4>
-                <ul class="space-y-3">
-                    <li><a href="{{ route('legal.terms') }}" class="hover:text-pink-500 transition-colors">Términos y
-                            Condiciones</a></li>
-                    <li><a href="{{ route('legal.privacy') }}" class="hover:text-pink-500 transition-colors">Política
-                            de Privacidad</a></li>
-                    <li><a href="{{ route('legal.rules') }}" class="hover:text-pink-500 transition-colors">Reglas de
-                            la Comunidad</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="text-white font-bold mb-6 uppercase tracking-wider">Ayuda</h4>
-                <ul class="space-y-3">
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Soporte 24/7</a></li>
-                    <li><a href="#" class="hover:text-pink-500 transition-colors">Contacto</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="container mx-auto px-6 mt-16 pt-8 border-t border-white/5 text-center text-xs">
-            <p>&copy; {{ date('Y') }} Big-dad Latinoamérica. Todos los derechos reservados. Hecho con ❤️ para toda
-                LATAM.</p>
-        </div>
-    </footer>
+    @include('partials.footer')
 
     <script>
         function homePage() {

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class BlogPost extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'title',
@@ -102,6 +103,169 @@ class BlogPost extends Model
                 $post->reading_time = max(1, ceil($wordCount / 200));
             }
         });
+    }
+
+    /**
+     * SEO: Genera la mejor descripción disponible (≤160 chars).
+     * Prioridad: meta_description → excerpt → contenido limpio → fallback.
+     */
+    public function getSeoDescriptionAttribute(): string
+    {
+        $fallback = 'Descubre lo último en lifestyle premium y conexiones exclusivas en Latinoamérica. Lee más en Big-Dad Blog.';
+
+        if (! empty($this->meta_description)) {
+            return $this->meta_description;
+        }
+
+        if (! empty($this->excerpt)) {
+            return Str::limit($this->excerpt, 160);
+        }
+
+        if (! empty($this->content)) {
+            $clean = strip_tags($this->content);
+            $clean = html_entity_decode($clean, ENT_QUOTES, 'UTF-8');
+            $clean = preg_replace('/\s+/', ' ', trim($clean));
+
+            if (mb_strlen($clean) > 0) {
+                return Str::limit($clean, 160);
+            }
+        }
+
+        return $fallback;
+    }
+
+    /**
+     * SEO: Genera keywords automáticas.
+     * Prioridad: meta_keywords → categoría + top-5 palabras del contenido.
+     */
+    public function getSeoKeywordsAttribute(): string
+    {
+        if (! empty($this->meta_keywords)) {
+            return $this->meta_keywords;
+        }
+
+        $keywords = [];
+
+        // Incluir categoría si existe
+        if ($this->relationLoaded('category') && $this->category) {
+            $keywords[] = mb_strtolower($this->category->name);
+        } elseif ($this->category_id) {
+            $category = $this->category;
+            if ($category) {
+                $keywords[] = mb_strtolower($category->name);
+            }
+        }
+
+        // Extraer top-5 palabras del contenido
+        if (! empty($this->content)) {
+            $clean = strip_tags($this->content);
+            $clean = html_entity_decode($clean, ENT_QUOTES, 'UTF-8');
+            $clean = mb_strtolower($clean);
+            $clean = preg_replace('/[^\p{L}\s]/u', '', $clean);
+
+            $words = preg_split('/\s+/', $clean, -1, PREG_SPLIT_NO_EMPTY);
+
+            // Stopwords en español
+            $stopwords = [
+                'de',
+                'la',
+                'el',
+                'en',
+                'que',
+                'por',
+                'con',
+                'un',
+                'una',
+                'los',
+                'las',
+                'del',
+                'para',
+                'es',
+                'se',
+                'al',
+                'lo',
+                'como',
+                'más',
+                'mas',
+                'pero',
+                'sus',
+                'le',
+                'ya',
+                'este',
+                'esta',
+                'entre',
+                'cuando',
+                'muy',
+                'sin',
+                'sobre',
+                'ser',
+                'también',
+                'me',
+                'hasta',
+                'hay',
+                'donde',
+                'quien',
+                'desde',
+                'todo',
+                'nos',
+                'durante',
+                'todos',
+                'uno',
+                'les',
+                'ni',
+                'contra',
+                'otros',
+                'ese',
+                'eso',
+                'ante',
+                'ellos',
+                'fue',
+                'son',
+                'está',
+                'tiene',
+                'han',
+                'sido',
+                'tiene',
+                'the',
+                'and',
+                'for',
+                'are',
+                'but',
+                'not',
+                'you',
+                'all',
+                'can',
+                'had',
+                'her',
+                'was',
+                'one',
+                'our',
+                'out',
+                'has',
+                'with',
+                'that',
+                'this',
+                'from',
+                'they',
+            ];
+
+            $filtered = array_filter($words, function ($word) use ($stopwords) {
+                return mb_strlen($word) >= 4 && ! in_array($word, $stopwords);
+            });
+
+            $frequency = array_count_values($filtered);
+            arsort($frequency);
+
+            $topWords = array_slice(array_keys($frequency), 0, 5);
+            $keywords = array_merge($keywords, $topWords);
+        }
+
+        // Fallback si no hay nada
+        if (empty($keywords)) {
+            return 'lifestyle, conexiones, latinoamérica, premium, blog';
+        }
+
+        return implode(', ', array_unique($keywords));
     }
 
     /**

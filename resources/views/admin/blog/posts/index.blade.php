@@ -10,13 +10,29 @@
                 <h2 class="text-3xl font-outfit font-bold">Posts del Blog</h2>
                 <p class="text-gray-400 mt-1">Gestiona todos los artículos del blog</p>
             </div>
-            <a href="{{ route('admin.blog.posts.create') }}"
-                class="px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-xl font-semibold transition-colors flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                Nuevo Post
-            </a>
+            <div class="flex items-center gap-3">
+                {{-- Botón Regenerar Sitemap --}}
+                <form method="POST" action="{{ route('admin.blog.settings.sitemap.regenerate') }}"
+                      onsubmit="return confirm('¿Regenerar el sitemap.xml ahora?')">
+                    @csrf
+                    <button type="submit"
+                            class="px-5 py-3 bg-slate-700 hover:bg-slate-600 text-gray-200 rounded-xl font-semibold transition-colors flex items-center gap-2 border border-white/10 hover:border-white/20">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        Regenerar Sitemap
+                    </button>
+                </form>
+
+                <a href="{{ route('admin.blog.posts.create') }}"
+                    class="px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-xl font-semibold transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Nuevo Post
+                </a>
+            </div>
         </div>
 
         {{-- Filters --}}

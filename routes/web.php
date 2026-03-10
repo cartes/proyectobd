@@ -18,6 +18,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+Route::get('/como-funciona', function () {
+    return view('como-funciona');
+})->name('como-funciona');
+
 // Controlled Media Routes (Bypassing reserved /storage path)
 Route::get('/app-media/profiles/{hash}/{file}', [StorageController::class, 'showProfilePhoto']);
 Route::get('/app-media/{path}', [StorageController::class, 'showPublicFile'])->where('path', '.*');
@@ -40,7 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
     /**
      * Rutas de perfil con prefijo /profile
@@ -67,23 +71,28 @@ Route::middleware('auth')->group(function () {
     });
 
     /**
-     * Discovery system
+     * Discovery system (requiere al menos 1 foto)
      */
-    Route::get('/discover', [DiscoveryController::class, 'index'])->name('discover.index');
-    Route::post('/like/{user}', [DiscoveryController::class, 'like'])->name('discover.like');
-    Route::delete('/unlike/{user}', [DiscoveryController::class, 'unlike'])->name('discover.unlike');
-    Route::get('/favoritos', [DiscoveryController::class, 'favorites'])->name('discover.favorites');
+    Route::middleware('has_photo')->group(function () {
+        Route::get('/discover', [DiscoveryController::class, 'index'])->name('discover.index');
+        Route::post('/discover/ai-search', [DiscoveryController::class, 'aiSearch'])->name('discover.ai-search');
+        Route::post('/like/{user}', [DiscoveryController::class, 'like'])->name('discover.like');
+        Route::delete('/unlike/{user}', [DiscoveryController::class, 'unlike'])->name('discover.unlike');
+        Route::get('/favoritos', [DiscoveryController::class, 'favorites'])->name('discover.favorites');
+    });
 
     /**
-     * Matches management
+     * Matches management (requiere al menos 1 foto)
      */
-    Route::get('/matches', [MatchController::class, 'index'])->name('matches.index');
-    Route::delete('/matches/{user}', [MatchController::class, 'unmatch'])->name('matches.unmatch');
+    Route::middleware('has_photo')->group(function () {
+        Route::get('/matches', [MatchController::class, 'index'])->name('matches.index');
+        Route::delete('/matches/{user}', [MatchController::class, 'unmatch'])->name('matches.unmatch');
+    });
 
     /**
-     * Prefijo chats
+     * Prefijo chats (requiere al menos 1 foto)
      */
-    Route::prefix('chat')->name('chat.')->group(function () {
+    Route::middleware('has_photo')->prefix('chat')->name('chat.')->group(function () {
         Route::get('/', action: [ChatController::class, 'index'])->name('index');
         Route::get('/with/{user}', [ChatController::class, 'createOrFind'])->name('create');
         Route::get('/{conversation}', [ChatController::class, 'show'])->name('show');
@@ -105,26 +114,29 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('subscription')->name('subscription.')->group(function () {
         Route::get('/plans', [SubscriptionController::class, 'index'])->name('plans');
+        // ⚡ COMENTADO: Modo Lanzamiento - Webhooks MP en reparación
         Route::post('/checkout/{plan}', [SubscriptionController::class, 'createCheckout'])->name('checkout');
         Route::get('/success', [SubscriptionController::class, 'returnSuccess'])->name('success');
         Route::get('/failure', [SubscriptionController::class, 'returnFailure'])->name('failure');
         Route::get('/pending', [SubscriptionController::class, 'returnPending'])->name('pending');
-        Route::post('/cancel', [SubscriptionController::class, 'cancelSubscription'])->name('cancel');
+        // Route::post('/cancel', [SubscriptionController::class, 'cancelSubscription'])->name('cancel');
         Route::get('/{subscription}', [SubscriptionController::class, 'show'])->name('show');
     });
 
-    // Compras
-    Route::post('/purchase/boost', [PurchaseController::class, 'buyBoost'])->name('purchase.boost');
-    Route::post('/purchase/super-likes', [PurchaseController::class, 'buySuperLikes'])->name('purchase.super-likes');
-    Route::post('/purchase/verification', [PurchaseController::class, 'buyVerification'])->name('purchase.verification');
-    Route::post('/purchase/gift/{recipient}', [PurchaseController::class, 'buyGift'])->name('purchase.gift');
+    // Compras - ⚡ COMENTADO: Modo Lanzamiento - Webhooks MP en reparación
+    // Route::post('/purchase/boost', [PurchaseController::class, 'buyBoost'])->name('purchase.boost');
+    // Route::post('/purchase/super-likes', [PurchaseController::class, 'buySuperLikes'])->name('purchase.super-likes');
+    // Route::post('/purchase/verification', [PurchaseController::class, 'buyVerification'])->name('purchase.verification');
+    // Route::post('/purchase/gift/{recipient}', [PurchaseController::class, 'buyGift'])->name('purchase.gift');
     Route::get('/purchase/success', [PurchaseController::class, 'returnSuccess'])->name('purchase.success');
     Route::get('/purchase/failure', [PurchaseController::class, 'returnFailure'])->name('purchase.failure');
     Route::get('/purchase/pending', [PurchaseController::class, 'returnPending'])->name('purchase.pending');
 });
 
 // Webhook de Mercado Pago (sin auth)
-Route::post('/webhook/mercadopago', [WebhookController::class, 'handleMercadoPagoWebhook'])->name('webhook.mercadopago');
+Route::post('/webhook/mercadopago', [WebhookController::class, 'handleMercadoPagoWebhook'])
+    ->middleware('rate_limit')
+    ->name('webhook.mercadopago');
 
 /**
  * Rutas de administración
@@ -152,6 +164,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/moderation/users/{user}/change-country', [ModerationController::class, 'changeCountry'])->name('moderation.users.change-country');
     Route::post('/moderation/users/{user}/toggle-premium', [ModerationController::class, 'togglePremium'])->name('moderation.users.toggle-premium');
     Route::post('/moderation/users/{user}/toggle-private', [ModerationController::class, 'togglePrivateProfile'])->name('moderation.users.toggle-private');
+    Route::post('/moderation/users/{user}/update-profile', [ModerationController::class, 'updateUserProfile'])->name('moderation.users.update-profile');
 
     // Gestión de Planes (Precios y Ofertas)
     Route::get('/plans', [App\Http\Controllers\Admin\PlanController::class, 'index'])->name('plans.index');
@@ -178,6 +191,24 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/system/stats', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('system.stats')->defaults('title', 'Estadísticas Generales');
     Route::get('/marketing/promotions', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('marketing.promotions')->defaults('title', 'Promociones');
     Route::get('/marketing/notifications', [App\Http\Controllers\Admin\AdminPlaceholderController::class, 'index'])->name('marketing.notifications')->defaults('title', 'Notificaciones Push');
+
+    // Perfil del Super-Admin
+    Route::get('/profile', [App\Http\Controllers\Admin\AdminProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [App\Http\Controllers\Admin\AdminProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [App\Http\Controllers\Admin\AdminProfileController::class, 'updatePassword'])->name('profile.password');
+
+    // Notificaciones de Admin (campana)
+    Route::post('/notifications/mark-all-read', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+
+        return back()->with('success', 'Notificaciones marcadas como leídas.');
+    })->name('notifications.mark-all-read');
+
+    Route::post('/notifications/{id}/mark-read', function (string $id) {
+        auth()->user()->notifications()->where('id', $id)->update(['read_at' => now()]);
+
+        return back();
+    })->name('notifications.mark-read');
 
     // Gestión de Países
     Route::prefix('countries')->name('countries.')->group(function () {
@@ -217,6 +248,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
             Route::get('/seo', [\App\Http\Controllers\Admin\BlogSettingsController::class, 'seo'])->name('seo');
             Route::get('/analytics', [\App\Http\Controllers\Admin\BlogSettingsController::class, 'analytics'])->name('analytics');
             Route::get('/scripts', [\App\Http\Controllers\Admin\BlogSettingsController::class, 'scripts'])->name('scripts');
+            Route::post('/sitemap/regenerate', [\App\Http\Controllers\Admin\BlogSettingsController::class, 'regenerateSitemap'])->name('sitemap.regenerate');
         });
     });
 });
@@ -230,6 +262,7 @@ Route::prefix('blog')->name('blog.')->group(function () {
 
 // Archives Públicos por País
 Route::get('/sugar-babies/{country:iso_code}', [\App\Http\Controllers\CountryArchiveController::class, 'index'])->name('archive.country');
+Route::get('/sugar-babies/{country:iso_code}/{city:slug}', [\App\Http\Controllers\CityArchiveController::class, 'index'])->name('archive.city');
 
 // Tracking de Engagement desde Email
 Route::get('/e/{token}', [App\Http\Controllers\EngagementController::class, 'track'])->name('engagement.track');
@@ -240,5 +273,20 @@ Route::get('/politica-de-privacidad', [App\Http\Controllers\LegalController::cla
 Route::get('/reglas-de-la-comunidad', [App\Http\Controllers\LegalController::class, 'rules'])->name('legal.rules');
 Route::get('/seguridad', [App\Http\Controllers\LegalController::class, 'safety'])->name('legal.safety');
 Route::get('/planes', [App\Http\Controllers\SubscriptionController::class, 'index'])->name('plans.public');
+
+// Ruta temporal de prueba
+Route::get('/test-payment', function () {
+    $service = app(App\Services\MercadoPagoService::class);
+    $user = Auth::user(); // Asegúrate de estar logueado
+
+    // Simula la compra de un 'boost'
+    $result = $service->createPaymentPreference($user, 'boost', 5000.00);
+
+    if ($result['success']) {
+        return redirect($result['sandbox_init_point']); // USA EL LINK DE SANDBOX
+    }
+
+    return $result['error'];
+});
 
 require __DIR__.'/auth.php';

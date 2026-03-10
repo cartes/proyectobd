@@ -139,8 +139,13 @@ return [
         // Payment endpoints - CRÍTICO
         'payment' => [
             'checkout' => '5,1',           // 5 requests por minuto
-            'webhook' => '10,1',            // 10 requests por minuto
+            'webhook' => '10,1',            // 10 requests por minuto (ruta antigua)
             'refund' => '3,1',              // 3 requests por minuto
+        ],
+
+        // Webhook de Mercado Pago (ruta canónica)
+        'webhook' => [
+            'mercadopago' => '10,1',        // 10 requests por minuto
         ],
 
         // Matching endpoints - ALTO

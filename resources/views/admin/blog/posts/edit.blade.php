@@ -4,7 +4,7 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.4/tinymce.min.js" referrerpolicy="origin"></script>
 @endpush
 
 @section('content')
@@ -286,98 +286,45 @@
 @endsection
 
 @push('scripts')
-    {{-- CKEditor 5 Styles for Dark Theme --}}
-    <style>
-        .ck-editor__editable_inline {
-            min-height: 400px;
-            background-color: #1f2937 !important;
-            color: #e5e7eb !important;
-            border-color: rgba(255, 255, 255, 0.1) !important;
-        }
-
-        .ck.ck-editor__main>.ck-editor__editable {
-            background: #1f2937 !important;
-        }
-
-        .ck.ck-toolbar {
-            background: #111827 !important;
-            border-color: rgba(255, 255, 255, 0.1) !important;
-        }
-
-        .ck.ck-toolbar__separator {
-            background: rgba(255, 255, 255, 0.1) !important;
-        }
-
-        .ck.ck-button {
-            color: #9ca3af !important;
-            cursor: pointer !important;
-        }
-
-        .ck.ck-button:not(.ck-disabled):hover,
-        .ck.ck-button.ck-on {
-            background: #374151 !important;
-            color: #fff !important;
-        }
-
-        .ck.ck-list {
-            background: #1f2937 !important;
-        }
-
-        .ck.ck-list__item .ck-button:hover:not(.ck-disabled) {
-            background: #374151 !important;
-        }
-
-        .ck.ck-dropdown__panel {
-            background: #1f2937 !important;
-            border-color: rgba(255, 255, 255, 0.1) !important;
-        }
-    </style>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize CKEditor 5
-            let editorInstance;
-            ClassicEditor
-                .create(document.querySelector('#content'), {
-                    toolbar: [
-                        'heading', '|',
-                        'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
-                        'undo', 'redo'
-                    ],
-                    heading: {
-                        options: [{
-                                model: 'paragraph',
-                                title: 'Párrafo',
-                                class: 'ck-heading_paragraph'
-                            },
-                            {
-                                model: 'heading2',
-                                view: 'h2',
-                                title: 'Título 2',
-                                class: 'ck-heading_heading2'
-                            },
-                            {
-                                model: 'heading3',
-                                view: 'h3',
-                                title: 'Título 3',
-                                class: 'ck-heading_heading3'
-                            }
-                        ]
-                    }
-                })
-                .then(editor => {
-                    editorInstance = editor;
-                    // Update textarea whenever editor content changes
-                    editor.model.document.on('change:data', () => {
-                        document.querySelector('#content').value = editor.getData();
+            const submitButtons = document.querySelectorAll('button[type="submit"]');
+
+            // Initialize TinyMCE
+            tinymce.init({
+                selector: '#content',
+                base_url: 'https://cdn.jsdelivr.net/npm/tinymce@6.8.4',
+                suffix: '.min',
+                skin: 'oxide-dark',
+                content_css: 'dark',
+                height: 500,
+                menubar: true,
+                plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table wordcount codesample',
+                toolbar: 'undo redo | blocks | bold italic underline strikethrough | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | table codesample | code preview | removeformat',
+                images_upload_handler: function(blobInfo) {
+                    return new Promise((resolve, reject) => {
+                        const formData = new FormData();
+                        formData.append('image', blobInfo.blob(), blobInfo.filename());
+                        formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+                        fetch('{{ route('admin.blog.posts.upload-image') }}', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(r => r.json())
+                            .then(data => data.location ? resolve(data.location) : reject('Upload failed'))
+                            .catch(() => reject('Upload failed'));
+                    });
+                },
+                setup: function(editor) {
+                    editor.on('change input', function() {
+                        editor.save();
                         updateStats();
                     });
-                    // Force update stats on load
-                    setTimeout(updateStats, 500);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+                    editor.on('init', function() {
+                        setTimeout(updateStats, 300);
+                    });
+                }
+            });
 
             // Handle Slug Logic
             const slugInput = document.getElementById('slug');
@@ -395,7 +342,6 @@
             const featuredImage = document.getElementById('featuredImage');
             const imagePreview = document.getElementById('imagePreview');
             const previewImg = document.getElementById('previewImg');
-            const submitButtons = document.querySelectorAll('button[type="submit"]');
 
             featuredImage.addEventListener('change', function(e) {
                 const file = e.target.files[0];
@@ -448,11 +394,12 @@
 
             // Stats Update
             function updateStats() {
-                if (!editorInstance) return;
-                const content = editorInstance.getData().replace(/<[^>]*>/g, '');
+                const editor = tinymce.get('content');
+                if (!editor) return;
+                const content = editor.getContent({ format: 'text' });
                 const words = content.trim().split(/\s+/).filter(w => w.length > 0).length;
                 const chars = content.length;
-                const readingTime = Math.ceil(words / 200);
+                const readingTime = Math.ceil(words / 200) || 0;
 
                 document.getElementById('wordCount').textContent = words.toLocaleString();
                 document.getElementById('charCount').textContent = chars.toLocaleString();
@@ -464,6 +411,9 @@
 
             postForm.addEventListener('submit', function(e) {
                 e.preventDefault();
+
+                // Sync TinyMCE content to textarea before submission
+                tinymce.triggerSave();
 
                 // Set status based on which button was clicked
                 const clickedButton = e.submitter;

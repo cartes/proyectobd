@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -48,6 +48,7 @@ class User extends Authenticatable
         'last_email_interaction_at',
         'engagement_score',
         'country_id',
+        'city_id',
     ];
 
     /**
@@ -56,6 +57,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
+        'email',
         'password',
         'remember_token',
     ];
@@ -90,6 +92,11 @@ class User extends Authenticatable
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
+    }
+
+    public function cityModel(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\City::class, 'city_id');
     }
 
     /**
@@ -383,7 +390,9 @@ class User extends Authenticatable
      */
     public function hasSuperLikesAvailable(): bool
     {
-        return $this->super_likes_remaining > 0;
+        // ⚡ MODO LANZAMIENTO: Super Likes ilimitados
+        // TODO: Restaurar: return $this->super_likes_remaining > 0;
+        return true;
     }
 
     /**
@@ -428,26 +437,73 @@ class User extends Authenticatable
         ]);
     }
 
+    /** Límites del plan gratuito para Sugar Daddies */
+    const FREE_DADDY_MATCH_LIMIT = 3;
+
+    const FREE_DADDY_CONVERSATION_LIMIT = 1;
+
     /**
-     * Verificar si usuario es premium
-     * Usa la suscripción activa si existe, sino verifica el atributo legacy is_premium
+     * Verificar si usuario es premium (suscripción activa o campo legacy)
      */
     public function isPremium(): bool
     {
-        // ✅ Obtener la suscripción activa
-        $activeSubscription = $this->activeSubscription()->first();
-
-        // ✅ Si tiene suscripción activa, es premium
-        if ($activeSubscription) {
+        if ($this->activeSubscription()->exists()) {
             return true;
         }
 
-        // ✅ Si NO tiene suscripción activa pero is_premium=true, resetear a false
-        if ($this->is_premium) {
-            $this->update(['is_premium' => false]);
+        if ($this->is_premium && $this->premium_until && $this->premium_until->isFuture()) {
+            return true;
         }
 
         return false;
+    }
+
+    /**
+     * ¿El daddy free puede dar like a más babies?
+     * Bloquea si ya alcanzó 3 matches mutuos con babies.
+     */
+    public function canLikeMoreBabies(): bool
+    {
+        if (! $this->isSugarDaddy()) {
+            return true;
+        }
+
+        if ($this->isPremium()) {
+            return true;
+        }
+
+        return $this->matches()->where('user_type', 'sugar_baby')->count() < self::FREE_DADDY_MATCH_LIMIT;
+    }
+
+    /**
+     * ¿El daddy free puede iniciar una nueva conversación?
+     * Bloquea si ya tiene 1 conversación activa con una baby.
+     */
+    public function canStartConversation(): bool
+    {
+        if (! $this->isSugarDaddy()) {
+            return true;
+        }
+
+        if ($this->isPremium()) {
+            return true;
+        }
+
+        return $this->conversationsWithBabiesCount() < self::FREE_DADDY_CONVERSATION_LIMIT;
+    }
+
+    /**
+     * Contar conversaciones activas con Sugar Babies
+     */
+    public function conversationsWithBabiesCount(): int
+    {
+        return Conversation::where(function ($q) {
+            $q->where('user_one_id', $this->id)
+                ->whereHas('userTwo', fn ($q2) => $q2->where('user_type', 'sugar_baby'));
+        })->orWhere(function ($q) {
+            $q->where('user_two_id', $this->id)
+                ->whereHas('userOne', fn ($q2) => $q2->where('user_type', 'sugar_baby'));
+        })->count();
     }
 
     // ==================== MÉTODOS HELPER - PERFIL ====================
@@ -572,6 +628,7 @@ class User extends Authenticatable
         // 1. Actualizar datos base en la tabla 'users'
         $this->update([
             'city' => $data['city'] ?? $this->city,
+            'city_id' => array_key_exists('city_id', $data) ? $data['city_id'] : $this->city_id,
             'birth_date' => $data['birth_date'] ?? $this->birth_date,
             'bio' => $data['bio'] ?? $this->bio,
         ]);

@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="mb-8">
-        <h1 class="text-4xl font-playfair font-bold bg-gradient-to-r {{ Auth::user()->user_type === 'sugar_daddy' ? 'from-purple-600 to-purple-800' : 'from-pink-600 to-pink-800' }} bg-clip-text text-transparent mb-3">
+        <h1 class="text-4xl font-montserrat font-bold bg-gradient-to-r {{ Auth::user()->user_type === 'sugar_daddy' ? 'from-purple-600 to-purple-800' : 'from-pink-600 to-pink-800' }} bg-clip-text text-transparent mb-3">
             ✏️ Editar Perfil
         </h1>
         <p class="text-gray-600 text-lg">Completa tu información para destacar en Big-dad</p>
@@ -20,20 +20,42 @@
                 <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xl shadow-lg">
                     📋
                 </div>
-                <h2 class="text-2xl font-playfair font-bold text-gray-900">Información Básica</h2>
+                <h2 class="text-2xl font-montserrat font-bold text-gray-900">Información Básica</h2>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 {{-- Ciudad --}}
-                <div>
+                <div x-data="{
+                    selectedCountryId: '{{ $user->country_id ?? '' }}',
+                    cities: [],
+                    loadingCities: false,
+                    selectedCityId: '{{ old('city_id', $user->city_id ?? '') }}',
+                    async init() {
+                        if (this.selectedCountryId) await this.loadCities(this.selectedCountryId);
+                    },
+                    async loadCities(countryId) {
+                        if (!countryId) { this.cities = []; return; }
+                        this.loadingCities = true;
+                        try {
+                            const res = await fetch(`/api/countries/${countryId}/cities`);
+                            this.cities = await res.json();
+                        } catch(e) { this.cities = []; }
+                        this.loadingCities = false;
+                    }
+                }">
                     <label class="block text-gray-700 font-bold mb-3 text-sm uppercase tracking-wide">Ciudad</label>
-                    <input type="text" name="city" value="{{ old('city', $user->city) }}"
-                           class="w-full px-5 py-3.5 bg-gradient-to-r from-blue-50 to-blue-100/50 border-2 border-blue-200 rounded-xl 
+                    <select name="city_id" x-model="selectedCityId"
+                        class="w-full px-5 py-3.5 bg-gradient-to-r from-blue-50 to-blue-100/50 border-2 border-blue-200 rounded-xl 
                                   focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-400 
-                                  transition-all duration-200 font-medium text-gray-900 placeholder-gray-500"
-                           placeholder="Tu ciudad">
-                    @error('city')
+                                  transition-all duration-200 font-medium text-gray-900"
+                        :disabled="loadingCities">
+                        <option value="" x-text="loadingCities ? 'Cargando...' : 'Selecciona tu ciudad (opcional)'"></option>
+                        <template x-for="city in cities" :key="city.id">
+                            <option :value="city.id" x-text="city.name" :selected="city.id == selectedCityId"></option>
+                        </template>
+                    </select>
+                    @error('city_id')
                         <p class="text-red-500 text-sm mt-2 font-medium">{{ $message }}</p>
                     @enderror
                 </div>
@@ -214,7 +236,7 @@
                     ❤️
                 </div>
                 <div>
-                    <h2 class="text-2xl font-playfair font-bold text-gray-900">Intereses</h2>
+                    <h2 class="text-2xl font-montserrat font-bold text-gray-900">Intereses</h2>
                     <p class="text-gray-600 text-sm">Selecciona tus intereses (máximo 8)</p>
                 </div>
             </div>

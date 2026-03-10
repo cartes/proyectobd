@@ -1,19 +1,19 @@
 @extends('layouts.blog')
 
 @section('meta_title', $post->meta_title ?: $post->title . ' - ' . config('app.name'))
-@section('meta_description', $post->meta_description ?: $post->excerpt)
-@section('meta_keywords', $post->meta_keywords)
+@section('meta_description', $post->seo_description)
+@section('meta_keywords', $post->seo_keywords)
 @section('canonical_url', route('blog.show', $post->slug))
 
 @section('og_type', 'article')
 @section('og_title', $post->meta_title ?: $post->title)
-@section('og_description', $post->meta_description ?: $post->excerpt)
+@section('og_description', $post->seo_description)
 @section('og_url', route('blog.show', $post->slug))
-@section('og_image', $post->og_image ? asset('app-media/' . $post->og_image) : ($post->featured_image ? asset('app-media/' .
-    $post->featured_image) : asset('images/og-default.jpg')))
+@section('og_image', $post->og_image ? asset('app-media/' . $post->og_image) : ($post->featured_image ?
+    asset('app-media/' . $post->featured_image) : asset('images/og-default.jpg')))
 
 @section('twitter_title', $post->meta_title ?: $post->title)
-@section('twitter_description', $post->meta_description ?: $post->excerpt)
+@section('twitter_description', $post->seo_description)
 @section('twitter_image', $post->og_image ? asset('app-media/' . $post->og_image) : ($post->featured_image ?
     asset('app-media/' . $post->featured_image) : asset('images/og-default.jpg')))
 
@@ -153,7 +153,7 @@
 
             {{-- Title --}}
             <h1 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight"
-                style="font-family: 'Outfit', sans-serif;">
+               >
                 {{ $post->title }}
             </h1>
 
@@ -165,7 +165,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <span class="text-sm font-medium">{{ $post->published_at->format('d M Y') }}</span>
+                    <span class="text-sm font-medium">{{ $post->published_at?->format('d M Y') ?? '' }}</span>
                 </div>
 
                 {{-- Reading Time --}}
@@ -289,7 +289,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
-                                        {{ $related->published_at->format('d M Y') }}
+                                        {{ $related->published_at?->format('d M Y') ?? '' }}
                                     </p>
                                 </div>
                             </article>
@@ -301,12 +301,67 @@
     </article>
 
     @push('scripts')
+        {{-- Schema.org JSON-LD for SEO --}}
+        @php
+            $schemaData = [
+                '@context' => 'https://schema.org',
+                '@type' => 'BlogPosting',
+                'headline' => $post->title,
+                'description' => $post->seo_description,
+                'datePublished' => $post->published_at?->toIso8601String(),
+                'dateModified' => $post->updated_at->toIso8601String(),
+                'wordCount' => str_word_count(strip_tags($post->content)),
+                'timeRequired' => 'PT' . ($post->reading_time ?? 5) . 'M',
+                'url' => route('blog.show', $post->slug),
+                'mainEntityOfPage' => [
+                    '@type' => 'WebPage',
+                    '@id' => route('blog.show', $post->slug),
+                ],
+            ];
+
+            // Add featured image if available
+            if ($post->featured_image) {
+                $schemaData['image'] = asset('app-media/' . $post->featured_image);
+            }
+
+            // Add author if available
+            if ($post->author) {
+                $schemaData['author'] = [
+                    '@type' => 'Person',
+                    'name' => $post->author->name,
+                ];
+            }
+
+            // Add publisher
+            $schemaData['publisher'] = [
+                '@type' => 'Organization',
+                'name' => config('app.name'),
+                'logo' => [
+                    '@type' => 'ImageObject',
+                    'url' => asset('favicon.png'),
+                ],
+            ];
+
+            // Add category if available
+            // Add keywords
+            $schemaData['keywords'] = $post->seo_keywords;
+
+            if ($post->category) {
+                $schemaData['articleSection'] = $post->category->name;
+            }
+        @endphp
+
+        <script type="application/ld+json">
+        {!! json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+        </script>
+
+        {{-- Google Analytics Event Tracking --}}
         <script>
             // Track article read event for analytics
             @if (config('services.google_analytics.id'))
                 gtag('event', 'article_read', {
-                    'article_title': '{{ $post->title }}',
-                    'article_category': '{{ $post->category ? $post->category->name : 'Uncategorized' }}'
+                    'article_title': {{ json_encode($post->title) }},
+                    'article_category': {{ json_encode($post->category ? $post->category->name : 'Uncategorized') }}
                 });
             @endif
         </script>

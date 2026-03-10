@@ -25,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
             'rate_limit' => \App\Http\Middleware\RateLimitMiddleware::class,
+            'has_photo' => \App\Http\Middleware\EnsureHasProfilePhoto::class,
         ]);
         $middleware->validateCsrfTokens(except: [
             'webhook/mercadopago',

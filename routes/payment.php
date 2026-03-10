@@ -10,7 +10,3 @@ Route::middleware(['auth', 'rate_limit'])->group(function () {
     Route::post('/refund', [PaymentController::class, 'refund'])
         ->name('payment.refund');
 });
-
-Route::post('/webhook/mercado-pago', [PaymentController::class, 'webhook'])
-    ->middleware('rate_limit')
-    ->name('payment.webhook');

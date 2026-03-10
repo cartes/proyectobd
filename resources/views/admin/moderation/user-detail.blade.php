@@ -547,6 +547,119 @@
                     </div>
                 </div>
 
+                <!-- Edit Profile Data -->
+                <div class="bg-[#0c111d] border border-white/5 rounded-3xl p-8 space-y-6">
+                    <h4 class="font-outfit font-bold text-lg border-b border-white/5 pb-4">Editar Datos de Perfil</h4>
+
+                    <form action="{{ route('admin.moderation.users.update-profile', $user) }}" method="POST"
+                        class="space-y-4">
+                        @csrf
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Nombre</label>
+                            <input type="text" name="name" value="{{ old('name', $user->name) }}" required
+                                class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm focus:border-pink-500/50 focus:ring-0 transition-all text-white">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Bio</label>
+                            <textarea name="bio" rows="3"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm focus:border-pink-500/50 focus:ring-0 transition-all text-white"
+                                placeholder="Descripción del perfil...">{{ old('bio', $user->bio) }}</textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Ciudad</label>
+                            <input type="text" name="city" value="{{ old('city', $user->city) }}"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm focus:border-pink-500/50 focus:ring-0 transition-all text-white"
+                                placeholder="Ciudad">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Fecha de
+                                Nacimiento</label>
+                            <input type="date" name="birth_date"
+                                value="{{ old('birth_date', $user->birth_date?->format('Y-m-d')) }}"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm focus:border-pink-500/50 focus:ring-0 transition-all text-white">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Género</label>
+                            <select name="gender"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm focus:border-pink-500/50 focus:ring-0 appearance-none transition-all text-white">
+                                <option value="">Sin especificar</option>
+                                <option value="male"
+                                    {{ old('gender', $user->gender) === 'male' ? 'selected' : '' }}>Masculino</option>
+                                <option value="female"
+                                    {{ old('gender', $user->gender) === 'female' ? 'selected' : '' }}>Femenino</option>
+                                <option value="other"
+                                    {{ old('gender', $user->gender) === 'other' ? 'selected' : '' }}>Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label
+                                class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Ocupación</label>
+                            <input type="text" name="occupation"
+                                value="{{ old('occupation', $user->profileDetail?->occupation) }}"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm focus:border-pink-500/50 focus:ring-0 transition-all text-white"
+                                placeholder="Ocupación / profesión">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label
+                                class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Educación</label>
+                            <select name="education"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm focus:border-pink-500/50 focus:ring-0 appearance-none transition-all text-white">
+                                <option value="">Sin especificar</option>
+                                @foreach (\App\Models\ProfileDetail::educationLevels() as $key => $label)
+                                    <option value="{{ $key }}"
+                                        {{ old('education', $user->profileDetail?->education) === $key ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        @if ($user->isSugarDaddy())
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Rango de
+                                    Ingresos</label>
+                                <select name="income_range"
+                                    class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm focus:border-pink-500/50 focus:ring-0 appearance-none transition-all text-white">
+                                    <option value="">Sin especificar</option>
+                                    @foreach (\App\Models\ProfileDetail::incomeRanges() as $key => $label)
+                                        <option value="{{ $key }}"
+                                            {{ old('income_range', $user->profileDetail?->income_range) === $key ? 'selected' : '' }}>
+                                            {{ $label }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
+
+                        <div class="space-y-2">
+                            <label
+                                class="text-xs font-bold text-gray-500 uppercase tracking-widest px-1">Disponibilidad</label>
+                            <select name="availability"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-sm focus:border-pink-500/50 focus:ring-0 appearance-none transition-all text-white">
+                                <option value="">Sin especificar</option>
+                                @foreach (\App\Models\ProfileDetail::availabilityOptions() as $key => $label)
+                                    <option value="{{ $key }}"
+                                        {{ old('availability', $user->profileDetail?->availability) === $key ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full py-3 rounded-2xl font-black uppercase tracking-widest text-xs bg-pink-500 hover:bg-pink-600 text-white shadow-lg shadow-pink-500/20 transition-all">
+                            Actualizar Perfil
+                        </button>
+                    </form>
+                </div>
+
                 <!-- Moderation Action Form -->
                 <div class="bg-rose-500/5 border border-rose-500/10 rounded-3xl p-8 space-y-6">
                     <h4 class="font-outfit font-bold text-lg text-rose-500 border-b border-rose-500/10 pb-4">Moderación &

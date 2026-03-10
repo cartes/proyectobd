@@ -12,6 +12,7 @@
     <meta name="keywords" content="@yield('meta_keywords', 'blog, artículos, noticias')">
     <meta name="author" content="@yield('author', config('app.name'))">
     <link rel="canonical" href="@yield('canonical_url', url()->current())">
+    @yield('seo_links')
 
     {{-- Open Graph Meta Tags --}}
     <meta property="og:type" content="@yield('og_type', 'website')">
@@ -28,12 +29,13 @@
     <meta name="twitter:image" content="@yield('twitter_image', asset('images/og-default.jpg'))">
 
     {{-- Favicon --}}
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
 
     {{-- Fonts --}}
     <link
-        href="https://fonts.bunny.net/css?family=playfair-display:400,700,900|inter:400,500,600,700,800,900|outfit:400,500,600,700,800,900&display=swap"
+        href="https://fonts.bunny.net/css?family=figtree:300,400,500,600,700,800,900|montserrat:300,400,500,600,700,800&display=swap"
         rel="stylesheet" />
 
     {{-- Scripts --}}
@@ -88,7 +90,21 @@
     @endif
 
     @stack('styles')
+    @if (!$gaId)
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-G035SGF3GT"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'G-G035SGF3GT');
+    </script>
+    @endif
 </head>
+
 
 <body class="font-sans antialiased bg-gray-50">
     @if ($gtmId)
@@ -110,7 +126,7 @@
                 <a href="{{ route('plans.public') }}" class="hover:text-pink-400 transition-colors">Planes</a>
                 <a href="{{ route('blog.index') }}"
                     class="text-white hover:text-pink-400 transition-colors border-b-2 border-pink-500">Blog</a>
-                <a href="/#como-funciona" class="hover:text-pink-400 transition-colors">Cómo Funciona</a>
+                <a href="{{ route('como-funciona') }}" class="hover:text-pink-400 transition-colors">Cómo Funciona</a>
                 <a href="/#beneficios" class="hover:text-pink-400 transition-colors">Beneficios</a>
             </div>
 
@@ -150,71 +166,7 @@
     </main>
 
     {{-- Footer --}}
-    <footer class="bg-gray-900 text-gray-300 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                {{-- About --}}
-                <div class="col-span-1 md:col-span-2">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div
-                            class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
-                            </svg>
-                        </div>
-                        <div class="text-2xl font-black text-white" style="font-family: 'Outfit', sans-serif;">
-                            Big-Dad
-                        </div>
-                    </div>
-                    <p class="text-gray-400 mb-4">
-                        Tu plataforma de conexiones premium. Descubre artículos, consejos y las últimas noticias en
-                        nuestro blog.
-                    </p>
-                </div>
-
-                {{-- Quick Links --}}
-                <div>
-                    <h3 class="text-white font-semibold mb-4">Enlaces Rápidos</h3>
-                    <ul class="space-y-2">
-                        <li><a href="{{ route('blog.index') }}" class="hover:text-amber-500 transition-colors">Blog</a>
-                        </li>
-                        <li><a href="{{ route('welcome') }}" class="hover:text-amber-500 transition-colors">Inicio</a>
-                        </li>
-                        @auth
-                            <li><a href="{{ route('dashboard') }}"
-                                    class="hover:text-amber-500 transition-colors">Dashboard</a></li>
-                        @else
-                            <li><a href="{{ route('login') }}" class="hover:text-amber-500 transition-colors">Iniciar
-                                    Sesión</a></li>
-                            <li><a href="{{ route('register') }}"
-                                    class="hover:text-amber-500 transition-colors">Registrarse</a></li>
-                        @endauth
-                    </ul>
-                </div>
-
-                {{-- Categories --}}
-                <div>
-                    <h3 class="text-white font-semibold mb-4">Categorías</h3>
-                    <ul class="space-y-2">
-                        @foreach ($categories->take(5) as $category)
-                            <li>
-                                <a href="{{ route('blog.category', $category->slug) }}"
-                                    class="hover:text-amber-500 transition-colors">
-                                    {{ $category->name }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-
-            {{-- Copyright --}}
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; {{ date('Y') }} {{ config('app.name') }}. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
+    @include('partials.footer')
 
     {{-- Custom Footer Scripts --}}
     @php

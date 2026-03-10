@@ -12,7 +12,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
@@ -24,16 +24,8 @@
         <div class="max-w-7xl mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
                 <a href="{{ route('welcome') }}" class="flex items-center space-x-3">
-                    <div
-                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
-                        </svg>
-                    </div>
-                    <span
-                        class="text-2xl font-black bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
-                        Big-Dad
+                    <span class="text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
+                        BIG-<span class="text-pink-500">DAD</span>
                     </span>
                 </a>
 
@@ -301,29 +293,7 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-white/5 mt-24">
-        <div class="max-w-7xl mx-auto px-6 py-12">
-            <div class="text-center space-y-4">
-                <div class="flex items-center justify-center space-x-6 text-sm text-gray-400">
-                    <a href="{{ route('legal.terms') }}" class="hover:text-amber-400 transition-colors">
-                        Términos y Condiciones
-                    </a>
-                    <span>•</span>
-                    <a href="{{ route('legal.privacy') }}" class="hover:text-amber-400 transition-colors">
-                        Política de Privacidad
-                    </a>
-                    <span>•</span>
-                    <a href="{{ route('welcome') }}" class="hover:text-amber-400 transition-colors">
-                        Inicio
-                    </a>
-                </div>
-                <p class="text-gray-500 text-sm">
-                    © {{ date('Y') }} Big-Dad. Todos los derechos reservados.
-                </p>
-            </div>
-        </div>
-    </footer>
+    @include('partials.footer')
 </body>
 
 </html>

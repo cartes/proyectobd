@@ -85,6 +85,8 @@
                     <x-input-label for="country_id" :value="__('País')" class="text-sm font-semibold text-gray-700" />
                     <select id="country_id" name="country_id"
                         class="block mt-1 w-full rounded-lg border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                        x-model="selectedCountryId"
+                        @change="loadCities(selectedCountryId); selectedCityId = ''"
                         required>
                         <option value="">Selecciona tu país</option>
                         @foreach ($countries as $country)
@@ -100,6 +102,28 @@
                             <span class="text-gray-500">¿No es correcto? Puedes cambiarlo.</span>
                         </p>
                     @endif
+                </div>
+
+                <div>
+                    <x-input-label for="city_id" :value="__('Ciudad')" class="text-sm font-semibold text-gray-700" />
+                    <input type="hidden" name="city_id" :value="selectedCityId === 'other' ? '' : selectedCityId">
+                    <select id="city_id" x-model="selectedCityId"
+                        class="block mt-1 w-full rounded-lg border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                        :disabled="!selectedCountryId || loadingCities">
+                        <option value="">
+                            <span x-text="loadingCities ? 'Cargando ciudades...' : (selectedCountryId ? 'Selecciona tu ciudad (opcional)' : 'Primero elige un país')"></span>
+                        </option>
+                        <template x-for="city in cities" :key="city.id">
+                            <option :value="city.id" x-text="city.name" :selected="city.id == selectedCityId"></option>
+                        </template>
+                        <option value="other">✏️ Otra ciudad</option>
+                    </select>
+                    <div x-show="selectedCityId === 'other'" x-transition class="mt-2">
+                        <input type="text" name="city" x-model="otherCity" maxlength="100"
+                            placeholder="Escribe tu ciudad..."
+                            class="block w-full rounded-lg border-gray-300 focus:border-purple-500 focus:ring-purple-500 text-sm">
+                    </div>
+                    <x-input-error :messages="$errors->get('city_id')" class="mt-1" />
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
@@ -192,7 +216,26 @@
         <script>
             function registrationForm() {
                 return {
-                    userType: '{{ old('user_type', 'sugar_baby') }}'
+                    userType: '{{ old('user_type', 'sugar_baby') }}',
+                    selectedCountryId: '{{ old('country_id', $defaultCountryId ?? '') }}',
+                    cities: [],
+                    loadingCities: false,
+                    selectedCityId: '{{ old('city_id', old('city') ? 'other' : '') }}',
+                    otherCity: '{{ old('city', '') }}',
+                    async init() {
+                        if (this.selectedCountryId) {
+                            await this.loadCities(this.selectedCountryId);
+                        }
+                    },
+                    async loadCities(countryId) {
+                        if (!countryId) { this.cities = []; return; }
+                        this.loadingCities = true;
+                        try {
+                            const res = await fetch(`/api/countries/${countryId}/cities`);
+                            this.cities = await res.json();
+                        } catch(e) { this.cities = []; }
+                        this.loadingCities = false;
+                    }
                 }
             }
         </script>

@@ -5,7 +5,7 @@
 @section('content')
     <div class="mb-8">
         <h1 class="text-4xl font-black bg-gradient-to-r from-purple-600 to-indigo-800 bg-clip-text text-transparent mb-3 uppercase tracking-tighter"
-            style="font-family: 'Outfit', sans-serif;">
+           >
             Editar Perfil Profesional
         </h1>
         <p class="text-gray-600 text-lg">Destaca tu experiencia y estilo de vida ejecutivo</p>
@@ -30,7 +30,7 @@
                     <div class="flex items-center gap-3 mb-4">
                         <span
                             class="px-3 py-1 bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Exclusivo</span>
-                        <h2 class="text-3xl font-playfair font-bold text-white">Perfil Privado</h2>
+                        <h2 class="text-3xl font-montserrat font-bold text-white">Perfil Privado</h2>
                     </div>
                     <p class="text-indigo-100 text-lg leading-relaxed mb-6">
                         @if ($hasPrivateProfilePlan)
@@ -94,7 +94,7 @@
                             d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                 </div>
-                <h2 class="text-2xl font-playfair font-bold !text-gray-900">Perfil Profesional</h2>
+                <h2 class="text-2xl font-montserrat font-bold !text-gray-900">Perfil Profesional</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -175,7 +175,7 @@
                     class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white text-xl shadow-lg">
                     💰
                 </div>
-                <h2 class="text-2xl font-playfair font-bold !text-gray-900">Estilo de Vida</h2>
+                <h2 class="text-2xl font-montserrat font-bold !text-gray-900">Estilo de Vida</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -217,12 +217,46 @@
                 </div>
 
                 {{-- Ciudad --}}
-                <div>
+                <div x-data="{
+                    selectedCountryId: '{{ $user->country_id ?? '' }}',
+                    cities: [],
+                    loadingCities: false,
+                    selectedCityId: '{{ old('city_id', $user->city_id ? $user->city_id : ($user->city ? 'other' : '')) }}',
+                    otherCity: '{{ old('city', $user->city ?? '') }}',
+                    async init() {
+                        if (this.selectedCountryId) await this.loadCities(this.selectedCountryId);
+                    },
+                    async loadCities(countryId) {
+                        if (!countryId) { this.cities = []; return; }
+                        this.loadingCities = true;
+                        try {
+                            const res = await fetch(`/api/countries/${countryId}/cities`);
+                            this.cities = await res.json();
+                        } catch(e) { this.cities = []; }
+                        this.loadingCities = false;
+                    }
+                }">
                     <label class="block text-gray-700 font-bold mb-3 text-sm uppercase tracking-wide">Ciudad</label>
-                    <input type="text" name="city" value="{{ old('city', $user->city) }}" placeholder="Tu ciudad"
+                    <input type="hidden" name="city_id" :value="selectedCityId === 'other' ? '' : selectedCityId">
+                    <select x-model="selectedCityId"
                         class="w-full px-5 py-3.5 bg-gradient-to-r from-teal-50 to-teal-100/50 border-2 border-teal-200 rounded-xl 
                                   focus:outline-none focus:ring-4 focus:ring-teal-200 focus:border-teal-400 
-                                  transition-all duration-200 font-medium !text-gray-900 placeholder-gray-500">
+                                  transition-all duration-200 font-medium !text-gray-900"
+                        :disabled="loadingCities">
+                        <option value="" x-text="loadingCities ? 'Cargando...' : 'Selecciona tu ciudad (opcional)'"></option>
+                        <template x-for="city in cities" :key="city.id">
+                            <option :value="city.id" x-text="city.name" :selected="city.id == selectedCityId"></option>
+                        </template>
+                        <option value="other">✏️ Otra ciudad</option>
+                    </select>
+                    <div x-show="selectedCityId === 'other'" x-transition class="mt-2">
+                        <input type="text" name="city" x-model="otherCity" maxlength="100"
+                            placeholder="Escribe tu ciudad..."
+                            class="w-full px-5 py-3 bg-white border-2 border-teal-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-teal-200 focus:border-teal-400 transition-all duration-200 font-medium text-gray-900 text-sm">
+                    </div>
+                    @error('city_id')
+                        <p class="text-red-500 text-sm mt-2 font-medium">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Disponibilidad --}}
@@ -253,7 +287,7 @@
                     class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xl shadow-lg">
                     👤
                 </div>
-                <h2 class="text-2xl font-playfair font-bold !text-gray-900">Información Personal</h2>
+                <h2 class="text-2xl font-montserrat font-bold !text-gray-900">Información Personal</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -373,7 +407,7 @@
                     🎁
                 </div>
                 <div>
-                    <h2 class="text-2xl font-playfair font-bold !text-gray-900">Qué Puedo Ofrecer</h2>
+                    <h2 class="text-2xl font-montserrat font-bold !text-gray-900">Qué Puedo Ofrecer</h2>
                     <p class="text-sm text-gray-600">Tu propuesta de valor</p>
                 </div>
             </div>
@@ -397,7 +431,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-playfair font-bold !text-gray-900">Áreas de Mentoría</h2>
+                    <h2 class="text-2xl font-montserrat font-bold !text-gray-900">Áreas de Mentoría</h2>
                     <p class="text-sm text-gray-500">En qué puedes asesorar</p>
                 </div>
             </div>
@@ -437,7 +471,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-playfair font-bold !text-gray-900">Mis Intereses</h2>
+                    <h2 class="text-2xl font-montserrat font-bold !text-gray-900">Mis Intereses</h2>
                     <p class="text-sm text-gray-500">Hobbies y pasiones</p>
                 </div>
             </div>
@@ -478,7 +512,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-playfair font-bold !text-gray-900">Qué Busco</h2>
+                    <h2 class="text-2xl font-montserrat font-bold !text-gray-900">Qué Busco</h2>
                     <p class="text-sm text-gray-600">Tu relación ideal</p>
                 </div>
             </div>

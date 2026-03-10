@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -49,8 +50,9 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'user_type' => ['required', 'in:sugar_daddy,sugar_baby'],
             'gender' => ['required', 'in:male,female,other'],
-            'birth_date' => ['required', 'date', 'before:today'],
+            'birth_date' => ['required', 'date', 'before:-18 years'],
             'country_id' => ['required', 'exists:countries,id'],
+            'city_id' => ['nullable', 'exists:cities,id'],
             'city' => ['nullable', 'string', 'max:255'],
         ]);
 
@@ -60,14 +62,24 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'user_type' => $request->user_type,
             'country_id' => $request->country_id,
+            'city_id' => $request->city_id,
             'city' => $request->city,
             'gender' => $request->gender,
             'birth_date' => $request->birth_date,
         ]);
 
         event(new Registered($user));
+
+        // Notificar a todos los administradores (notificaciones de BD)
+        $admins = User::where('role', 'admin')->get();
+        if ($admins->isNotEmpty()) {
+            Notification::send($admins, new \App\Notifications\AdminNewUserNotification($user));
+        }
+
+        // Log the user in so they can access the verification notice page
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Redirect to email verification notice instead of dashboard
+        return redirect()->route('verification.notice');
     }
 }

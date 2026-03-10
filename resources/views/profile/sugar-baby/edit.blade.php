@@ -5,7 +5,7 @@
 @section('content')
     <div class="mb-8">
         <h1 class="text-4xl font-black bg-gradient-to-r from-pink-600 to-fuchsia-800 bg-clip-text text-transparent mb-3 uppercase tracking-tighter"
-            style="font-family: 'Outfit', sans-serif;">
+           >
             Editar Mi Perfil
         </h1>
         <p class="text-gray-600 text-lg">Haz que tu perfil brille y atraiga a los mejores Sugar Daddies</p>
@@ -30,7 +30,7 @@
                     <div class="flex items-center gap-3 mb-4">
                         <span
                             class="px-3 py-1 bg-pink-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Privilegio</span>
-                        <h2 class="text-3xl font-black text-white" style="font-family: 'Outfit', sans-serif;">Perfil Privado
+                        <h2 class="text-3xl font-black text-white">Perfil Privado
                         </h2>
                     </div>
                     <p class="text-pink-100 text-lg leading-relaxed mb-6">
@@ -88,18 +88,52 @@
                             d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
                     </svg>
                 </div>
-                <h2 class="text-2xl font-black !text-gray-900" style="font-family: 'Outfit', sans-serif;">Sobre Mí</h2>
+                <h2 class="text-2xl font-black !text-gray-900">Sobre Mí</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 {{-- Ciudad --}}
-                <div>
+                <div x-data="{
+                    selectedCountryId: '{{ $user->country_id ?? '' }}',
+                    cities: [],
+                    loadingCities: false,
+                    selectedCityId: '{{ old('city_id', $user->city_id ? $user->city_id : ($user->city ? 'other' : '')) }}',
+                    otherCity: '{{ old('city', $user->city ?? '') }}',
+                    async init() {
+                        if (this.selectedCountryId) await this.loadCities(this.selectedCountryId);
+                    },
+                    async loadCities(countryId) {
+                        if (!countryId) { this.cities = []; return; }
+                        this.loadingCities = true;
+                        try {
+                            const res = await fetch(`/api/countries/${countryId}/cities`);
+                            this.cities = await res.json();
+                        } catch(e) { this.cities = []; }
+                        this.loadingCities = false;
+                    }
+                }">
                     <label class="block text-gray-700 font-bold mb-3 text-sm uppercase tracking-wide">Ciudad</label>
-                    <input type="text" name="city" value="{{ old('city', $user->city) }}" placeholder="Tu ciudad"
+                    <input type="hidden" name="city_id" :value="selectedCityId === 'other' ? '' : selectedCityId">
+                    <select x-model="selectedCityId"
                         class="w-full px-5 py-3.5 bg-gradient-to-r from-pink-50 to-pink-100/50 border-2 border-pink-200 rounded-xl 
                                   focus:outline-none focus:ring-4 focus:ring-pink-200 focus:border-pink-400 
-                                  transition-all duration-200 font-medium !text-gray-900 placeholder-gray-500">
+                                  transition-all duration-200 font-medium !text-gray-900"
+                        :disabled="loadingCities">
+                        <option value="" x-text="loadingCities ? 'Cargando...' : 'Selecciona tu ciudad (opcional)'"></option>
+                        <template x-for="city in cities" :key="city.id">
+                            <option :value="city.id" x-text="city.name" :selected="city.id == selectedCityId"></option>
+                        </template>
+                        <option value="other">✏️ Otra ciudad</option>
+                    </select>
+                    <div x-show="selectedCityId === 'other'" x-transition class="mt-2">
+                        <input type="text" name="city" x-model="otherCity" maxlength="100"
+                            placeholder="Escribe tu ciudad..."
+                            class="w-full px-5 py-3 bg-white border-2 border-pink-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-pink-200 focus:border-pink-400 transition-all duration-200 font-medium text-gray-900 text-sm">
+                    </div>
+                    @error('city_id')
+                        <p class="text-red-500 text-sm mt-2 font-medium">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Fecha de Nacimiento --}}
@@ -281,7 +315,7 @@
                     class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-xl shadow-lg">
                     📚
                 </div>
-                <h2 class="text-2xl font-black !text-gray-900" style="font-family: 'Outfit', sans-serif;">Educación y
+                <h2 class="text-2xl font-black !text-gray-900">Educación y
                     Ocupación</h2>
             </div>
 
@@ -331,7 +365,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-black !text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis
+                    <h2 class="text-2xl font-black !text-gray-900">Mis
                         Aspiraciones y Metas</h2>
                     <p class="text-sm text-gray-600">Qué quieres lograr en la vida</p>
                 </div>
@@ -357,7 +391,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-black !text-gray-900" style="font-family: 'Outfit', sans-serif;">Mis
+                    <h2 class="text-2xl font-black !text-gray-900">Mis
                         Intereses
                     </h2>
                     <p class="text-sm text-gray-500">Selecciona lo que te apasiona (máximo 8)</p>
@@ -400,7 +434,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-black !text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi Sugar
+                    <h2 class="text-2xl font-black !text-gray-900">Mi Sugar
                         Daddy Ideal</h2>
                     <p class="text-sm text-gray-600">Describe a tu pareja perfecta</p>
                 </div>

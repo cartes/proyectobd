@@ -21,5 +21,5 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-// PÚBLICAS (webhook se maneja en routes/web.php)
-// Las rutas de webhook están en web.php para evitar duplicación
+// Públicas
+Route::get('/countries/{country}/cities', [\App\Http\Controllers\Api\CityController::class, 'index']);

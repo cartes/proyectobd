@@ -27,6 +27,7 @@ class UpdateProfileRequest extends FormRequest
 
         $rules = [
             'city' => 'nullable|string|max:100',
+            'city_id' => 'nullable|exists:cities,id',
             'birth_date' => 'nullable|date|before:today',
             'bio' => 'nullable|string|max:1000',
             'height' => 'nullable|integer|min:100|max:250',

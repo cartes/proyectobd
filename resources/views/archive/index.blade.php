@@ -1,6 +1,90 @@
 @extends('layouts.mobile-app')
 
-@section('page-title', 'Sugar Babies en ' . $country->name)
+@php
+    $pageTitle = 'Sugar Babies en ' . $country->name . ' | Conoce chicas de ' . $country->name;
+    $metaDescription = 'Conoce ' . $users->total() . ' Sugar Babies de ' . $country->name . ' en Big-Dad. Perfiles verificados de chicas que buscan conexiones especiales con Sugar Daddies. ¡Únete gratis!';
+    $canonicalUrl = route('archive.country', $country->iso_code) . ($users->currentPage() > 1 ? '?page=' . $users->currentPage() : '');
+    $ogImage = $users->isNotEmpty() && $users->first()->primaryPhoto ? $users->first()->primaryPhoto->url : asset('favicon.png');
+@endphp
+
+@section('page-title', $pageTitle)
+@section('meta_robots', 'index, follow')
+@section('meta_description', $metaDescription)
+@section('canonical_url', route('archive.country', $country->iso_code))
+@section('og_title', $pageTitle)
+@section('og_description', $metaDescription)
+@section('og_url', $canonicalUrl)
+@section('og_image', $ogImage)
+@section('og_type', 'website')
+
+@push('schema_markup')
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@graph": [
+        {
+            "@@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@@type": "ListItem",
+                    "position": 1,
+                    "name": "Big-Dad",
+                    "item": "{{ url('/') }}"
+                },
+                {
+                    "@@type": "ListItem",
+                    "position": 2,
+                    "name": "Sugar Babies",
+                    "item": "{{ url('/sugar-babies') }}"
+                },
+                {
+                    "@@type": "ListItem",
+                    "position": 3,
+                    "name": "{{ $country->name }}",
+                    "item": "{{ route('archive.country', $country->iso_code) }}"
+                }
+            ]
+        },
+        {
+            "@@type": "CollectionPage",
+            "name": "{{ $pageTitle }}",
+            "description": "{{ $metaDescription }}",
+            "url": "{{ route('archive.country', $country->iso_code) }}",
+            "inLanguage": "es",
+            "numberOfItems": {{ $users->total() }},
+            "mainEntity": {
+                "@@type": "ItemList",
+                "name": "Sugar Babies en {{ $country->name }}",
+                "numberOfItems": {{ $users->total() }},
+                "itemListElement": [
+                    @foreach ($users as $index => $profile)
+                    {
+                        "@@type": "ListItem",
+                        "position": {{ (($users->currentPage() - 1) * $users->perPage()) + $loop->index + 1 }},
+                        "url": "{{ url('/profile/' . $profile->id) }}",
+                        "name": "{{ $profile->name }}, {{ $profile->age }} años – {{ $profile->city ?? $country->name }}"
+                    }{{ !$loop->last ? ',' : '' }}
+                    @endforeach
+                ]
+            }
+        },
+        {
+            "@@type": "WebSite",
+            "name": "Big-Dad",
+            "url": "{{ url('/') }}",
+            "potentialAction": {
+                "@@type": "SearchAction",
+                "target": {
+                    "@@type": "EntryPoint",
+                    "urlTemplate": "{{ url('/sugar-babies') }}/{country}"
+                },
+                "query-input": "required name=country"
+            }
+        }
+    ]
+}
+</script>
+@endpush
 
 @section('content')
     <div class="min-h-screen" style="background: var(--theme-gradient-deep);">
@@ -133,6 +217,21 @@
                             Ver más Sugar Babies
                         </a>
                     </div>
+                @endif
+
+                {{-- Ciudades disponibles --}}
+                @if($countryCities->count() > 0)
+                <div class="px-6 pb-16 max-w-7xl mx-auto">
+                    <h2 class="text-white/60 text-xs font-black uppercase tracking-widest mb-6">Buscar por ciudad</h2>
+                    <div class="flex flex-wrap gap-3">
+                        @foreach($countryCities as $cityItem)
+                            <a href="{{ route('archive.city', [$country->iso_code, $cityItem->slug]) }}"
+                               class="px-4 py-2 glass-card rounded-full text-white/70 text-xs font-bold border border-white/10 hover:border-pink-500/50 hover:text-white transition-all">
+                                {{ $cityItem->name }}
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
                 @endif
             @else
                 {{-- Empty State --}}

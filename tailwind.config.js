@@ -16,7 +16,7 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-                'playfair': ['Playfair Display', 'serif'],
+                'montserrat': ['Montserrat', ...defaultTheme.fontFamily.sans],
             },
         },
     },

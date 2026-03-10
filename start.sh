@@ -14,6 +14,9 @@ rm -rf public/storage
 echo "Running migrations..."
 php artisan migrate --force
 
+echo "Seeding cities..."
+php artisan db:seed --class=CitySeeder --force
+
 echo "Caching config..."
 php artisan config:cache
 php artisan route:cache

@@ -7,6 +7,39 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('page-title', 'Big-Dad') - {{ config('app.name') }}</title>
+    <meta name="robots" content="@yield('meta_robots', 'noindex, nofollow')">
+
+    {{-- SEO: Description & Canonical --}}
+    @hasSection('meta_description')
+        <meta name="description" content="@yield('meta_description')">
+    @endif
+    @hasSection('canonical_url')
+        <link rel="canonical" href="@yield('canonical_url')">
+    @endif
+
+    {{-- Open Graph --}}
+    @hasSection('og_title')
+        <meta property="og:type" content="@yield('og_type', 'website')">
+        <meta property="og:site_name" content="{{ config('app.name') }}">
+        <meta property="og:title" content="@yield('og_title')">
+        <meta property="og:description" content="@yield('og_description', '')">
+        <meta property="og:url" content="@yield('og_url', request()->url())">
+        <meta property="og:image" content="@yield('og_image', asset('favicon.png'))">
+        <meta property="og:locale" content="es_ES">
+    @endif
+
+    {{-- Twitter Card --}}
+    @hasSection('og_title')
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="@yield('og_title')">
+        <meta name="twitter:description" content="@yield('og_description', '')">
+        <meta name="twitter:image" content="@yield('og_image', asset('favicon.png'))">
+    @endif
+
+    {{-- JSON-LD Schema Markup --}}
+    @stack('schema_markup')
+
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
 
@@ -14,7 +47,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Outfit:wght@400;700;900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap"
         rel="stylesheet">
 
     {{-- Vite --}}

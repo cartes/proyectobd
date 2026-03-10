@@ -6,7 +6,7 @@
 
             <!-- Header -->
             <div class="mb-8">
-                <h1 class="text-4xl font-bold text-red-600" style="font-family: 'Playfair Display', serif;">
+                <h1 class="text-4xl font-bold text-red-600" style="font-family: 'Montserrat', sans-serif;">
                     🛡️ Panel de Moderación
                 </h1>
                 <p class="text-gray-600 mt-2">Sistema de administración y seguridad</p>
@@ -130,7 +130,7 @@
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center">
-                                            <img src="{{ $report->reportedUser->getPrimaryPhotoUrlAttribute ?? '/images/default-avatar.png' }}"
+                                            <img src="{{ $report->reportedUser->primary_photo_url ?? '/images/default-avatar.png' }}"
                                                 class="w-10 h-10 rounded-full mr-3">
                                             <div>
                                                 <div class="font-medium text-gray-900">{{ $report->reportedUser->name }}

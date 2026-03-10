@@ -38,10 +38,101 @@
             </div>
         @endif
 
+        {{-- 🔥 Banner Onboarding: Aparece cuando el usuario es redirigido por no tener fotos --}}
+        @if (session('photo_required') || Auth::user()->photos()->count() === 0)
+            <div class="mb-8 relative overflow-hidden rounded-3xl shadow-2xl"
+                 x-data="{ show: true }"
+                 x-show="show"
+                 x-transition:enter="transition ease-out duration-700"
+                 x-transition:enter-start="opacity-0 transform scale-95"
+                 x-transition:enter-end="opacity-100 transform scale-100">
+
+                {{-- Fondo con gradiente animado --}}
+                <div class="absolute inset-0 {{ Auth::user()->user_type === 'sugar_daddy'
+                    ? 'bg-gradient-to-br from-indigo-900 via-purple-900 to-violet-800'
+                    : 'bg-gradient-to-br from-pink-600 via-rose-500 to-fuchsia-600' }}">
+                </div>
+
+                {{-- Efecto de partículas/bokeh --}}
+                <div class="absolute inset-0 overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+                    <div class="absolute -bottom-10 -left-10 w-56 h-56 bg-white/5 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-white/5 rounded-full blur-2xl animate-pulse" style="animation-delay: 0.5s;"></div>
+                </div>
+
+                <div class="relative px-8 py-10 md:py-12 md:px-12 text-center">
+                    {{-- Icono animado --}}
+                    <div class="mb-5 inline-flex items-center justify-center">
+                        <div class="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-2 border-white/30 shadow-2xl
+                                    animate-bounce" style="animation-duration: 2s;">
+                            <span class="text-4xl">📸</span>
+                        </div>
+                    </div>
+
+                    @if (Auth::user()->isSugarBaby())
+                        {{-- Mensaje para Sugar Babies --}}
+                        <h2 class="text-3xl md:text-4xl font-black text-white mb-3 tracking-tight leading-tight">
+                            Tu belleza merece ser vista 💫
+                        </h2>
+                        <p class="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-3 font-medium leading-relaxed">
+                            Los perfiles con fotos reciben <span class="font-black text-amber-300 underline decoration-wavy decoration-amber-400/50">10x más likes</span> y
+                            <span class="font-black text-amber-300">5x más mensajes</span> de Sugar Daddies Premium.
+                        </p>
+                        <p class="text-white/70 text-base max-w-xl mx-auto mb-8 italic">
+                            Sube al menos una foto para desbloquear todo el poder de Big-dad. Los Daddies están esperando conocerte… 🔥
+                        </p>
+                    @else
+                        {{-- Mensaje para Sugar Daddies --}}
+                        <h2 class="text-3xl md:text-4xl font-black text-white mb-3 tracking-tight leading-tight">
+                            Destaca entre los demás 👑
+                        </h2>
+                        <p class="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-3 font-medium leading-relaxed">
+                            Los Daddies con foto de perfil generan <span class="font-black text-amber-300 underline decoration-wavy decoration-amber-400/50">8x más confianza</span> y
+                            reciben <span class="font-black text-amber-300">matches más rápido</span>.
+                        </p>
+                        <p class="text-white/70 text-base max-w-xl mx-auto mb-8 italic">
+                            Muestra quién eres. Las Sugar Babies prefieren perfiles con cara visible… sube tu foto y empieza a conectar.
+                        </p>
+                    @endif
+
+                    {{-- Indicador de paso obligatorio --}}
+                    @if (session('photo_required'))
+                        <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md text-white px-5 py-2.5 rounded-full text-sm font-bold border border-white/20 mb-6 shadow-lg">
+                            <svg class="w-4 h-4 text-amber-300 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                            Necesitas al menos <span class="font-black">1 foto</span> para explorar perfiles, chatear y hacer match
+                        </div>
+                    @endif
+
+                    {{-- CTA: Scroll hacia el uploader --}}
+                    <div>
+                        <a href="#photoUploader"
+                           class="inline-flex items-center gap-3 {{ Auth::user()->user_type === 'sugar_daddy'
+                               ? 'bg-white text-indigo-900 hover:bg-indigo-100'
+                               : 'bg-white text-pink-700 hover:bg-pink-50' }}
+                               px-8 py-4 rounded-2xl font-black text-lg transition-all duration-300 shadow-2xl hover:shadow-white/30 hover:scale-105 active:scale-95 uppercase tracking-tight">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Subir mi primera foto
+                        </a>
+                    </div>
+
+                    {{-- Trust badges --}}
+                    <div class="flex items-center justify-center gap-6 mt-8 text-white/60 text-xs font-bold">
+                        <span class="flex items-center gap-1">🔒 100% privado</span>
+                        <span class="flex items-center gap-1">✓ Moderación humana</span>
+                        <span class="flex items-center gap-1">🛡️ Datos protegidos</span>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         {{-- Header --}}
         <div class="mb-8">
             <h1 class="text-4xl font-black bg-gradient-to-r {{ Auth::user()->user_type === 'sugar_daddy' ? 'from-purple-600 to-indigo-800' : 'from-pink-600 to-fuchsia-800' }} bg-clip-text text-transparent mb-3 uppercase tracking-tighter"
-                style="font-family: 'Outfit', sans-serif;">
+               >
                 📸 Mis Fotos
             </h1>
             <p class="text-gray-600 text-lg">
@@ -52,7 +143,7 @@
 
         {{-- Upload Area --}}
         @if (Auth::user()->canUploadMorePhotos())
-            <div
+            <div id="photoUploader"
                 class="bg-white rounded-3xl shadow-lg p-8 mb-6 border-2 border-dashed {{ Auth::user()->user_type === 'sugar_daddy' ? 'border-purple-300' : 'border-pink-300' }}">
                 <div class="flex items-center gap-4 mb-6">
                     <div
@@ -60,7 +151,7 @@
                         ⬆️
                     </div>
                     <div>
-                        <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Subir Nueva
+                        <h2 class="text-2xl font-black text-gray-900">Subir Nueva
                             Foto</h2>
                         <p class="text-sm text-gray-500">JPG, PNG o WebP • Máximo 20MB</p>
                     </div>
@@ -158,7 +249,7 @@
                             🖼️
                         </div>
                         <div>
-                            <h2 class="text-2xl font-black text-gray-900" style="font-family: 'Outfit', sans-serif;">Mi
+                            <h2 class="text-2xl font-black text-gray-900">Mi
                                 Galería
                             </h2>
                             <p class="text-sm text-gray-500">{{ Auth::user()->photos()->count() }} fotos • Arrastra para
@@ -239,7 +330,7 @@
         @else
             <div class="bg-white rounded-3xl shadow-lg p-12 border border-gray-100 text-center">
                 <div class="text-6xl mb-4">📸</div>
-                <h3 class="text-2xl font-black text-gray-900 mb-2" style="font-family: 'Outfit', sans-serif;">
+                <h3 class="text-2xl font-black text-gray-900 mb-2">
                     Aún no tienes fotos
                 </h3>
                 <p class="text-gray-600 mb-6">
