@@ -350,12 +350,12 @@
                 </div>
 
                 <!-- Step 2 — destacado -->
-                <div class="hiw-reveal hiw-card group relative" style="--hiw-delay:120ms">
+                <div class="hiw-reveal hiw-card group relative md:-mt-6" style="--hiw-delay:120ms">
                     <div
                         class="absolute -inset-px rounded-3xl bg-gradient-to-b from-purple-500 via-pink-500 to-transparent opacity-40 pointer-events-none">
                     </div>
                     <div
-                        class="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-5 py-1.5 rounded-full shadow-lg shadow-purple-500/40">
+                        class="absolute -top-4 z-40 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-5 py-1.5 rounded-full shadow-lg shadow-purple-500/40">
                         ⭐ Paso Clave
                     </div>
                     <div
