@@ -325,7 +325,7 @@
             </div>
 
             <!-- Steps Grid -->
-            <div class="grid grid-cols-1 pt-30 md:grid-cols-3 mt-100 gap-8 max-w-6xl mx-auto items-start">
+            <div class="grid grid-cols-1 pt-[5rem] md:grid-cols-3 gap-8 max-w-6xl mx-auto items-start">
 
                 <!-- Step 1 -->
                 <div class="hiw-reveal hiw-card group relative" style="--hiw-delay:0ms">
