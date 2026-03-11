@@ -3,14 +3,14 @@
 @php
     $pageTitle = 'Sugar Babies en ' . $country->name . ' | Conoce chicas de ' . $country->name;
     $metaDescription = 'Conoce ' . $users->total() . ' Sugar Babies de ' . $country->name . ' en Big-Dad. Perfiles verificados de chicas que buscan conexiones especiales con Sugar Daddies. ¡Únete gratis!';
-    $canonicalUrl = route('archive.country', $country->iso_code) . ($users->currentPage() > 1 ? '?page=' . $users->currentPage() : '');
+    $canonicalUrl = route('archive.country', $country->slug) . ($users->currentPage() > 1 ? '?page=' . $users->currentPage() : '');
     $ogImage = $users->isNotEmpty() && $users->first()->primaryPhoto ? $users->first()->primaryPhoto->url : asset('favicon.png');
 @endphp
 
 @section('page-title', $pageTitle)
 @section('meta_robots', 'index, follow')
 @section('meta_description', $metaDescription)
-@section('canonical_url', route('archive.country', $country->iso_code))
+@section('canonical_url', route('archive.country', $country->slug))
 @section('og_title', $pageTitle)
 @section('og_description', $metaDescription)
 @section('og_url', $canonicalUrl)
@@ -41,7 +41,7 @@
                     "@@type": "ListItem",
                     "position": 3,
                     "name": "{{ $country->name }}",
-                    "item": "{{ route('archive.country', $country->iso_code) }}"
+                    "item": "{{ route('archive.country', $country->slug) }}"
                 }
             ]
         },
@@ -49,7 +49,7 @@
             "@@type": "CollectionPage",
             "name": "{{ $pageTitle }}",
             "description": "{{ $metaDescription }}",
-            "url": "{{ route('archive.country', $country->iso_code) }}",
+            "url": "{{ route('archive.country', $country->slug) }}",
             "inLanguage": "es",
             "numberOfItems": {{ $users->total() }},
             "mainEntity": {
@@ -225,7 +225,7 @@
                     <h2 class="text-white/60 text-xs font-black uppercase tracking-widest mb-6">Buscar por ciudad</h2>
                     <div class="flex flex-wrap gap-3">
                         @foreach($countryCities as $cityItem)
-                            <a href="{{ route('archive.city', [$country->iso_code, $cityItem->slug]) }}"
+                            <a href="{{ route('archive.city', [$country->slug, $cityItem->slug]) }}"
                                class="px-4 py-2 glass-card rounded-full text-white/70 text-xs font-bold border border-white/10 hover:border-pink-500/50 hover:text-white transition-all">
                                 {{ $cityItem->name }}
                             </a>

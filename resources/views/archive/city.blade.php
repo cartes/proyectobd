@@ -3,14 +3,14 @@
 @php
     $pageTitle = 'Sugar Babies en ' . $city->name . ', ' . $country->name . ' | Big-Dad';
     $metaDescription = 'Conoce ' . $users->total() . ' Sugar Babies de ' . $city->name . ', ' . $country->name . ' en Big-Dad. Perfiles verificados buscando conexiones especiales. ¡Únete gratis!';
-    $canonicalUrl = route('archive.city', [$country->iso_code, $city->slug]) . ($users->currentPage() > 1 ? '?page=' . $users->currentPage() : '');
+    $canonicalUrl = route('archive.city', [$country->slug, $city->slug]) . ($users->currentPage() > 1 ? '?page=' . $users->currentPage() : '');
     $ogImage = $users->isNotEmpty() && $users->first()->primaryPhoto ? $users->first()->primaryPhoto->url : asset('favicon.png');
 @endphp
 
 @section('page-title', $pageTitle)
 @section('meta_robots', 'index, follow')
 @section('meta_description', $metaDescription)
-@section('canonical_url', route('archive.city', [$country->iso_code, $city->slug]))
+@section('canonical_url', route('archive.city', [$country->slug, $city->slug]))
 @section('og_title', $pageTitle)
 @section('og_description', $metaDescription)
 @section('og_url', $canonicalUrl)
@@ -41,13 +41,13 @@
                     "@@type": "ListItem",
                     "position": 3,
                     "name": "{{ $country->name }}",
-                    "item": "{{ route('archive.country', $country->iso_code) }}"
+                    "item": "{{ route('archive.country', $country->slug) }}"
                 },
                 {
                     "@@type": "ListItem",
                     "position": 4,
                     "name": "{{ $city->name }}",
-                    "item": "{{ route('archive.city', [$country->iso_code, $city->slug]) }}"
+                    "item": "{{ route('archive.city', [$country->slug, $city->slug]) }}"
                 }
             ]
         },
@@ -55,7 +55,7 @@
             "@@type": "CollectionPage",
             "name": "{{ $pageTitle }}",
             "description": "{{ $metaDescription }}",
-            "url": "{{ route('archive.city', [$country->iso_code, $city->slug]) }}",
+            "url": "{{ route('archive.city', [$country->slug, $city->slug]) }}",
             "inLanguage": "es",
             "numberOfItems": {{ $users->total() }},
             "mainEntity": {
@@ -107,7 +107,7 @@
                     <div class="text-center md:text-left">
                         {{-- Breadcrumb --}}
                         <div class="flex items-center gap-2 text-white/50 text-xs font-bold uppercase tracking-widest mb-3">
-                            <a href="{{ route('archive.country', $country->iso_code) }}" class="hover:text-white/80 transition-colors">
+                            <a href="{{ route('archive.country', $country->slug) }}" class="hover:text-white/80 transition-colors">
                                 {{ $country->name }}
                             </a>
                             <span>›</span>
@@ -236,7 +236,7 @@
                             registradas en {{ $city->name }}. ¡Sé la primera en unirte!</p>
                         <div class="flex flex-col gap-3 items-center">
                             <a href="{{ route('register') }}" class="theme-btn px-10">Crear mi Perfil</a>
-                            <a href="{{ route('archive.country', $country->iso_code) }}"
+                            <a href="{{ route('archive.country', $country->slug) }}"
                                class="text-white/50 text-sm hover:text-white/80 transition-colors font-bold">
                                 ← Ver todas en {{ $country->name }}
                             </a>

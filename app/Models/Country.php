@@ -12,12 +12,18 @@ class Country extends Model
     protected $fillable = [
         'name',
         'iso_code',
+        'slug',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 
     public function scopeActive($query)
     {

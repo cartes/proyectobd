@@ -139,7 +139,7 @@ class GenerateSitemap extends Command
         $countries = Country::where('is_active', true)->get();
         foreach ($countries as $country) {
             $urls[] = [
-                'loc' => route('archive.country', $country->iso_code),
+                'loc' => route('archive.country', $country->slug),
                 'lastmod' => now()->toDateString(),
                 'changefreq' => 'weekly',
                 'priority' => '0.7',

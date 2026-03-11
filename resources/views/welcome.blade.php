@@ -509,7 +509,7 @@
                    class="group bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl border border-white/5 hover:border-pink-500/40 transition-all hover:-translate-y-2 overflow-hidden flex flex-col">
                     @if($post->featured_image)
                     <div class="aspect-video overflow-hidden">
-                        <img src="{{ asset($post->featured_image) }}"
+                        <img src="{{ asset('app-media/' . $post->featured_image) }}"
                              alt="{{ $post->title }}"
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
