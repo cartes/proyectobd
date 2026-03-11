@@ -22,6 +22,7 @@ class AdminNewUserNotificationTest extends TestCase
         $country = \App\Models\Country::create([
             'name' => 'Chile',
             'iso_code' => 'CL',
+            'slug' => 'chile',
             'is_active' => true,
         ]);
 
@@ -51,6 +52,7 @@ class AdminNewUserNotificationTest extends TestCase
         $country = \App\Models\Country::create([
             'name' => 'Chile',
             'iso_code' => 'CL',
+            'slug' => 'chile',
             'is_active' => true,
         ]);
 
