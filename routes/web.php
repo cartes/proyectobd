@@ -266,12 +266,8 @@ Route::prefix('blog')->name('blog.')->group(function () {
     Route::get('/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('show');
 });
 
-// Archives Públicos por País (slug amigable, ej: /sugar-babies/venezuela)
-Route::get('/sugar-babies/{country:slug}', [\App\Http\Controllers\CountryArchiveController::class, 'index'])->name('archive.country');
-Route::get('/sugar-babies/{country:slug}/{city:slug}', [\App\Http\Controllers\CityArchiveController::class, 'index'])->name('archive.city');
-
 // Redirecciones 301: URLs antiguas con ISO code (ej: /sugar-babies/VE → /sugar-babies/venezuela)
-// Las constrains de regex aseguran que solo capturen códigos de 2 letras y no colisionen con los slugs.
+// DEBEN ir antes que las rutas de slug para que Laravel las evalúe primero.
 Route::get('/sugar-babies/{iso}', function (string $iso) {
     $country = \App\Models\Country::where('iso_code', strtoupper($iso))->firstOrFail();
 
@@ -286,6 +282,10 @@ Route::get('/sugar-babies/{iso}/{city}', function (string $iso, string $city) {
 
     return redirect()->route('archive.city', [$country->slug, $cityModel->slug], 301);
 })->where('iso', '[A-Za-z]{2}');
+
+// Archives Públicos por País (slug amigable, ej: /sugar-babies/venezuela)
+Route::get('/sugar-babies/{country:slug}', [\App\Http\Controllers\CountryArchiveController::class, 'index'])->name('archive.country');
+Route::get('/sugar-babies/{country:slug}/{city:slug}', [\App\Http\Controllers\CityArchiveController::class, 'index'])->name('archive.city');
 
 // Tracking de Engagement desde Email
 Route::get('/e/{token}', [App\Http\Controllers\EngagementController::class, 'track'])->name('engagement.track');
