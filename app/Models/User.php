@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Mail\WelcomeEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -678,6 +679,15 @@ class User extends Authenticatable implements MustVerifyEmail
             ['user_id' => $this->id],
             $profileData
         );
+    }
+
+    /**
+     * Reemplaza el correo de verificación por defecto de Laravel
+     * con el correo de bienvenida personalizado de Big-Dad.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        \Illuminate\Support\Facades\Mail::to($this->email)->queue(new WelcomeEmail($this));
     }
 
     /**
