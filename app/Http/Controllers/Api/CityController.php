@@ -3,14 +3,24 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\City;
 use App\Models\Country;
 
 class CityController extends Controller
 {
-    public function index(Country $country)
+    public function index(string $country)
     {
-        return City::where('country_id', $country->id)
+        $countryModel = Country::query()
+            ->active()
+            ->where(function ($query) use ($country) {
+                $query->where('slug', $country);
+
+                if (ctype_digit($country)) {
+                    $query->orWhere('id', (int) $country);
+                }
+            })
+            ->firstOrFail();
+
+        return $countryModel->cities()
             ->active()
             ->orderBy('name')
             ->get(['id', 'name', 'slug']);

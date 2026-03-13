@@ -22,6 +22,21 @@ class EmailVerificationTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function test_email_verification_screen_uses_readable_email_styles_for_sugar_daddy(): void
+    {
+        $user = User::factory()->unverified()->create([
+            'user_type' => 'sugar_daddy',
+        ]);
+
+        $response = $this->actingAs($user)->get('/verify-email');
+
+        $response
+            ->assertOk()
+            ->assertSee('bg-slate-800 border border-slate-700', false)
+            ->assertSee('text-white', false)
+            ->assertSee($user->email, false);
+    }
+
     public function test_email_can_be_verified(): void
     {
         $user = User::factory()->unverified()->create();

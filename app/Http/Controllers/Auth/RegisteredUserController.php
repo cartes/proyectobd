@@ -21,6 +21,9 @@ class RegisteredUserController extends Controller
     public function create(Request $request, \App\Services\GeoLocationService $geoService): View
     {
         $countries = \App\Models\Country::active()->orderBy('name')->get();
+        $preferredUserType = in_array($request->query('role'), ['sugar_daddy', 'sugar_baby'], true)
+            ? $request->query('role')
+            : 'sugar_baby';
 
         // Detectar país por IP
         $detectedCountryCode = $geoService->getCountryCodeFromIp($request->ip());
@@ -34,7 +37,7 @@ class RegisteredUserController extends Controller
         // $defaultCountryId = $defaultCountry ? $defaultCountry->id : ($countries->firstWhere('iso_code', 'CL')?->id ?? null);
         $defaultCountryId = $defaultCountry?->id;
 
-        return view('auth.register', compact('countries', 'defaultCountryId'));
+        return view('auth.register', compact('countries', 'defaultCountryId', 'preferredUserType'));
     }
 
     /**

@@ -1,6 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $emailPanelClass = auth()->user()?->isSugarDaddy()
+            ? 'bg-slate-800 border border-slate-700'
+            : 'bg-gray-50 border border-gray-100';
+        $emailLabelClass = auth()->user()?->isSugarDaddy() ? 'text-slate-300' : 'text-gray-500';
+        $emailValueClass = auth()->user()?->isSugarDaddy() ? 'text-white' : 'text-gray-900';
+    @endphp
+
     <div
         class="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-rose-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-md w-full">
@@ -43,9 +51,9 @@
                 @endif
 
                 {{-- Email Display --}}
-                <div class="bg-gray-50 rounded-2xl p-4 text-center">
-                    <p class="text-sm text-gray-500 mb-1">Email enviado a:</p>
-                    <p class="text-lg font-bold text-gray-900">{{ auth()->user()->email }}</p>
+                <div class="{{ $emailPanelClass }} rounded-2xl p-4 text-center">
+                    <p class="text-sm mb-1 {{ $emailLabelClass }}">Email enviado a:</p>
+                    <p class="text-lg font-bold break-all {{ $emailValueClass }}">{{ auth()->user()->email }}</p>
                 </div>
 
                 {{-- Actions --}}

@@ -216,7 +216,7 @@
         <script>
             function registrationForm() {
                 return {
-                    userType: '{{ old('user_type', 'sugar_baby') }}',
+                    userType: '{{ old('user_type', $preferredUserType ?? 'sugar_baby') }}',
                     selectedCountryId: '{{ old('country_id', $defaultCountryId ?? '') }}',
                     cities: [],
                     loadingCities: false,

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\City;
 use App\Models\Country;
 use App\Services\GeoLocationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -88,5 +89,59 @@ class CountryFeaturesTest extends TestCase
         ]);
 
         $response->assertRedirect(route('verification.notice'));
+    }
+
+    public function test_cities_api_returns_active_cities_when_country_id_is_used()
+    {
+        $country = Country::create([
+            'name' => 'Chile',
+            'iso_code' => 'CL',
+            'slug' => 'chile',
+            'is_active' => true,
+        ]);
+
+        $otherCountry = Country::create([
+            'name' => 'Argentina',
+            'iso_code' => 'AR',
+            'slug' => 'argentina',
+            'is_active' => true,
+        ]);
+
+        City::create([
+            'country_id' => $country->id,
+            'name' => 'Santiago',
+            'slug' => 'santiago',
+            'is_active' => true,
+        ]);
+
+        City::create([
+            'country_id' => $country->id,
+            'name' => 'Valparaiso',
+            'slug' => 'valparaiso',
+            'is_active' => false,
+        ]);
+
+        City::create([
+            'country_id' => $otherCountry->id,
+            'name' => 'Buenos Aires',
+            'slug' => 'buenos-aires',
+            'is_active' => true,
+        ]);
+
+        $response = $this->getJson("/api/countries/{$country->id}/cities");
+
+        $response
+            ->assertOk()
+            ->assertJsonCount(1)
+            ->assertJsonFragment([
+                'name' => 'Santiago',
+                'slug' => 'santiago',
+            ])
+            ->assertJsonMissing([
+                'name' => 'Valparaiso',
+            ])
+            ->assertJsonMissing([
+                'name' => 'Buenos Aires',
+            ]);
     }
 }
