@@ -75,8 +75,8 @@
             {{-- Logo / Branding Premium --}}
             <div class="p-8 border-b border-white/5">
                 <a href="{{ route('welcome') }}"
-                    class="inline-flex text-2xl font-black tracking-tighter text-white transition-transform hover:scale-105">
-                    BIG-<span class="text-pink-500">DAD</span>
+                    class="wordmark-theme inline-flex text-2xl font-black tracking-tighter transition-transform hover:scale-105">
+                    BIG-<span class="wordmark-accent">DAD</span>
                 </a>
             </div>
 

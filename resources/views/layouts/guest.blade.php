@@ -88,8 +88,8 @@
             <div class="flex justify-center mb-6">
                 <div class="text-center">
                     <a href="/"
-                        class="mb-2 inline-flex items-center justify-center text-4xl font-black tracking-tighter text-slate-950 drop-shadow-sm transition-opacity hover:opacity-90">
-                        BIG-<span class="text-pink-600">DAD</span>
+                        class="wordmark-dark mb-2 inline-flex items-center justify-center text-4xl font-black tracking-tighter transition-opacity hover:opacity-90">
+                        BIG-<span class="wordmark-accent">DAD</span>
                     </a>
                 </div>
             </div>

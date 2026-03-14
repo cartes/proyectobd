@@ -144,8 +144,8 @@
             <div class="relative z-10">
                 <!-- Logo -->
                 <div class="mb-6">
-                    <span class="text-3xl font-black tracking-tighter">
-                        BIG-<span class="text-pink-500">DAD</span>
+                    <span class="wordmark-light text-3xl font-black tracking-tighter">
+                        BIG-<span class="wordmark-accent">DAD</span>
                     </span>
                 </div>
 
@@ -179,8 +179,8 @@
     <nav x-ref="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300"
         :class="isScrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-lg py-4' : 'bg-transparent py-6'">
         <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
-            <a href="/" class="text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
-                BIG-<span class="text-pink-500">DAD</span>
+            <a href="/" class="wordmark-light text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
+                BIG-<span class="wordmark-accent">DAD</span>
             </a>
 
             <div class="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-300">

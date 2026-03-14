@@ -64,8 +64,8 @@
     <div
         class="lg:hidden flex items-center justify-between px-6 py-4 bg-[#0c111d] border-b border-white/5 sticky top-0 z-50">
         <a href="{{ route('admin.dashboard') }}"
-            class="text-2xl font-black tracking-tighter text-white transition-transform hover:scale-105">
-            BIG-<span class="text-pink-500">DAD</span>
+            class="wordmark-light text-2xl font-black tracking-tighter transition-transform hover:scale-105">
+            BIG-<span class="wordmark-accent">DAD</span>
         </a>
         <button @click="mobileMenuOpen = !mobileMenuOpen"
             class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
@@ -91,8 +91,8 @@
         <!-- Logo -->
         <div class="px-8 py-10">
             <a href="{{ route('admin.dashboard') }}"
-                class="inline-flex text-2xl font-black tracking-tighter text-white transition-transform hover:scale-105">
-                BIG-<span class="text-pink-500">DAD</span>
+                class="wordmark-light inline-flex text-2xl font-black tracking-tighter transition-transform hover:scale-105">
+                BIG-<span class="wordmark-accent">DAD</span>
             </a>
         </div>
 

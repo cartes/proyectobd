@@ -319,8 +319,8 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <nav class="fixed top-0 left-0 w-full z-50 bg-slate-900/90 backdrop-blur-md shadow-lg py-4 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
-            <a href="{{ route('welcome') }}" class="text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
-                BIG-<span class="text-pink-500">DAD</span>
+            <a href="{{ route('welcome') }}" class="wordmark-light text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
+                BIG-<span class="wordmark-accent">DAD</span>
             </a>
 
             <!-- Desktop Nav -->

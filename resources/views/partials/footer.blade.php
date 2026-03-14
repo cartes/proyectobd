@@ -2,8 +2,8 @@
 <footer class="bg-slate-950 py-16 border-t border-white/5 text-sm text-slate-400">
     <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
         <div>
-            <a href="/" class="text-2xl font-black text-white block mb-6">
-                BIG-<span class="text-pink-500">DAD</span>
+            <a href="/" class="wordmark-light text-2xl font-black block mb-6">
+                BIG-<span class="wordmark-accent">DAD</span>
             </a>
             <p class="leading-relaxed mb-6">
                 La plataforma líder de Sugar Dating en Latinoamérica. Conectando ambición con éxito desde 2024.

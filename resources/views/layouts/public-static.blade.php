@@ -57,8 +57,8 @@
 <body class="bg-slate-950 font-sans antialiased">
     <nav class="fixed top-0 left-0 z-50 w-full bg-slate-900/90 py-4 shadow-lg backdrop-blur-md transition-all duration-300">
         <div class="mx-auto flex max-w-7xl items-center justify-between px-6">
-            <a href="{{ route('welcome') }}" class="text-2xl font-black tracking-tighter transition-transform hover:scale-105">
-                BIG-<span class="text-pink-500">DAD</span>
+            <a href="{{ route('welcome') }}" class="wordmark-light text-2xl font-black tracking-tighter transition-transform hover:scale-105">
+                BIG-<span class="wordmark-accent">DAD</span>
             </a>
 
             <div class="hidden items-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-300 md:flex">

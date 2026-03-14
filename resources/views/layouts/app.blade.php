@@ -47,8 +47,8 @@
             <!-- Logo -->
             <div class="flex items-center px-6 h-16 border-b border-gray-200">
                 <a href="{{ route('welcome') }}"
-                    class="text-2xl font-black tracking-tighter text-slate-950 drop-shadow-sm transition-transform hover:scale-105">
-                    BIG-<span class="text-pink-600">DAD</span>
+                    class="wordmark-dark text-2xl font-black tracking-tighter transition-transform hover:scale-105">
+                    BIG-<span class="wordmark-accent">DAD</span>
                 </a>
             </div>
 

@@ -45,6 +45,40 @@
 }
 
 @layer components {
+    .wordmark-dark {
+        @apply text-slate-950 drop-shadow-sm;
+    }
+
+    .wordmark-dark .wordmark-accent {
+        @apply text-pink-600;
+    }
+
+    .wordmark-light {
+        @apply text-white;
+        text-shadow: 0 2px 12px rgba(15, 23, 42, 0.35);
+    }
+
+    .wordmark-light .wordmark-accent {
+        @apply text-pink-400;
+    }
+
+    .wordmark-theme {
+        @apply text-slate-950 drop-shadow-sm;
+    }
+
+    .wordmark-theme .wordmark-accent {
+        @apply text-pink-600;
+    }
+
+    .theme-sd .wordmark-theme {
+        @apply text-white;
+        text-shadow: 0 2px 12px rgba(15, 23, 42, 0.35);
+    }
+
+    .theme-sd .wordmark-theme .wordmark-accent {
+        @apply text-pink-400;
+    }
+
     .glass-card {
         @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
     }

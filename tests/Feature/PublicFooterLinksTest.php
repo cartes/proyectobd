@@ -47,7 +47,8 @@ class PublicFooterLinksTest extends TestCase
         $response = $this->get(route('plans.public'));
 
         $response->assertOk()
-            ->assertSee('BIG-<span class="text-pink-500">DAD</span>', false)
+            ->assertSee('wordmark-light', false)
+            ->assertSee('BIG-<span class="wordmark-accent">DAD</span>', false)
             ->assertSee('Quiénes Somos')
             ->assertSee(route('archive.country', $argentina->slug), false)
             ->assertSee('Sugar Babies de Argentina')

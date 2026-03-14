@@ -6,8 +6,8 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}"
-                        class="text-2xl font-black tracking-tighter text-slate-950 drop-shadow-sm transition-transform hover:scale-105">
-                        BIG-<span class="text-pink-600">DAD</span>
+                        class="wordmark-dark text-2xl font-black tracking-tighter transition-transform hover:scale-105">
+                        BIG-<span class="wordmark-accent">DAD</span>
                     </a>
                 </div>
 

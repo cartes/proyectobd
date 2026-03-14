@@ -24,8 +24,8 @@
         <div class="max-w-7xl mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
                 <a href="{{ route('welcome') }}" class="flex items-center space-x-3">
-                    <span class="text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
-                        BIG-<span class="text-pink-500">DAD</span>
+                    <span class="wordmark-light text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
+                        BIG-<span class="wordmark-accent">DAD</span>
                     </span>
                 </a>
 

@@ -81,8 +81,8 @@
     <nav x-ref="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300"
         :class="isScrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-lg py-4' : 'bg-slate-900/50 backdrop-blur-sm py-6'">
         <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
-            <a href="/" class="text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
-                BIG-<span class="text-pink-500">DAD</span>
+            <a href="/" class="wordmark-light text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
+                BIG-<span class="wordmark-accent">DAD</span>
             </a>
 
             <div class="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-300">
