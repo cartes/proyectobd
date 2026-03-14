@@ -37,6 +37,7 @@
                 <li><a href="#" class="hover:text-pink-500 transition-colors">Sugar Babies Premium</a></li>
                 <li><a href="#" class="hover:text-pink-500 transition-colors">Sugar Daddies Verificados</a></li>
                 <li><a href="#" class="hover:text-pink-500 transition-colors">Elite Dating Internacional</a></li>
+                <li><a href="{{ route('about.index') }}" class="hover:text-pink-500 transition-colors">Quiénes Somos</a></li>
                 <li><a href="{{ route('blog.index') }}" class="hover:text-pink-500 transition-colors">Blog de Estilo de Vida</a></li>
             </ul>
         </div>

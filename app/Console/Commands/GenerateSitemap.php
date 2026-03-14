@@ -94,6 +94,14 @@ class GenerateSitemap extends Command
             'priority' => '0.8',
         ];
 
+        // Quiénes Somos page
+        $urls[] = [
+            'loc' => route('about.index'),
+            'lastmod' => now()->toDateString(),
+            'changefreq' => 'monthly',
+            'priority' => '0.8',
+        ];
+
         // Blog index
         $urls[] = [
             'loc' => route('blog.index'),

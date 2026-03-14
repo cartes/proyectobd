@@ -90,6 +90,7 @@
                 <a href="{{ route('blog.index') }}"
                     class="text-white hover:text-pink-400 transition-colors border-b-2 border-pink-500">Blog</a>
                 <a href="/#como-funciona" class="hover:text-pink-400 transition-colors">Cómo Funciona</a>
+                <a href="{{ route('about.index') }}" class="hover:text-pink-400 transition-colors">Quiénes Somos</a>
                 <a href="/#beneficios" class="hover:text-pink-400 transition-colors">Beneficios</a>
             </div>
 

@@ -125,8 +125,10 @@
             <div class="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest text-slate-300">
                 <a href="{{ route('plans.public') }}" class="hover:text-pink-400 transition-colors">Planes</a>
                 <a href="{{ route('blog.index') }}"
-                    class="text-white hover:text-pink-400 transition-colors border-b-2 border-pink-500">Blog</a>
+                    class="{{ request()->routeIs('blog.*') ? 'text-white border-b-2 border-pink-500' : 'hover:text-pink-400' }} transition-colors">Blog</a>
                 <a href="{{ route('como-funciona') }}" class="hover:text-pink-400 transition-colors">Cómo Funciona</a>
+                <a href="{{ route('about.index') }}"
+                    class="{{ request()->routeIs('about.index') ? 'text-white border-b-2 border-pink-500' : 'hover:text-pink-400' }} transition-colors">Quiénes Somos</a>
                 <a href="/#beneficios" class="hover:text-pink-400 transition-colors">Beneficios</a>
             </div>
 

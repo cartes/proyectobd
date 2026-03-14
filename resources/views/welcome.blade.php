@@ -187,6 +187,7 @@
                 <a href="{{ route('plans.public') }}" class="hover:text-pink-400 transition-colors">Planes</a>
                 <a href="{{ route('blog.index') }}" class="hover:text-pink-400 transition-colors">Blog</a>
                 <a href="{{ route('como-funciona') }}" class="hover:text-pink-400 transition-colors">Cómo Funciona</a>
+                <a href="{{ route('about.index') }}" class="hover:text-pink-400 transition-colors">Quiénes Somos</a>
                 <a href="#beneficios" class="hover:text-pink-400 transition-colors">Beneficios</a>
             </div>
 
