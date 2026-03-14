@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\View\Composers\AdminStatsComposer;
 use App\View\Composers\BlogSettingsComposer;
+use App\View\Composers\FooterLinksComposer;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,5 +31,8 @@ class ViewServiceProvider extends ServiceProvider
 
         // Blog settings for blog layout
         View::composer('layouts.blog', BlogSettingsComposer::class);
+
+        // Dynamic footer links for public pages
+        View::composer('partials.footer', FooterLinksComposer::class);
     }
 }

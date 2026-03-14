@@ -63,11 +63,9 @@
     <!-- Mobile Header -->
     <div
         class="lg:hidden flex items-center justify-between px-6 py-4 bg-[#0c111d] border-b border-white/5 sticky top-0 z-50">
-        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2">
-            <div
-                class="w-8 h-8 bg-pink-500 rounded-lg flex items-center justify-center font-black text-white text-base">
-                B</div>
-            <div class="font-outfit text-lg font-bold">Admin</div>
+        <a href="{{ route('admin.dashboard') }}"
+            class="text-2xl font-black tracking-tighter text-white transition-transform hover:scale-105">
+            BIG-<span class="text-pink-500">DAD</span>
         </a>
         <button @click="mobileMenuOpen = !mobileMenuOpen"
             class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
@@ -92,13 +90,9 @@
         class="w-72 bg-[#0c111d] border-r border-white/5 flex flex-col fixed h-full z-50 transition-transform duration-300 ease-in-out">
         <!-- Logo -->
         <div class="px-8 py-10">
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
-                <div
-                    class="w-10 h-10 bg-pink-500 rounded-xl flex items-center justify-center font-black text-white text-xl shadow-lg shadow-pink-500/20">
-                    B</div>
-                <div class="font-outfit text-xl font-bold tracking-tight">
-                    BIG-<span class="text-pink-500">ADMIN</span>
-                </div>
+            <a href="{{ route('admin.dashboard') }}"
+                class="inline-flex text-2xl font-black tracking-tighter text-white transition-transform hover:scale-105">
+                BIG-<span class="text-pink-500">DAD</span>
             </a>
         </div>
 

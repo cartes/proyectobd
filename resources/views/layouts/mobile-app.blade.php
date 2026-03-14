@@ -74,32 +74,10 @@
 
             {{-- Logo / Branding Premium --}}
             <div class="p-8 border-b border-white/5">
-                <div class="flex items-center space-x-3">
-                    <div
-                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h1
-                            class="text-2xl font-black bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">
-                            Big-Dad
-                        </h1>
-                        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mt-0.5">
-                            @if ($user)
-                                @if ($user->user_type === 'sugar_daddy')
-                                    Sugar Daddy
-                                @else
-                                    Sugar Baby
-                                @endif
-                            @else
-                                Welcome
-                            @endif
-                        </p>
-                    </div>
-                </div>
+                <a href="{{ route('welcome') }}"
+                    class="inline-flex text-2xl font-black tracking-tighter text-white transition-transform hover:scale-105">
+                    BIG-<span class="text-pink-500">DAD</span>
+                </a>
             </div>
 
             {{-- Perfil User Premium --}}

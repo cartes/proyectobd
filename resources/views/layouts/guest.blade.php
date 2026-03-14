@@ -88,20 +88,9 @@
             <div class="flex justify-center mb-6">
                 <div class="text-center">
                     <a href="/"
-                        class="flex items-center justify-center space-x-3 mb-2 hover:opacity-90 transition-opacity">
-                        <div
-                            class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
-                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
-                            </svg>
-                        </div>
-                        <h1 class="text-4xl font-black bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent"
-                           >
-                            Big-Dad
-                        </h1>
+                        class="mb-2 inline-flex items-center justify-center text-4xl font-black tracking-tighter text-slate-900 transition-opacity hover:opacity-90">
+                        BIG-<span class="text-pink-500">DAD</span>
                     </a>
-                    <p class="text-sm text-gray-600 mt-1 font-medium">Conexiones Premium</p>
                 </div>
             </div>
             {{ $slot }}

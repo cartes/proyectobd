@@ -1,11 +1,29 @@
-@extends('layouts.subscription', ['hideSidebar' => true])
+@extends('layouts.public-static')
+
+@section('meta_title', 'Planes Premium | Big-dad')
+@section('meta_description',
+    'Conoce los planes premium de Big-dad y descubre cómo potenciar tu perfil, visibilidad y conexiones exclusivas en Latinoamérica.')
+@section('meta_keywords',
+    'planes big-dad, premium sugar daddy, suscripción sugar dating, planes premium latam, membresía big-dad')
+@section('canonical_url', route(request()->routeIs('subscription.plans') ? 'subscription.plans' : 'plans.public'))
+
+@section('og_title', 'Planes Premium | Big-dad')
+@section('og_description',
+    'Explora los planes premium de Big-dad para desbloquear beneficios exclusivos, mayor visibilidad y una experiencia superior dentro de la plataforma.')
+@section('og_url', url()->current())
+@section('og_image', asset('images/og-image.jpg'))
+
+@section('twitter_title', 'Planes Premium | Big-dad')
+@section('twitter_description',
+    'Descubre los planes premium de Big-dad y eleva tu experiencia con funciones exclusivas, más visibilidad y mejores conexiones.')
+@section('twitter_image', asset('images/og-image.jpg'))
 
 @section('content')
     {{-- ⚡ MODO LANZAMIENTO: SDK de Mercado Pago desactivado temporalmente --}}
     {{-- <script src="https://sdk.mercadopago.com/js/v2"></script> --}}
     {{-- <script>const mp = new MercadoPago('...', { locale: 'es-CL' });</script> --}}
 
-    <div class="px-4 sm:px-6 lg:px-8 min-h-screen"
+    <div class="min-h-screen px-4 sm:px-6 lg:px-8"
         style="background: radial-gradient(circle at top right, rgba(var(--primary-rgb, 79, 70, 229), 0.1), transparent);">
         <div class="max-w-7xl mx-auto py-16">
             <!-- Título -->

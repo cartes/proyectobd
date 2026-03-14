@@ -46,18 +46,9 @@
 
             <!-- Logo -->
             <div class="flex items-center px-6 h-16 border-b border-gray-200">
-                <a href="{{ route('welcome') }}" class="flex items-center gap-3">
-                    <div
-                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
-                        </svg>
-                    </div>
-                    <div class="text-2xl font-black bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent"
-                       >
-                        Big-Dad
-                    </div>
+                <a href="{{ route('welcome') }}"
+                    class="text-2xl font-black tracking-tighter text-slate-900 transition-transform hover:scale-105">
+                    BIG-<span class="text-pink-500">DAD</span>
                 </a>
             </div>
 
@@ -126,6 +117,11 @@
                         class="flex items-center gap-3 text-gray-600 hover:text-purple-600 font-bold transition-all p-2 rounded-xl hover:bg-purple-50">
                         <span class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">✨</span>
                         Regístrate ahora
+                    </a>
+                    <a href="{{ route('about.index') }}"
+                        class="flex items-center gap-3 text-gray-600 hover:text-purple-600 font-bold transition-all p-2 rounded-xl hover:bg-purple-50">
+                        <span class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">ℹ️</span>
+                        Quiénes Somos
                     </a>
                 </nav>
             @endauth
