@@ -38,7 +38,7 @@
                 <!-- Messages Area -->
                 <div id="messages-container" class="h-96 overflow-y-auto p-6 space-y-4 bg-gray-50">
                     @forelse($messages as $message)
-                        <div class="flex {{ $message->sender_id === auth()->id() ? 'justify-end' : 'justify-start' }}">
+                        <div class="flex {{ $message->sender_id === auth()->id() ? 'justify-end' : 'justify-start' }}" data-message-id="{{ $message->id }}">
                             <div
                                 class="flex items-end space-x-2 max-w-xs {{ $message->sender_id === auth()->id() ? 'flex-row-reverse space-x-reverse' : '' }}">
                                 @if ($message->sender_id !== auth()->id())
@@ -54,13 +54,7 @@
                                     <span class="text-xs text-gray-500 mt-1">
                                         {{ $message->created_at->format('H:i') }}
                                         @if ($message->sender_id === auth()->id())
-                                            <span class="ml-1">
-                                                @if ($message->is_read)
-                                                    ✓✓
-                                                @else
-                                                    ✓
-                                                @endif
-                                            </span>
+                                            <span class="ml-1 read-indicator">{{ $message->is_read ? '✓✓' : '✓' }}</span>
                                         @endif
                                     </span>
                                 </div>
@@ -122,61 +116,141 @@
                 typingTimeout: null,
                 conversationId: {{ $conversation->id }},
                 userId: {{ auth()->id() }},
+                otherUserName: @js($otherUser->name),
+                otherUserAvatar: @js($otherUser->profile_photo_url ?? '/images/default-avatar.png'),
 
                 initChat() {
-                    // Auto-scroll al último mensaje
                     this.scrollToBottom();
-
-                    // Simular websocket (placeholder para Laravel Reverb)
-                    // En producción, usar Reverb para actualizaciones en tiempo real
+                    this.listenForMessages();
                 },
 
-                sendMessage() {
-                    if (!this.message.trim()) return;
+                // ─── Suscripción a Reverb ───────────────────────────────────
+                listenForMessages() {
+                    if (!window.Echo) {
+                        console.warn('Echo no está disponible. Reverb puede no estar corriendo.');
+                        return;
+                    }
 
-                    const currentMessage = this.message;
-                    this.message = '';
+                    window.Echo.private(`conversation.${this.conversationId}`)
+                        // Nuevo mensaje recibido del otro usuario
+                        .listen('.message.sent', (e) => {
+                            // Evitar duplicar si Echo rebota el propio mensaje
+                            if (e.message.sender_id !== this.userId) {
+                                this.addMessageToDOM(e.message, false);
+                                this.scrollToBottom();
 
-                    fetch(`/chat/${this.conversationId}/send`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            },
-                            body: JSON.stringify({
-                                content: currentMessage
-                            })
+                                // Notificar al servidor que lo leímos
+                                fetch(`/chat/${this.conversationId}/read/${e.message.id}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                    },
+                                });
+                            }
                         })
-                        .then(response => response.json())
-                        .then(data => {
-                            // El mensaje se agregar automáticamente con Livewire o recargar
-                            location.reload();
+                        // El otro usuario leyó nuestro mensaje
+                        .listen('.message.read', (e) => {
+                            const msgEl = document.querySelector(`[data-message-id="${e.message_id}"] .read-indicator`);
+                            if (msgEl) {
+                                msgEl.textContent = '✓✓';
+                            }
                         });
                 },
 
-                notifyTyping() {
-                    // Enviar notificación de escritura (para websockets)
-                    // fetch(`/chat/${this.conversationId}/typing`);
+                // ─── Enviar mensaje ──────────────────────────────────────────
+                sendMessage() {
+                    const content = this.message.trim();
+                    if (!content) return;
+
+                    // UI optimista: añadir el mensaje propio inmediatamente
+                    const optimisticMsg = {
+                        id: `temp-${Date.now()}`,
+                        sender_id: this.userId,
+                        content: content,
+                        is_read: false,
+                        created_at: new Date().toISOString(),
+                    };
+                    this.addMessageToDOM(optimisticMsg, true);
+                    this.message = '';
+                    this.scrollToBottom();
+
+                    fetch(`/chat/${this.conversationId}/send`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        },
+                        body: JSON.stringify({ content }),
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        // Actualizar el id temporal por el real
+                        const tempEl = document.querySelector(`[data-message-id="temp-${optimisticMsg.id.split('-')[1]}"]`);
+                        if (tempEl && data.message) {
+                            tempEl.dataset.messageId = data.message.id;
+                        }
+                    })
+                    .catch(() => {
+                        // Si falla, avisar al usuario
+                        alert('No se pudo enviar el mensaje. Verifica tu conexión.');
+                    });
                 },
 
+                // ─── Construir y añadir mensaje al DOM ───────────────────────
+                addMessageToDOM(msg, isMine) {
+                    const container = document.getElementById('messages-container');
+                    const time = new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    const readIndicator = isMine
+                        ? `<span class="ml-1 read-indicator">${msg.is_read ? '✓✓' : '✓'}</span>`
+                        : '';
+
+                    const avatarHtml = !isMine
+                        ? `<img src="${this.otherUserAvatar}" alt="${this.otherUserName}" class="w-8 h-8 rounded-full object-cover flex-shrink-0">`
+                        : '';
+
+                    const wrapper = document.createElement('div');
+                    wrapper.className = `flex ${isMine ? 'justify-end' : 'justify-start'}`;
+                    wrapper.dataset.messageId = msg.id;
+                    wrapper.innerHTML = `
+                        <div class="flex items-end space-x-2 max-w-xs ${isMine ? 'flex-row-reverse space-x-reverse' : ''}">
+                            ${avatarHtml}
+                            <div class="flex flex-col ${isMine ? 'items-end' : 'items-start'}">
+                                <div class="px-4 py-2 rounded-lg ${isMine ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-900'}">
+                                    <p class="break-words">${this.escapeHtml(msg.content)}</p>
+                                </div>
+                                <span class="text-xs text-gray-500 mt-1">
+                                    ${time}${readIndicator}
+                                </span>
+                            </div>
+                        </div>`;
+
+                    container.appendChild(wrapper);
+                },
+
+                // ─── Typing indicator (preparado para cuando se active) ──────
+                notifyTyping() {},
                 resetTypingTimeout() {
                     clearTimeout(this.typingTimeout);
-                    this.typingTimeout = setTimeout(() => {
-                        // Notificar que dejó de escribir
-                    }, 1000);
                 },
 
+                // ─── Helpers ─────────────────────────────────────────────────
                 insertEmoji(event) {
-                    const emoji = event.target.value;
-                    this.message += emoji;
+                    this.message += event.target.value;
                     event.target.value = '';
                 },
 
                 scrollToBottom() {
                     const container = document.getElementById('messages-container');
                     container.scrollTop = container.scrollHeight;
-                }
-            }
+                },
+
+                escapeHtml(text) {
+                    const div = document.createElement('div');
+                    div.appendChild(document.createTextNode(text));
+                    return div.innerHTML;
+                },
+            };
         }
     </script>
 @endpush
