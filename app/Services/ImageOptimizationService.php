@@ -78,6 +78,9 @@ class ImageOptimizationService
             throw new \Exception("Failed to load image: {$sourcePath}");
         }
 
+        // ✅ AUTO-ORIENTAR BASADO EN EXIF (Solo para JPEGs)
+        $sourceImage = $this->fixOrientation($sourceImage, $sourcePath);
+
         // Get original dimensions
         $originalWidth = imagesx($sourceImage);
         $originalHeight = imagesy($sourceImage);
@@ -151,6 +154,54 @@ class ImageOptimizationService
             'image/gif' => imagecreatefromgif($path),
             default => false,
         };
+    }
+
+    /**
+     * Fix image orientation based on EXIF data
+     */
+    private function fixOrientation($image, string $path)
+    {
+        if (! function_exists('exif_read_data')) {
+            return $image;
+        }
+
+        $imageInfo = getimagesize($path);
+        if (! $imageInfo || $imageInfo['mime'] !== 'image/jpeg') {
+            return $image;
+        }
+
+        try {
+            $exif = @exif_read_data($path);
+            if (! $exif || ! isset($exif['Orientation'])) {
+                return $image;
+            }
+
+            $orientation = $exif['Orientation'];
+
+            // Orientaciones comunes:
+            // 3: 180° rotado
+            // 6: 90° hacia la derecha (iPhone vertical común)
+            // 8: 90° hacia la izquierda (270°)
+            switch ($orientation) {
+                case 3:
+                    $image = imagerotate($image, 180, 0);
+                    break;
+                case 6:
+                    $image = imagerotate($image, -90, 0);
+                    break;
+                case 8:
+                    $image = imagerotate($image, 90, 0);
+                    break;
+            }
+        } catch (\Exception $e) {
+            // Si falla la lectura EXIF, devolvemos la imagen original
+            \Log::warning('ImageOptimizationService: Failed to read EXIF for orientation', [
+                'path' => $path,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return $image;
     }
 
     /**
