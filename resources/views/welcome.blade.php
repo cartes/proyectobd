@@ -13,7 +13,7 @@
     <!-- SEO Meta Tags -->
     <title>Big-dad: #1 Sugar Dating en Latinoamérica | Citas Exclusivas y Lujos</title>
     <meta name="description"
-        content="Únete a Big-dad, la comunidad de élite para Sugar Daddies y Sugar Babies en Latinoamérica. Encuentra tu compañero de lujo para viajes, cenas y conexiones exclusivas. Registro GRATIS para una vida de alto nivel." />
+        content="Únete a Big-dad, la comunidad de élite para Sugar Daddies y Sugar Babies en Latinoamérica." />
     <meta name="keywords"
         content="sugar daddy latinoamerica, sugar baby, citas exclusivas, dating de lujo, relaciones mutuamente beneficiosas, buscar pareja con dinero, sugar dating internacional" />
     <meta name="author" content="Big-dad Elite Dating" />
@@ -179,7 +179,8 @@
     <nav x-ref="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300"
         :class="isScrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-lg py-4' : 'bg-transparent py-6'">
         <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
-            <a href="/" class="wordmark-light text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
+            <a href="/"
+                class="wordmark-light text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
                 BIG-<span class="wordmark-accent">DAD</span>
             </a>
 
@@ -493,64 +494,72 @@
     </section>
 
     <!-- Blog Section -->
-    @if(isset($latestPosts) && $latestPosts->isNotEmpty())
-    <section class="py-24 bg-slate-950 border-t border-white/5">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-14">
-                <p class="text-sm font-semibold tracking-widest text-pink-500 uppercase mb-3">Nuestro Blog</p>
-                <h2 class="text-3xl md:text-5xl font-black mb-4">
-                    Consejos &amp; <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400">Estilo de Vida</span>
-                </h2>
-                <p class="text-slate-400 max-w-xl mx-auto">Aprende cómo sacar el máximo provecho de tus relaciones y mantener una vida plena.</p>
-            </div>
+    @if (isset($latestPosts) && $latestPosts->isNotEmpty())
+        <section class="py-24 bg-slate-950 border-t border-white/5">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-14">
+                    <p class="text-sm font-semibold tracking-widest text-pink-500 uppercase mb-3">Nuestro Blog</p>
+                    <h2 class="text-3xl md:text-5xl font-black mb-4">
+                        Consejos &amp; <span
+                            class="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400">Estilo
+                            de Vida</span>
+                    </h2>
+                    <p class="text-slate-400 max-w-xl mx-auto">Aprende cómo sacar el máximo provecho de tus relaciones
+                        y mantener una vida plena.</p>
+                </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                @foreach($latestPosts as $post)
-                <a href="{{ route('blog.show', $post->slug) }}"
-                   class="group bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl border border-white/5 hover:border-pink-500/40 transition-all hover:-translate-y-2 overflow-hidden flex flex-col">
-                    @if($post->featured_image)
-                    <div class="aspect-video overflow-hidden">
-                        <img src="{{ asset('app-media/' . $post->featured_image) }}"
-                             alt="{{ $post->title }}"
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                    </div>
-                    @else
-                    <div class="aspect-video bg-gradient-to-br from-pink-600/20 to-purple-600/20 flex items-center justify-center">
-                        <span class="text-5xl">✍️</span>
-                    </div>
-                    @endif
-
-                    <div class="p-6 flex flex-col flex-1">
-                        @if($post->category)
-                        <span class="text-xs font-semibold tracking-widest text-pink-500 uppercase mb-3">{{ $post->category->name }}</span>
-                        @endif
-                        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-pink-400 transition-colors line-clamp-2">
-                            {{ $post->title }}
-                        </h3>
-                        @if($post->excerpt)
-                        <p class="text-slate-400 text-sm mb-4 line-clamp-3 flex-1">{{ $post->excerpt }}</p>
-                        @endif
-                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
-                            <span class="text-xs text-slate-500">
-                                {{ $post->published_at->translatedFormat('d M, Y') }}
-                            </span>
-                            @if($post->reading_time)
-                            <span class="text-xs text-slate-500">{{ $post->reading_time }} min de lectura</span>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    @foreach ($latestPosts as $post)
+                        <a href="{{ route('blog.show', $post->slug) }}"
+                            class="group bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl border border-white/5 hover:border-pink-500/40 transition-all hover:-translate-y-2 overflow-hidden flex flex-col">
+                            @if ($post->featured_image)
+                                <div class="aspect-video overflow-hidden">
+                                    <img src="{{ asset('app-media/' . $post->featured_image) }}"
+                                        alt="{{ $post->title }}"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                </div>
+                            @else
+                                <div
+                                    class="aspect-video bg-gradient-to-br from-pink-600/20 to-purple-600/20 flex items-center justify-center">
+                                    <span class="text-5xl">✍️</span>
+                                </div>
                             @endif
-                        </div>
-                    </div>
-                </a>
-                @endforeach
-            </div>
 
-            <div class="text-center mt-12">
-                <a href="{{ route('blog.index') }}"
-                   class="inline-flex items-center gap-2 text-pink-400 font-bold hover:gap-4 transition-all">
-                    Ver todos los artículos <span class="text-xl">→</span>
-                </a>
+                            <div class="p-6 flex flex-col flex-1">
+                                @if ($post->category)
+                                    <span
+                                        class="text-xs font-semibold tracking-widest text-pink-500 uppercase mb-3">{{ $post->category->name }}</span>
+                                @endif
+                                <h3
+                                    class="text-lg font-bold text-white mb-2 group-hover:text-pink-400 transition-colors line-clamp-2">
+                                    {{ $post->title }}
+                                </h3>
+                                @if ($post->excerpt)
+                                    <p class="text-slate-400 text-sm mb-4 line-clamp-3 flex-1">{{ $post->excerpt }}
+                                    </p>
+                                @endif
+                                <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+                                    <span class="text-xs text-slate-500">
+                                        {{ $post->published_at->translatedFormat('d M, Y') }}
+                                    </span>
+                                    @if ($post->reading_time)
+                                        <span class="text-xs text-slate-500">{{ $post->reading_time }} min de
+                                            lectura</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+
+                <div class="text-center mt-12">
+                    <a href="{{ route('blog.index') }}"
+                        class="inline-flex items-center gap-2 text-pink-400 font-bold hover:gap-4 transition-all">
+                        Ver todos los artículos <span class="text-xl">→</span>
+                    </a>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
     @endif
 
     <!-- Membership / CTA Section -->
