@@ -94,6 +94,9 @@ class RateLimitingTest extends TestCase
         // Allow Log::error calls from the signature mismatch check.
         Log::shouldReceive('error')->zeroOrMoreTimes();
 
+        // Mock validateSignature para que no tire error el mock
+        $this->mpService->shouldReceive('validateSignature')->andReturn(false);
+
         for ($i = 0; $i < $limit; $i++) {
             $response = $this->withHeaders([
                 'X-Signature' => 'ts=123,v1=invalid_sig',

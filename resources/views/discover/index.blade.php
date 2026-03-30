@@ -128,7 +128,7 @@
             @if ($users->count() > 0)
                 <div class="p-6 md:p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
                     @foreach ($users as $profile)
-                        @php $hasLiked = auth()->user()->hasLiked($profile); @endphp
+                        @php $hasLiked = in_array($profile->id, $likedUserIds); @endphp
 
                         <div class="glass-card rounded-[2.5rem] overflow-hidden group hover:scale-[1.02] transition-all duration-500 relative flex flex-col border border-white/10">
                             

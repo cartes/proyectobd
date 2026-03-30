@@ -64,7 +64,14 @@ class DiscoveryController extends Controller
 
         $interestsOptions = ProfileDetail::interestsOptions();
 
-        return view('discover.index', compact('users', 'cities', 'interestsOptions', 'targetUserType'));
+        // Evitar N+1 al verificar likes de usuarios paginados
+        $userIds = $users->pluck('id')->toArray();
+        $likedUserIds = $user->likes()
+            ->whereIn('liked_user_id', $userIds)
+            ->pluck('liked_user_id')
+            ->toArray();
+
+        return view('discover.index', compact('users', 'cities', 'interestsOptions', 'targetUserType', 'likedUserIds'));
     }
 
     /**
@@ -139,7 +146,10 @@ class DiscoveryController extends Controller
 
         $interestsOptions = ProfileDetail::interestsOptions();
 
-        return view('discover.favorites', compact('favorites', 'interestsOptions'));
+        // En favoritos, el usuario actual ya le dio like a todos los perfiles de la vista
+        $likedUserIds = $favorites->pluck('id')->toArray();
+
+        return view('discover.favorites', compact('favorites', 'interestsOptions', 'likedUserIds'));
     }
 
     /**
