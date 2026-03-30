@@ -439,8 +439,10 @@ class MercadoPagoService
                     'received' => $v1,
                     'manifest' => $manifest,
                 ]);
+
                 return false;
             }
+
             return true;
         }
 
