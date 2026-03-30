@@ -397,6 +397,8 @@ class MercadoPagoService
         if (! $webhookSecret) {
             Log::warning('MP Webhook Secret not configured');
 
+            // ⚠️ WARNING: in test environment, we might want to throw or fail differently.
+            // Returning false will block tests that don't mock this.
             return false;
         }
 
@@ -431,7 +433,15 @@ class MercadoPagoService
             $manifest = "id:{$id};ts:{$ts};";
             $sha256 = hash_hmac('sha256', $manifest, $webhookSecret);
 
-            return hash_equals($sha256, $v1);
+            if (! hash_equals($sha256, $v1)) {
+                Log::error('Mercado Pago webhook signature mismatch!', [
+                    'expected' => $sha256,
+                    'received' => $v1,
+                    'manifest' => $manifest,
+                ]);
+                return false;
+            }
+            return true;
         }
 
         return false;
