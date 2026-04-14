@@ -17,7 +17,7 @@
     <meta name="keywords"
         content="sugar dating blog, lifestyle premium, relaciones sugar, sugar daddy latinoamerica, sugar baby consejos" />
     <meta name="author" content="Big-dad" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="canonical" href="{{ $posts->url($posts->currentPage()) }}" />
 
     @if ($posts->previousPageUrl())
