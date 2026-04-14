@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="robots" content="max-image-preview:large">
 
     {{-- SEO Meta Tags --}}
     <title>@yield('meta_title', config('app.name', 'Big-dad') . ' - Blog')</title>
