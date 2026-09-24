@@ -16,7 +16,7 @@ class CityArchiveController extends Controller
             ->where('city_id', $city->id)
             ->where('is_active', true)
             ->whereHas('profileDetail', fn ($q) => $q->where('is_private', false))
-            ->with(['profileDetail', 'photos', 'country', 'cityModel'])
+            ->with(['profileDetail', 'primaryPhoto', 'country', 'cityModel'])
             ->latest()
             ->paginate(12);
 

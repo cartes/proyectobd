@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -12,6 +13,20 @@ class GeoLocationService
      * Using ipapi.co (Free tier: 1000 requests/day, no API key needed for basic)
      */
     public function getCountryCodeFromIp(string $ip): ?string
+    {
+        // 0. Cloudflare ya geolocaliza cada request (header CF-IPCountry): sin llamadas externas
+        $cfCountry = strtoupper((string) request()->header('CF-IPCountry'));
+        if ($ip === request()->ip() && preg_match('/^[A-Z]{2}$/', $cfCountry) && $cfCountry !== 'XX') {
+            return $cfCountry;
+        }
+
+        // Cachear también los fallos (''), para no repetir llamadas HTTP de hasta 6s por request
+        $cached = Cache::remember('geo.country.'.md5($ip), 86400, fn () => $this->lookupCountryCode($ip) ?? '');
+
+        return $cached !== '' ? $cached : null;
+    }
+
+    protected function lookupCountryCode(string $ip): ?string
     {
         // 1. En local, si es IP local, simular una IP real (ej. Chile) para probar
         if (app()->isLocal() && ($ip === '127.0.0.1' || $ip === '::1')) {
@@ -31,7 +46,7 @@ class GeoLocationService
             // Log for debugging
             Log::info("GeoLocation: Querying ipapi.co for {$ip}");
 
-            $response = Http::timeout(3)->get("https://ipapi.co/{$ip}/json/");
+            $response = Http::timeout(2)->get("https://ipapi.co/{$ip}/json/");
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -49,7 +64,7 @@ class GeoLocationService
         // Fallback: ipwhois.app (Free, no key required)
         try {
             Log::info("GeoLocation: Querying fallback ipwhois.app for {$ip}");
-            $response = Http::timeout(3)->get("http://ipwhois.app/json/{$ip}");
+            $response = Http::timeout(2)->get("http://ipwhois.app/json/{$ip}");
 
             if ($response->successful()) {
                 $data = $response->json();

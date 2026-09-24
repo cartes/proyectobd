@@ -15,11 +15,11 @@ use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $latestPosts = \App\Models\BlogPost::published()
+    $latestPosts = \Illuminate\Support\Facades\Cache::remember('welcome.latest-posts', 600, fn () => \App\Models\BlogPost::published()
         ->with('category')
         ->latest('published_at')
         ->take(3)
-        ->get();
+        ->get());
 
     return view('welcome', compact('latestPosts'));
 })->name('welcome');
@@ -33,8 +33,17 @@ Route::get('/quienes-somos', function () {
 })->name('about.index');
 
 // Controlled Media Routes (Bypassing reserved /storage path)
-Route::get('/app-media/profiles/{hash}/{file}', [StorageController::class, 'showProfilePhoto']);
-Route::get('/app-media/{path}', [StorageController::class, 'showPublicFile'])->where('path', '.*');
+// Sin sesión/cookies/CSRF: servir una imagen no debe abrir ni escribir una sesión.
+Route::withoutMiddleware([
+    \Illuminate\Cookie\Middleware\EncryptCookies::class,
+    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+    \Illuminate\Session\Middleware\StartSession::class,
+    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+    \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+])->group(function () {
+    Route::get('/app-media/profiles/{hash}/{file}', [StorageController::class, 'showProfilePhoto']);
+    Route::get('/app-media/{path}', [StorageController::class, 'showPublicFile'])->where('path', '.*');
+});
 
 // SEO Sitemap (static file served directly)
 // Generate with: php artisan sitemap:generate

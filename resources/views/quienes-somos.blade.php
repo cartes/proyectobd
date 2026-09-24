@@ -150,12 +150,19 @@
             </div>
 
             <figure class="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-2xl shadow-slate-950/40">
-                <img src="{{ asset('images/quienes-somos/experiencia-sugar-dating.jpg') }}"
-                    alt="experiencia en sugar dating"
-                    class="h-full w-full object-cover"
-                    width="1920"
-                    height="1080"
-                    fetchpriority="high">
+                <picture>
+                    <source type="image/webp"
+                        srcset="{{ asset('images/quienes-somos/experiencia-sugar-dating-768.webp') }} 768w,
+                            {{ asset('images/quienes-somos/experiencia-sugar-dating-1280.webp') }} 1280w"
+                        sizes="(min-width: 1024px) 50vw, 100vw">
+                    <img src="{{ asset('images/quienes-somos/experiencia-sugar-dating.jpg') }}"
+                        alt="experiencia en sugar dating"
+                        class="h-full w-full object-cover"
+                        width="1920"
+                        height="1080"
+                        decoding="async"
+                        fetchpriority="high">
+                </picture>
                 <figcaption class="border-t border-white/10 px-6 py-4 text-sm leading-6 text-slate-300">
                     Una experiencia social premium, adulta y discreta para quienes buscan relaciones con expectativas
                     claras y una conexión genuina.

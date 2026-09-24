@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class BlogPost extends Model
@@ -103,6 +104,10 @@ class BlogPost extends Model
                 $post->reading_time = max(1, ceil($wordCount / 200));
             }
         });
+
+        // Invalidate the cached "latest posts" block on the home page
+        static::saved(fn () => Cache::forget('welcome.latest-posts'));
+        static::deleted(fn () => Cache::forget('welcome.latest-posts'));
     }
 
     /**

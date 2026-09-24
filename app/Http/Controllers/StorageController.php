@@ -2,103 +2,78 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class StorageController extends Controller
 {
     /**
+     * Browser/CDN cache lifetime for served media (7 days).
+     */
+    protected const CACHE_MAX_AGE = 604800;
+
+    /**
      * Serve profile photos with privacy checks.
      */
-    public function showProfilePhoto(string $hash, string $file): BinaryFileResponse
+    public function showProfilePhoto(Request $request, string $hash, string $file): Response
     {
-        $path = "profiles/{$hash}/{$file}";
-        $currentUser = function_exists('posix_getpwuid') ? posix_getpwuid(posix_geteuid())['name'] : 'unknown';
-
-        \Log::info('StorageController@showProfilePhoto: Entry', [
-            'path' => $path,
-            'user' => $currentUser,
-        ]);
-
-        $searchPaths = [
-            Storage::disk('public')->path($path),
-            storage_path('app/public/'.$path),
-            storage_path($path),
-            base_path('storage/app/public/'.$path),
-            '/storage/app/public/'.$path,
-            '/storage/'.$path,
-        ];
-
-        foreach ($searchPaths as $index => $fullPath) {
-            $exists = file_exists($fullPath);
-            $readable = $exists ? is_readable($fullPath) : false;
-
-            \Log::info("StorageController@showProfilePhoto: Checking path #{$index}", [
-                'fullPath' => $fullPath,
-                'exists' => $exists,
-                'readable' => $readable,
-            ]);
-
-            if ($exists && $readable) {
-                \Log::info("StorageController@showProfilePhoto: SUCCESS at path #{$index}");
-
-                return response()->file($fullPath);
-            }
-        }
-
-        \Log::error('StorageController@showProfilePhoto: FAILURE - File not found or not readable', [
-            'path' => $path,
-            'checked' => $searchPaths,
-        ]);
-
-        abort(404);
+        // Private cache: browsers may cache it, but Cloudflare must not keep serving
+        // photos after they are rejected by moderation or the profile goes private.
+        return $this->serve($request, "profiles/{$hash}/{$file}", public: false);
     }
 
     /**
      * Serve other public storage files (blog images, etc.)
      */
-    public function showPublicFile(string $path): BinaryFileResponse
+    public function showPublicFile(Request $request, string $path): Response
     {
-        $currentUser = function_exists('posix_getpwuid') ? posix_getpwuid(posix_geteuid())['name'] : 'unknown';
+        return $this->serve($request, $path);
+    }
 
-        \Log::info('StorageController: Entry', [
-            'path' => $path,
-            'user' => $currentUser,
-            'base_path' => base_path(),
-            'storage_path' => storage_path(),
-        ]);
+    /**
+     * Locate the file in the storage volume and stream it with cache headers.
+     */
+    protected function serve(Request $request, string $path, bool $public = true): Response
+    {
+        if (str_contains($path, '..')) {
+            abort(404);
+        }
 
+        $fullPath = $this->resolvePath($path);
+
+        if (! $fullPath) {
+            Log::warning('StorageController: file not found', ['path' => $path]);
+
+            abort(404);
+        }
+
+        $response = new BinaryFileResponse($fullPath);
+        $public ? $response->setPublic() : $response->setPrivate();
+        $response->setMaxAge($public ? self::CACHE_MAX_AGE : 86400);
+        $response->isNotModified($request);
+
+        return $response;
+    }
+
+    protected function resolvePath(string $path): ?string
+    {
         $searchPaths = [
             Storage::disk('public')->path($path),
             storage_path('app/public/'.$path),
             storage_path($path),
-            base_path('storage/app/public/'.$path),
             '/storage/app/public/'.$path,
             '/storage/'.$path,
         ];
 
-        foreach ($searchPaths as $index => $fullPath) {
-            $exists = file_exists($fullPath);
-            $readable = $exists ? is_readable($fullPath) : false;
-
-            \Log::info("StorageController: Checking path #{$index}", [
-                'fullPath' => $fullPath,
-                'exists' => $exists,
-                'readable' => $readable,
-            ]);
-
-            if ($exists && $readable) {
-                \Log::info("StorageController: SUCCESS at path #{$index}");
-
-                return response()->file($fullPath);
+        foreach ($searchPaths as $fullPath) {
+            if (is_file($fullPath) && is_readable($fullPath)) {
+                return $fullPath;
             }
         }
 
-        \Log::error('StorageController: FAILURE - File not found or not readable', [
-            'path' => $path,
-            'checked' => $searchPaths,
-        ]);
-
-        abort(404);
+        return null;
     }
 }

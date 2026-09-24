@@ -67,12 +67,15 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap"
-        rel="stylesheet">
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap">
+    <link rel="stylesheet" media="print" onload="this.media='all'"
+        href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap">
+    </noscript>
 
     @vite(['resources/css/app.css', 'resources/css/home.css', 'resources/js/app.js'])
-    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 
 <body class="bg-slate-900 text-white antialiased overflow-x-hidden font-outfit" x-data="homePage()">
@@ -153,7 +156,9 @@
                             <div class="absolute inset-0">
                                 @if ($post->featured_image)
                                     <img src="{{ asset('app-media/' . $post->featured_image) }}"
-                                        alt="{{ $post->title }}"
+                                        alt="{{ $post->title }}" width="640" height="450"
+                                        loading="{{ $loop->index < 3 ? 'eager' : 'lazy' }}"
+                                        @if ($loop->first) fetchpriority="high" @endif decoding="async"
                                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                 @else
                                     <div class="w-full h-full bg-gradient-to-br from-slate-800 to-slate-700"></div>
@@ -224,7 +229,10 @@
                 isScrolled: false,
                 init() {
                     window.addEventListener('scroll', () => {
-                        this.isScrolled = window.scrollY > 50;
+                        const scrolled = window.scrollY > 50;
+                        if (scrolled !== this.isScrolled) this.isScrolled = scrolled;
+                    }, {
+                        passive: true
                     });
                 }
             }

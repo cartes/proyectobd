@@ -56,7 +56,8 @@
                                 <a href="{{ route('blog.show', $post->slug) }}" class="block">
                                     <div class="aspect-video overflow-hidden">
                                         <img src="{{ asset('app-media/' . $post->featured_image) }}"
-                                            alt="{{ $post->title }}"
+                                            alt="{{ $post->title }}" width="640" height="360"
+                                            loading="{{ $loop->index < 3 ? 'eager' : 'lazy' }}" decoding="async"
                                             class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                                     </div>
                                 </a>

@@ -142,6 +142,8 @@
                             <div class="relative aspect-[3/4] overflow-hidden">
                                 @if ($profile->primaryPhoto)
                                     <img src="{{ $profile->primaryPhoto->url }}" alt="{{ $profile->name }}"
+                                        width="480" height="640" decoding="async"
+                                        loading="{{ $loop->index < 4 ? 'eager' : 'lazy' }}"
                                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                 @else
                                     <div
@@ -168,6 +170,7 @@
                                     <div
                                         class="w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20">
                                         <img src="https://flagcdn.com/w40/{{ strtolower($country->iso_code) }}.png"
+                                            width="24" height="24" loading="lazy" decoding="async"
                                             alt="{{ $country->name }}" class="w-6 h-6 rounded-full object-cover">
                                     </div>
                                 </div>

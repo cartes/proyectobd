@@ -269,7 +269,8 @@
                                     <a href="{{ route('blog.show', $related->slug) }}">
                                         <div class="aspect-video overflow-hidden relative">
                                             <img src="{{ asset('app-media/' . $related->featured_image) }}"
-                                                alt="{{ $related->title }}"
+                                                alt="{{ $related->title }}" width="640" height="360"
+                                                loading="lazy" decoding="async"
                                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                             <div
                                                 class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">

@@ -18,6 +18,7 @@
         content="sugar daddy latinoamerica, sugar baby, citas exclusivas, dating de lujo, relaciones mutuamente beneficiosas, buscar pareja con dinero, sugar dating internacional" />
     <meta name="author" content="Big-dad Elite Dating" />
     <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="{{ url('/') }}" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -41,9 +42,13 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap"
-        rel="stylesheet">
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap">
+    <link rel="stylesheet" media="print" onload="this.media='all'"
+        href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap">
+    </noscript>
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
@@ -114,8 +119,6 @@
     </script>
 
     @vite(['resources/css/app.css', 'resources/css/home.css', 'resources/js/app.js'])
-    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-G035SGF3GT"></script>
     <script>
@@ -216,7 +219,7 @@
         <div class="absolute inset-0 z-0">
             <template x-for="i in 20">
                 <div class="heart-particle text-white/10"
-                    :style="`left: ${Math.random()*100}%; animation-duration: ${10 + Math.random()*20}s; animation-delay: -${Math.random()*20}s; font-size: ${20 + Math.random()*40}px; filter: blur(${Math.random()*3}px);`"
+                    :style="`left: ${Math.random()*100}%; animation-duration: ${10 + Math.random()*20}s; animation-delay: -${Math.random()*20}s; font-size: ${20 + Math.random()*40}px;`"
                     x-text="Math.random() > 0.5 ? '❤️' : '💖'">
                 </div>
             </template>
@@ -423,8 +426,12 @@
                         <div
                             class="absolute -inset-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-[2rem] blur-lg opacity-30">
                         </div>
-                        <img src="https://images.unsplash.com/photo-1544911845-1f34a3eb46b1?q=80&w=2070&auto=format&fit=crop"
-                            alt="Luxury Dating Lifestyle"
+                        <img src="https://images.unsplash.com/photo-1544911845-1f34a3eb46b1?q=75&w=900&auto=format&fit=crop"
+                            srcset="https://images.unsplash.com/photo-1544911845-1f34a3eb46b1?q=75&w=600&auto=format&fit=crop 600w,
+                                https://images.unsplash.com/photo-1544911845-1f34a3eb46b1?q=75&w=900&auto=format&fit=crop 900w,
+                                https://images.unsplash.com/photo-1544911845-1f34a3eb46b1?q=75&w=1300&auto=format&fit=crop 1300w"
+                            sizes="(min-width: 1024px) 50vw, 100vw" width="900" height="500" loading="lazy"
+                            decoding="async" alt="Pareja disfrutando de una cita de lujo en Big-dad"
                             class="relative rounded-[2rem] shadow-2xl w-full object-cover h-[500px]">
 
                         <!-- Floating Badge -->
@@ -515,7 +522,8 @@
                             @if ($post->featured_image)
                                 <div class="aspect-video overflow-hidden">
                                     <img src="{{ asset('app-media/' . $post->featured_image) }}"
-                                        alt="{{ $post->title }}"
+                                        alt="{{ $post->title }}" width="640" height="360" loading="lazy"
+                                        decoding="async"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 </div>
                             @else
@@ -616,6 +624,8 @@
 
     @include('partials.footer')
 
+    <div id="cursor-glow" aria-hidden="true"></div>
+
     <script>
         function homePage() {
             return {
@@ -631,14 +641,31 @@
                     }
 
                     window.addEventListener('scroll', () => {
-                        this.isScrolled = window.scrollY > 50;
+                        const scrolled = window.scrollY > 50;
+                        if (scrolled !== this.isScrolled) this.isScrolled = scrolled;
+                    }, {
+                        passive: true
                     });
 
-                    // Cursor Glow Interaction
-                    window.addEventListener('mousemove', (e) => {
-                        document.body.style.setProperty('--x', e.clientX + 'px');
-                        document.body.style.setProperty('--y', e.clientY + 'px');
-                    });
+                    // Cursor Glow: move a single composited layer (transform) once per frame
+                    const glow = document.getElementById('cursor-glow');
+                    if (glow && window.matchMedia('(pointer: fine)').matches) {
+                        let x = 0,
+                            y = 0,
+                            queued = false;
+                        window.addEventListener('mousemove', (e) => {
+                            x = e.clientX;
+                            y = e.clientY;
+                            if (queued) return;
+                            queued = true;
+                            requestAnimationFrame(() => {
+                                glow.style.transform = `translate3d(${x - 300}px, ${y - 300}px, 0)`;
+                                queued = false;
+                            });
+                        }, {
+                            passive: true
+                        });
+                    }
                 },
 
                 // Función que se ejecuta al hacer clic en "Sí"
@@ -658,7 +685,36 @@
         (function() {
             'use strict';
 
-            /* ── Esperar a que Three.js y el DOM estén listos ── */
+            // r160 es la última versión que publica el build UMD (three.min.js); r161+ da 404.
+            const THREE_SRC = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js';
+
+            /* ── Cargar Three.js solo cuando la sección se acerca al viewport ── */
+            function loadThree(callback) {
+                if (typeof THREE !== 'undefined') return callback();
+                const script = document.createElement('script');
+                script.src = THREE_SRC;
+                script.async = true;
+                script.onload = callback;
+                document.head.appendChild(script);
+            }
+
+            function lazyInit() {
+                const section = document.getElementById('como-funciona');
+                // Solo escritorio: en móvil (~150KB gzip + WebGL) penaliza Core Web Vitals
+                if (!section || window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+                    !window.matchMedia('(min-width: 1024px) and (pointer: fine)').matches) return;
+
+                const obs = new IntersectionObserver(entries => {
+                    if (entries.some(e => e.isIntersecting)) {
+                        obs.disconnect();
+                        loadThree(init);
+                    }
+                }, {
+                    rootMargin: '300px 0px'
+                });
+                obs.observe(section);
+            }
+
             function init() {
                 if (typeof THREE === 'undefined') return;
 
@@ -827,19 +883,29 @@
                 const ro = new ResizeObserver(resize);
                 ro.observe(section);
 
-                /* ── Animation loop ── */
+                /* ── Animation loop (se pausa cuando la sección no está visible) ── */
                 let t = 0;
+                let visible = true;
+                let rafId = null;
+
+                new IntersectionObserver(entries => {
+                    visible = entries[0].isIntersecting;
+                    if (visible && rafId === null) rafId = requestAnimationFrame(tick);
+                }).observe(section);
 
                 function tick() {
-                    requestAnimationFrame(tick);
+                    if (!visible) {
+                        rafId = null;
+                        return;
+                    }
+                    rafId = requestAnimationFrame(tick);
                     t += 0.008;
 
                     /* Particle drift */
-                    pGeo.attributes.position.array.forEach((_, idx) => {
-                        if (idx % 3 === 1) {
-                            pGeo.attributes.position.array[idx] += Math.sin(t + idx) * 0.002;
-                        }
-                    });
+                    const arr = pGeo.attributes.position.array;
+                    for (let idx = 1; idx < arr.length; idx += 3) {
+                        arr[idx] += Math.sin(t + idx) * 0.002;
+                    }
                     pGeo.attributes.position.needsUpdate = true;
 
                     /* Shape rotation + float */
@@ -856,7 +922,7 @@
 
                     renderer.render(scene, camera);
                 }
-                tick();
+                rafId = requestAnimationFrame(tick);
             }
 
             /* ── Scroll-reveal for cards ── */
@@ -888,21 +954,17 @@
 
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', () => {
-                    init();
+                    lazyInit();
                     initReveal();
                 });
             } else {
-                init();
+                lazyInit();
                 initReveal();
             }
         })();
     </script>
 
     <style>
-        [x-cloak] {
-            display: none !important;
-        }
-
         .animate-blob {
             animation: blob 7s infinite;
         }
@@ -934,15 +996,15 @@
         }
 
         /* Cursor Glow Effect */
-        body::after {
-            content: '';
+        #cursor-glow {
             position: fixed;
+            top: 0;
+            left: 0;
             width: 600px;
             height: 600px;
             background: radial-gradient(circle, rgba(124, 58, 237, 0.05) 0%, rgba(0, 0, 0, 0) 70%);
-            top: var(--y, 0);
-            left: var(--x, 0);
-            transform: translate(-50%, -50%);
+            transform: translate3d(-600px, -600px, 0);
+            will-change: transform;
             pointer-events: none;
             z-index: 999;
         }

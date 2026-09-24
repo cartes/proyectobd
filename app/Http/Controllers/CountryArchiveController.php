@@ -20,7 +20,7 @@ class CountryArchiveController extends Controller
             ->whereHas('profileDetail', function ($query) {
                 $query->where('is_private', false);
             })
-            ->with(['profileDetail', 'photos', 'country'])
+            ->with(['profileDetail', 'primaryPhoto', 'country'])
             ->latest()
             ->paginate(12);
 
