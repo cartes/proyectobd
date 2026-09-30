@@ -293,7 +293,7 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 lg:ml-72 min-h-screen flex flex-col">
+    <main class="flex-1 lg:ml-72 min-h-screen flex flex-col min-w-0">
         <!-- Top Header (Desktop) -->
         <header
             class="hidden lg:flex h-20 border-b border-white/5 px-10 items-center justify-between sticky top-0 bg-[#05070a]/80 backdrop-blur-xl z-40">
@@ -408,7 +408,7 @@
         </header>
 
         <!-- Content -->
-        <div class="p-6 lg:p-10 flex-1">
+        <div class="p-6 lg:p-10 flex-1 min-w-0 w-full">
             <div class="lg:hidden mb-10">
                 <h2 class="text-3xl font-outfit font-bold tracking-tight">@yield('title', 'Admin Panel')</h2>
                 <div class="h-1 w-12 bg-pink-500 rounded-full mt-2"></div>

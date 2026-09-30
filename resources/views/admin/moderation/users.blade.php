@@ -96,26 +96,27 @@
 
         <!-- Users Table -->
         <div class="bg-[#0c111d] border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
-            <table class="w-full text-left">
-                <thead>
-                    <tr class="text-xs font-bold text-gray-500 uppercase tracking-widest border-b border-white/5">
-                        <th class="px-8 py-5">Perfil</th>
-                        <th class="px-8 py-5 hidden lg:table-cell">País</th>
-                        <th class="px-8 py-5 hidden md:table-cell">Verificación</th>
-                        <th class="px-8 py-5">Nivel</th>
-                        <th class="px-8 py-5 hidden sm:table-cell">Actividad</th>
-                        <th class="px-8 py-5">Estado</th>
-                        <th class="px-8 py-5 text-right">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-white/2">
+            <div class="overflow-x-auto w-full">
+                <table class="w-full text-left min-w-[980px]">
+                    <thead>
+                        <tr class="text-xs font-bold text-gray-500 uppercase tracking-widest border-b border-white/5">
+                            <th class="px-5 py-4">Perfil</th>
+                            <th class="px-5 py-4">País</th>
+                            <th class="px-5 py-4">Verificación</th>
+                            <th class="px-5 py-4">Nivel</th>
+                            <th class="px-5 py-4">Actividad</th>
+                            <th class="px-5 py-4">Estado</th>
+                            <th class="px-5 py-4 text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/2">
                     @forelse($users as $user)
                         <tr class="hover:bg-white/[0.02] transition-colors group">
-                            <td class="px-8 py-6">
-                                <div class="flex items-center gap-4">
-                                    <div class="relative">
+                            <td class="px-5 py-4">
+                                <div class="flex items-center gap-3.5">
+                                    <div class="relative shrink-0">
                                         <div
-                                            class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500/20 to-purple-500/20 border border-white/10 flex items-center justify-center text-pink-500 font-black text-lg overflow-hidden">
+                                            class="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-500/20 to-purple-500/20 border border-white/10 flex items-center justify-center text-pink-500 font-black text-base overflow-hidden">
                                             @if ($user->primary_photo_url)
                                                 <img src="{{ $user->primary_photo_url }}" alt="{{ $user->name }}"
                                                     class="w-full h-full object-cover">
@@ -125,39 +126,32 @@
                                         </div>
                                         @if ($user->is_premium)
                                             <div
-                                                class="absolute -top-1 -right-1 w-5 h-5 bg-amber-500 rounded-lg flex items-center justify-center border-2 border-[#0c111d]">
-                                                <span class="text-[10px] text-white">👑</span>
+                                                class="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 rounded-lg flex items-center justify-center border-2 border-[#0c111d]">
+                                                <span class="text-[9px] text-white">👑</span>
                                             </div>
                                         @endif
                                     </div>
-                                    <div>
-                                        <p class="font-bold text-white group-hover:text-pink-500 transition-colors">
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-white group-hover:text-pink-500 transition-colors truncate">
                                             {{ $user->name }}
                                         </p>
-                                        <div class="flex items-center gap-2">
-                                            <p class="text-xs text-gray-500">{{ $user->email }}</p>
-                                            @if ($user->country)
-                                                <img src="https://flagcdn.com/w20/{{ strtolower($user->country->iso_code) }}.png"
-                                                    class="w-4 h-3 rounded-sm lg:hidden"
-                                                    title="{{ $user->country->name }}">
-                                            @endif
-                                        </div>
+                                        <p class="text-xs text-gray-500 truncate">{{ $user->email }}</p>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-8 py-6 hidden lg:table-cell">
+                            <td class="px-5 py-4 whitespace-nowrap">
                                 @if ($user->country)
-                                    <div class="flex items-center gap-2 text-xs text-gray-400">
+                                    <div class="flex items-center gap-2 text-xs text-gray-300">
                                         <img src="https://flagcdn.com/w20/{{ strtolower($user->country->iso_code) }}.png"
                                             width="20" height="15" alt="{{ $user->country->name }}"
-                                            class="rounded-[2px]">
+                                            class="rounded-[2px] shrink-0">
                                         <span>{{ $user->country->name }}</span>
                                     </div>
                                 @else
                                     <span class="text-xs text-rose-500 font-bold italic">Sin País</span>
                                 @endif
                             </td>
-                            <td class="px-8 py-6 hidden md:table-cell">
+                            <td class="px-5 py-4 whitespace-nowrap">
                                 @if ($user->is_verified)
                                     <span class="flex items-center gap-1.5 text-xs text-blue-400 font-bold">
                                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -171,7 +165,7 @@
                                     <span class="text-xs text-gray-500">Pendiente</span>
                                 @endif
                             </td>
-                            <td class="px-8 py-6">
+                            <td class="px-5 py-4 whitespace-nowrap">
                                 <span
                                     class="inline-flex items-center px-3 py-1 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap {{ $user->isSugarDaddy() ? 'text-purple-400' : 'text-pink-400' }}">
                                     <span class="sm:hidden">{{ $user->isSugarDaddy() ? 'SD' : 'SB' }}</span>
@@ -179,7 +173,7 @@
                                         class="hidden sm:inline">{{ $user->isSugarDaddy() ? 'Sugar Daddy' : 'Sugar Baby' }}</span>
                                 </span>
                             </td>
-                            <td class="px-8 py-6 text-xs text-gray-400 hidden sm:table-cell">
+                            <td class="px-5 py-4 text-xs text-gray-400 whitespace-nowrap">
                                 <div class="flex items-center gap-2">
                                     <span title="Mensajes">{{ $user->sentMessages->count() }} ✉️</span>
                                     <span class="text-gray-700 hidden lg:inline">|</span>
@@ -187,7 +181,7 @@
                                         title="Creación">{{ $user->created_at->format('d/m/y') }}</span>
                                 </div>
                             </td>
-                            <td class="px-8 py-6">
+                            <td class="px-5 py-4 whitespace-nowrap">
                                 @if ($user->isBanned())
                                     <div class="flex items-center gap-2 text-rose-500">
                                         <div class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></div>
@@ -205,7 +199,7 @@
                                     </div>
                                 @endif
                             </td>
-                            <td class="px-8 py-6 text-right whitespace-nowrap">
+                            <td class="px-5 py-4 text-right whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-2">
                                     <!-- Botón Enviar Mensaje -->
                                     <button type="button"
@@ -244,7 +238,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-8 py-20 text-center">
+                            <td colspan="7" class="px-5 py-16 text-center">
                                 <div
                                     class="inline-flex items-center justify-center w-20 h-20 bg-white/5 rounded-3xl mb-4 text-gray-600">
                                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -258,9 +252,10 @@
                     @endforelse
                 </tbody>
             </table>
+            </div>
 
             @if ($users->hasPages())
-                <div class="px-8 py-6 border-t border-white/5 bg-white/[0.01]">
+                <div class="px-6 py-5 border-t border-white/5 bg-white/[0.01]">
                     {{ $users->links() }}
                 </div>
             @endif
