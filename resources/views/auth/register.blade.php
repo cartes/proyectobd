@@ -10,7 +10,7 @@
             <p class="text-gray-600 mt-2">Únete a nuestra exclusiva comunidad</p>
         </div>
 
-        <form method="POST" action="{{ route('register') }}" x-data="registrationForm()" class="space-y-6">
+        <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" x-data="registrationForm()" class="space-y-6">
             @csrf
 
             <!-- Tipo de Usuario -->
@@ -126,6 +126,69 @@
                     <x-input-error :messages="$errors->get('city_id')" class="mt-1" />
                 </div>
 
+                <!-- Foto de Perfil (Obligatoria para Sugar Babies) -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label for="photo" class="text-sm font-semibold text-gray-700 flex items-center gap-1.5">
+                            <span>Foto de perfil</span>
+                            <span x-show="userType === 'sugar_baby'" class="text-xs text-pink-600 font-bold bg-pink-50 px-2 py-0.5 rounded-full border border-pink-200">
+                                * Obligatoria
+                            </span>
+                            <span x-show="userType === 'sugar_daddy'" class="text-xs text-gray-500 font-normal">
+                                (Opcional)
+                            </span>
+                        </label>
+                        <span x-show="userType === 'sugar_baby'" class="text-[11px] text-pink-600 font-semibold">
+                            Al menos 1 foto requerida
+                        </span>
+                    </div>
+
+                    <div class="border-2 border-dashed rounded-xl p-4 transition-all text-center relative"
+                        :class="photoPreview ? 'border-pink-500 bg-pink-50/20' : (userType === 'sugar_baby' ? 'border-pink-300 hover:border-pink-400 bg-pink-50/10' : 'border-gray-300 hover:border-purple-300 bg-gray-50')">
+                        
+                        <!-- Preview si se seleccionó foto -->
+                        <div x-show="photoPreview" class="space-y-3">
+                            <div class="relative inline-block">
+                                <img :src="photoPreview" alt="Vista previa" class="w-24 h-24 object-cover rounded-2xl mx-auto shadow-md border-2 border-white ring-2"
+                                     :class="userType === 'sugar_baby' ? 'ring-pink-400' : 'ring-purple-400'">
+                                <button type="button" @click="removePhoto()" 
+                                        class="absolute -top-2 -right-2 bg-rose-500 hover:bg-rose-600 text-white rounded-full p-1 shadow-md transition-transform hover:scale-110">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-600 font-medium truncate max-w-xs mx-auto" x-text="photoFileName"></p>
+                            <button type="button" @click="$refs.photoInput.click()" class="text-xs text-pink-600 font-bold hover:underline">
+                                Cambiar foto
+                            </button>
+                        </div>
+
+                        <!-- Dropzone cuando no hay foto -->
+                        <div x-show="!photoPreview" @click="$refs.photoInput.click()" class="cursor-pointer py-3">
+                            <div class="w-12 h-12 rounded-2xl mx-auto mb-2 flex items-center justify-center transition-transform hover:scale-105"
+                                 :class="userType === 'sugar_baby' ? 'bg-pink-100 text-pink-500' : 'bg-purple-100 text-purple-500'">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" 
+                                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-700">
+                                <span :class="userType === 'sugar_baby' ? 'text-pink-600 hover:underline' : 'text-purple-600 hover:underline'">Haz clic para seleccionar tu foto</span>
+                            </p>
+                            <p class="text-xs text-gray-500 mt-1">
+                                JPG, PNG o WEBP (máx. 20MB)
+                            </p>
+                        </div>
+
+                        <input type="file" id="photo" name="photo" x-ref="photoInput" class="hidden" 
+                               accept="image/jpeg,image/png,image/jpg,image/webp"
+                               @change="handlePhotoSelect($event)"
+                               :required="userType === 'sugar_baby'">
+                    </div>
+                    <x-input-error :messages="$errors->get('photo')" class="mt-1" />
+                </div>
+
                 <div class="grid grid-cols-2 gap-3">
                     <div x-data="{ show: false }">
                         <x-input-label for="password" :value="__('Contraseña')" class="text-sm font-semibold text-gray-700" />
@@ -222,6 +285,8 @@
                     loadingCities: false,
                     selectedCityId: '{{ old('city_id', old('city') ? 'other' : '') }}',
                     otherCity: '{{ old('city', '') }}',
+                    photoPreview: null,
+                    photoFileName: '',
                     async init() {
                         if (this.selectedCountryId) {
                             await this.loadCities(this.selectedCountryId);
@@ -235,6 +300,24 @@
                             this.cities = await res.json();
                         } catch(e) { this.cities = []; }
                         this.loadingCities = false;
+                    },
+                    handlePhotoSelect(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            this.photoFileName = file.name;
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                this.photoPreview = e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    },
+                    removePhoto() {
+                        this.photoPreview = null;
+                        this.photoFileName = '';
+                        if (this.$refs.photoInput) {
+                            this.$refs.photoInput.value = '';
+                        }
                     }
                 }
             }

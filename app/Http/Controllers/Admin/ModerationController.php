@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AdminDirectMessageMail;
 use App\Models\BlockedWord;
 use App\Models\Report;
 use App\Models\User;
 use App\Models\UserAction;
+use App\Notifications\AdminMessageNotification;
 use App\Services\ModerationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class ModerationController extends Controller
 {
@@ -423,5 +427,118 @@ class ModerationController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Perfil del usuario actualizado correctamente.');
+    }
+
+    // Eliminar usuario
+    public function destroyUser(Request $request, User $user)
+    {
+        if (auth()->id() === $user->id) {
+            return redirect()->back()->with('error', 'No puedes eliminar tu propia cuenta de administrador.');
+        }
+
+        $userName = $user->name;
+        $userEmail = $user->email;
+        $reason = $request->input('reason', 'Eliminación manual por super-admin');
+
+        // 1. Registrar auditoría del admin antes de eliminar
+        \App\Models\AdminAuditLog::create([
+            'admin_id' => auth()->id(),
+            'action_type' => 'delete_user',
+            'auditable_id' => $user->id,
+            'auditable_type' => User::class,
+            'old_values' => [
+                'id' => $user->id,
+                'name' => $userName,
+                'email' => $userEmail,
+                'user_type' => $user->user_type,
+            ],
+            'new_values' => null,
+            'reason' => $reason,
+            'ip_address' => $request->ip(),
+        ]);
+
+        // 2. Limpiar archivos de fotos en storage
+        try {
+            $storagePath = $user->getStoragePath();
+            if (Storage::disk('public')->exists($storagePath)) {
+                Storage::disk('public')->deleteDirectory($storagePath);
+            }
+        } catch (\Throwable $e) {
+            \Log::error("Error limpiando almacenamiento al eliminar usuario {$user->id}: ".$e->getMessage());
+        }
+
+        // 3. Limpiar notificaciones polimórficas asociadas
+        try {
+            $user->notifications()->delete();
+        } catch (\Throwable $e) {
+            // Ignorar si falla
+        }
+
+        // 4. Eliminar el usuario (las FK con cascade eliminan perfiles, fotos, mensajes, etc.)
+        $user->delete();
+
+        return redirect()->route('admin.moderation.users')
+            ->with('success', "Usuario \"{$userName}\" ({$userEmail}) eliminado correctamente.");
+    }
+
+    // Enviar mensaje al usuario (Email y Notificación)
+    public function sendMessage(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string|max:3000',
+            'action_url' => 'nullable|string|max:500',
+            'action_text' => 'nullable|string|max:100',
+            'template_key' => 'nullable|string|max:50',
+        ]);
+
+        $subject = trim($validated['subject']);
+        $messageBody = trim($validated['message']);
+        $actionUrl = ! empty($validated['action_url']) ? trim($validated['action_url']) : null;
+        $actionText = ! empty($validated['action_text']) ? trim($validated['action_text']) : null;
+
+        // 1. Enviar correo electrónico
+        try {
+            Mail::to($user->email)->send(new AdminDirectMessageMail(
+                $user,
+                $subject,
+                $messageBody,
+                $actionUrl,
+                $actionText
+            ));
+        } catch (\Throwable $e) {
+            \Log::error("Error enviando email a usuario {$user->id}: ".$e->getMessage());
+
+            return redirect()->back()->with('error', 'Error al enviar el correo al usuario: '.$e->getMessage());
+        }
+
+        // 2. Enviar notificación interna en base de datos
+        try {
+            $user->notify(new AdminMessageNotification(
+                $subject,
+                $messageBody,
+                $actionUrl
+            ));
+        } catch (\Throwable $e) {
+            \Log::warning("Error creando notificación interna para usuario {$user->id}: ".$e->getMessage());
+        }
+
+        // 3. Registrar auditoría del admin
+        \App\Models\AdminAuditLog::create([
+            'admin_id' => auth()->id(),
+            'action_type' => 'send_admin_message',
+            'auditable_id' => $user->id,
+            'auditable_type' => User::class,
+            'old_values' => null,
+            'new_values' => [
+                'subject' => $subject,
+                'message_preview' => substr($messageBody, 0, 150),
+                'template_key' => $request->input('template_key', 'custom'),
+            ],
+            'reason' => 'Mensaje administrativo directo',
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()->back()->with('success', "Mensaje enviado exitosamente a {$user->name} ({$user->email}).");
     }
 }

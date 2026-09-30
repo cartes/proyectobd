@@ -80,6 +80,7 @@ class CountryFeaturesTest extends TestCase
             'birth_date' => '2000-01-01',
             'country_id' => $country->id,
             'city' => 'Santiago', // Optional now
+            'photo' => \Illuminate\Http\UploadedFile::fake()->image('avatar.jpg'),
         ]);
 
         $this->assertDatabaseHas('users', [

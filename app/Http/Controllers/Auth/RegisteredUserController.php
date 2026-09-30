@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProfilePhoto;
 use App\Models\User;
+use App\Services\ImageOptimizationService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rules;
@@ -45,8 +48,10 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, ImageOptimizationService $imageService): RedirectResponse
     {
+        $isSugarBaby = $request->input('user_type') === 'sugar_baby';
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
@@ -57,19 +62,51 @@ class RegisteredUserController extends Controller
             'country_id' => ['required', 'exists:countries,id'],
             'city_id' => ['nullable', 'exists:cities,id'],
             'city' => ['nullable', 'string', 'max:255'],
+            'photo' => [
+                $isSugarBaby ? 'required' : 'nullable',
+                'image',
+                'mimes:'.implode(',', ProfilePhoto::ALLOWED_TYPES),
+                'max:'.ProfilePhoto::MAX_FILE_SIZE,
+            ],
+        ], [
+            'photo.required' => 'Es obligatorio subir al menos una foto de perfil para registrarte como Sugar Baby.',
+            'photo.image' => 'El archivo seleccionado debe ser una imagen válida.',
+            'photo.mimes' => 'La foto debe ser en formato: '.implode(', ', ProfilePhoto::ALLOWED_TYPES).'.',
+            'photo.max' => 'La foto no debe superar los 20MB.',
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'user_type' => $request->user_type,
-            'country_id' => $request->country_id,
-            'city_id' => $request->city_id,
-            'city' => $request->city,
-            'gender' => $request->gender,
-            'birth_date' => $request->birth_date,
-        ]);
+        $user = DB::transaction(function () use ($request, $imageService) {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'user_type' => $request->user_type,
+                'country_id' => $request->country_id,
+                'city_id' => $request->city_id,
+                'city' => $request->city,
+                'gender' => $request->gender,
+                'birth_date' => $request->birth_date,
+            ]);
+
+            if ($request->hasFile('photo')) {
+                $paths = $imageService->optimizeAndStore($request->file('photo'), $user->getStoragePath());
+
+                $photo = $user->photos()->create([
+                    'photo_path' => $paths['original'],
+                    'thumbnail_path' => $paths['thumbnail_path'],
+                    'medium_path' => $paths['medium_path'],
+                    'large_path' => $paths['large_path'],
+                    'file_size' => $paths['file_size'],
+                    'order' => 0,
+                    'moderation_status' => 'approved',
+                    'potential_nudity' => false,
+                ]);
+
+                $photo->setAsPrimary();
+            }
+
+            return $user;
+        });
 
         event(new Registered($user));
 

@@ -36,6 +36,7 @@ class AdminNewUserNotificationTest extends TestCase
             'birth_date' => '1995-01-01',
             'country_id' => $country->id,
             'city' => 'Santiago',
+            'photo' => \Illuminate\Http\UploadedFile::fake()->image('avatar.jpg'),
         ]);
 
         // La notificación debe haberse enviado al admin por canal 'database'
