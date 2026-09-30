@@ -39,6 +39,48 @@
                 <x-input-error :messages="$errors->get('user_type')" class="mt-2" />
             </div>
 
+            <!-- Banner motivacional lúdico -->
+            <div x-show="userType === 'sugar_baby'" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 -translate-y-2"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 class="p-4 rounded-2xl bg-gradient-to-r from-pink-50 via-rose-50 to-pink-50 border border-pink-200/80 shadow-sm relative overflow-hidden">
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-lg shrink-0 shadow-inner">
+                        ✨
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-sm font-bold text-pink-700">
+                            «Una mejor vida siempre es mejor acompañada»
+                        </p>
+                        <p class="text-xs text-pink-900/80 leading-relaxed">
+                            <span x-text="gender === 'male' ? 'Relájate y sé tú mismo.' : 'Relájate y sé tú misma.'">Relájate y sé tú misma.</span>
+                            Estás a punto de unirte a una comunidad exclusiva diseñada para conectar con personas que valoran tu estilo y compañía.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="userType === 'sugar_daddy'" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 -translate-y-2"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 class="p-4 rounded-2xl bg-gradient-to-r from-purple-50 via-indigo-50 to-purple-50 border border-purple-200/80 shadow-sm relative overflow-hidden">
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-lg shrink-0 shadow-inner">
+                        👑
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-sm font-bold text-purple-700">
+                            «Una mejor vida siempre es mejor acompañada»
+                        </p>
+                        <p class="text-xs text-purple-900/80 leading-relaxed">
+                            Conecta con personas extraordinarias y auténticas dispuestas a compartir momentos memorables.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Información Personal -->
             <div class="space-y-4">
                 <div>
@@ -61,7 +103,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <x-input-label for="gender" :value="__('Género')" class="text-sm font-semibold text-gray-700" />
-                        <select id="gender" name="gender"
+                        <select id="gender" name="gender" x-model="gender"
                             class="block mt-1 w-full rounded-lg border-gray-300 focus:border-purple-500 focus:ring-purple-500"
                             required>
                             <option value="">Seleccionar</option>
@@ -146,26 +188,72 @@
                     <div class="border-2 border-dashed rounded-xl p-4 transition-all text-center relative"
                         :class="photoPreview ? 'border-pink-500 bg-pink-50/20' : (userType === 'sugar_baby' ? 'border-pink-300 hover:border-pink-400 bg-pink-50/10' : 'border-gray-300 hover:border-purple-300 bg-gray-50')">
                         
-                        <!-- Preview si se seleccionó foto -->
+                        <!-- Preview si se seleccionó foto con feedback lúdico -->
                         <div x-show="photoPreview" class="space-y-3">
                             <div class="relative inline-block">
-                                <img :src="photoPreview" alt="Vista previa" class="w-24 h-24 object-cover rounded-2xl mx-auto shadow-md border-2 border-white ring-2"
-                                     :class="userType === 'sugar_baby' ? 'ring-pink-400' : 'ring-purple-400'">
+                                <img :src="photoPreview" alt="Vista previa" 
+                                     class="w-28 h-28 object-cover rounded-2xl mx-auto shadow-md border-2 border-white ring-4 transition-all duration-300 hover:scale-105"
+                                     :class="userType === 'sugar_baby' ? 'ring-pink-400 shadow-pink-200' : 'ring-purple-400 shadow-purple-200'">
+                                
+                                <!-- Insignia de estado lúdica -->
+                                <span class="absolute -bottom-2 -left-2 bg-white rounded-full p-1 shadow border text-sm select-none">
+                                    <span x-show="userType === 'sugar_baby'">🔥</span>
+                                    <span x-show="userType === 'sugar_daddy'">👑</span>
+                                </span>
+
                                 <button type="button" @click="removePhoto()" 
-                                        class="absolute -top-2 -right-2 bg-rose-500 hover:bg-rose-600 text-white rounded-full p-1 shadow-md transition-transform hover:scale-110">
+                                        class="absolute -top-2 -right-2 bg-rose-500 hover:bg-rose-600 text-white rounded-full p-1.5 shadow-md transition-transform hover:scale-110"
+                                        title="Eliminar foto">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                     </svg>
                                 </button>
                             </div>
-                            <p class="text-xs text-gray-600 font-medium truncate max-w-xs mx-auto" x-text="photoFileName"></p>
-                            <button type="button" @click="$refs.photoInput.click()" class="text-xs text-pink-600 font-bold hover:underline">
-                                Cambiar foto
-                            </button>
+                            
+                            <p class="text-xs text-gray-500 font-medium truncate max-w-xs mx-auto" x-text="photoFileName"></p>
+
+                            <!-- Mensaje lúdico y motivacional interactivo -->
+                            <div class="p-3.5 rounded-2xl border text-left shadow-sm relative overflow-hidden transition-all duration-300"
+                                 :class="userType === 'sugar_baby' ? 'bg-gradient-to-br from-pink-50 via-rose-50 to-white border-pink-200' : 'bg-gradient-to-br from-purple-50 via-indigo-50 to-white border-purple-200'">
+                                
+                                <div class="flex items-start gap-2.5">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-sm shrink-0"
+                                         :class="userType === 'sugar_baby' ? 'bg-pink-500 text-white' : 'bg-purple-600 text-white'">
+                                        <span x-text="userType === 'sugar_baby' ? '💎' : '👑'"></span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center justify-between gap-1 mb-1">
+                                            <span class="text-[11px] font-bold tracking-wider uppercase"
+                                                  :class="userType === 'sugar_baby' ? 'text-pink-600' : 'text-purple-600'">
+                                                ¡Vibra Big-dad 10/10! ✨
+                                            </span>
+                                            <button type="button" @click="nextCompliment()" 
+                                                    class="text-[11px] font-semibold text-gray-500 hover:text-pink-600 flex items-center gap-1 transition-colors px-2 py-0.5 rounded-full hover:bg-white border border-transparent hover:border-pink-200"
+                                                    title="Ver otro halago">
+                                                <span>🎲 Otro halago</span>
+                                            </button>
+                                        </div>
+                                        
+                                        <p class="text-xs sm:text-sm font-semibold text-gray-800 leading-snug" 
+                                           x-text="currentCompliment"></p>
+                                        
+                                        <p class="text-[11px] text-pink-600 font-medium mt-1.5 flex items-center gap-1">
+                                            <span>✨</span>
+                                            <span>«Una mejor vida siempre es mejor acompañada»</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <button type="button" @click="$refs.photoInput.click()" class="text-xs text-pink-600 font-bold hover:underline">
+                                    Cambiar foto
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Dropzone cuando no hay foto -->
-                        <div x-show="!photoPreview" @click="$refs.photoInput.click()" class="cursor-pointer py-3">
+                        <div x-show="!photoPreview" @click="$refs.photoInput.click()" class="cursor-pointer py-4">
                             <div class="w-12 h-12 rounded-2xl mx-auto mb-2 flex items-center justify-center transition-transform hover:scale-105"
                                  :class="userType === 'sugar_baby' ? 'bg-pink-100 text-pink-500' : 'bg-purple-100 text-purple-500'">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -174,10 +262,13 @@
                                 </svg>
                             </div>
                             <p class="text-sm font-semibold text-gray-700">
-                                <span :class="userType === 'sugar_baby' ? 'text-pink-600 hover:underline' : 'text-purple-600 hover:underline'">Haz clic para seleccionar tu foto</span>
+                                <span :class="userType === 'sugar_baby' ? 'text-pink-600 hover:underline' : 'text-purple-600 hover:underline'">
+                                    Haz clic para subir tu mejor foto
+                                </span>
                             </p>
                             <p class="text-xs text-gray-500 mt-1">
-                                JPG, PNG o WEBP (máx. 20MB)
+                                <span x-show="userType === 'sugar_baby'">📸 ¡Sube una donde salgas sonriendo! Tu sonrisa abre todas las puertas.</span>
+                                <span x-show="userType === 'sugar_daddy'">JPG, PNG o WEBP (máx. 20MB)</span>
                             </p>
                         </div>
 
@@ -280,6 +371,7 @@
             function registrationForm() {
                 return {
                     userType: '{{ old('user_type', $preferredUserType ?? 'sugar_baby') }}',
+                    gender: '{{ old('gender', '') }}',
                     selectedCountryId: '{{ old('country_id', $defaultCountryId ?? '') }}',
                     cities: [],
                     loadingCities: false,
@@ -287,6 +379,72 @@
                     otherCity: '{{ old('city', '') }}',
                     photoPreview: null,
                     photoFileName: '',
+                    currentComplimentIndex: 0,
+                    get activeCompliments() {
+                        const isMale = this.gender === 'male';
+                        const isFemale = this.gender === 'female' || (!this.gender && this.userType === 'sugar_baby');
+
+                        if (this.userType === 'sugar_baby') {
+                            if (isMale) {
+                                return [
+                                    '¡Wooow, sí que eres guapísimo! Con esa foto vas a causar sensación 🔥',
+                                    '¡Qué bien te ves! Te va a ir súper bien por aquí ✨',
+                                    '¡Esa sonrisa lo dice todo! Vas a conquistar muchas miradas en Big-dad 💖',
+                                    '¡Qué estilazo! Listo para vivir experiencias increíbles 😍',
+                                    '¡Foto espectacular! Una mejor vida siempre es mejor acompañada 🥂',
+                                    '¡Simplemente radiante! Listo para destacar en Big-dad 💎'
+                                ];
+                            } else if (isFemale) {
+                                return [
+                                    '¡Wooow, sí que eres guapísima! Con esa foto vas a causar sensación 🔥',
+                                    '¡Qué linda! Te va a ir súper bien por aquí ✨',
+                                    '¡Esa sonrisa lo dice todo! Vas a conquistar miradas en Big-dad 💖',
+                                    '¡Qué estilazo! Lista para vivir experiencias increíbles 😍',
+                                    '¡Foto espectacular! Una mejor vida siempre es mejor acompañada 🥂',
+                                    '¡Simplemente radiante! Los Sugar Daddies más selectos van a querer conocerte ya 💎'
+                                ];
+                            } else {
+                                return [
+                                    '¡Wooow, te ves increíble! Con esa foto vas a causar sensación 🔥',
+                                    '¡Qué gran estilo! Te va a ir súper bien por aquí ✨',
+                                    '¡Esa sonrisa lo dice todo! Vas a conquistar miradas en Big-dad 💖',
+                                    '¡Foto espectacular! Una mejor vida siempre es mejor acompañada 🥂',
+                                    '¡Vibra 10/10! Lista/o para vivir experiencias únicas en Big-dad 💎'
+                                ];
+                            }
+                        } else {
+                            // Sugar Daddy / Sugar Mommy
+                            if (this.gender === 'female') {
+                                return [
+                                    '¡Wooow, qué distinguida! Con esa foto vas a causar sensación 🔥',
+                                    '¡Excelente presencia! Refleja todo tu éxito, porte y elegancia 👑',
+                                    '¡Gran foto! Con esa presentación destacarás de inmediato 🥂',
+                                    '¡Foto impecable! Lista para inspirar distinción y confianza ✨',
+                                    '¡Elegancia total! Una mejor vida siempre es mejor acompañada 💎'
+                                ];
+                            } else {
+                                return [
+                                    '¡Wooow, sí que eres guapo y tienes porte! Con esa foto vas a causar sensación 🔥',
+                                    '¡Excelente presencia! Refleja todo tu porte y estilo de vida 👑',
+                                    '¡Gran foto! Con esa presentación destacarás de inmediato 🥂',
+                                    '¡Foto impecable! Listo para inspirar distinción y confianza ✨',
+                                    '¡Elegancia total! Una mejor vida siempre es mejor acompañada 💎'
+                                ];
+                            }
+                        }
+                    },
+                    get currentCompliment() {
+                        const list = this.activeCompliments;
+                        return list[this.currentComplimentIndex % list.length];
+                    },
+                    pickRandomCompliment() {
+                        const list = this.activeCompliments;
+                        this.currentComplimentIndex = Math.floor(Math.random() * list.length);
+                    },
+                    nextCompliment() {
+                        const list = this.activeCompliments;
+                        this.currentComplimentIndex = (this.currentComplimentIndex + 1) % list.length;
+                    },
                     async init() {
                         if (this.selectedCountryId) {
                             await this.loadCities(this.selectedCountryId);
@@ -308,6 +466,7 @@
                             const reader = new FileReader();
                             reader.onload = (e) => {
                                 this.photoPreview = e.target.result;
+                                this.pickRandomCompliment();
                             };
                             reader.readAsDataURL(file);
                         }
