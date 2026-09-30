@@ -683,7 +683,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Reemplaza el correo de verificación por defecto de Laravel
-     * con el correo de bienvenida personalizado de Big-Dad.
+     * con el correo de bienvenida personalizado de BigDad.
      */
     public function sendEmailVerificationNotification(): void
     {

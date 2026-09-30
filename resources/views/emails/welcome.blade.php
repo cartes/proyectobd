@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Bienvenido a Big-Dad</title>
+    <title>Bienvenido a BigDad</title>
     <!--[if mso]>
     <noscript>
         <xml>
@@ -331,7 +331,7 @@
 
             {{-- ── HEADER ── --}}
             <div class="header">
-                <div class="logo-text">Big-Dad<span class="logo-dot"></span></div>
+                <div class="logo-text">BigDad<span class="logo-dot"></span></div>
                 <p class="tagline">Lifestyle &amp; Citas Exclusivas</p>
             </div>
 
@@ -349,7 +349,7 @@
                 </p>
 
                 <p class="intro-text">
-                    Bienvenido a <strong style="color:#f1f5f9;">Big-Dad</strong>, la comunidad <strong style="color:#f1f5f9;">#1 de Lifestyle y citas exclusivas en Latinoamérica</strong>.
+                    Bienvenido a <strong style="color:#f1f5f9;">BigDad</strong>, la comunidad <strong style="color:#f1f5f9;">#1 de Lifestyle y citas exclusivas en Latinoamérica</strong>.
                 </p>
 
                 <p class="intro-text">
@@ -405,16 +405,16 @@
 
                 <div class="closing-quote">
                     <p><span class="highlight">"La vida es demasiado corta para citas aburridas"</span>.<br>Desbloquea tu nuevo estilo de vida hoy mismo.</p>
-                    <p style="margin-top:16px; font-size:14px; color:#64748b;">Atentamente,<br><strong style="color:#94a3b8;">El equipo de Big-Dad</strong></p>
+                    <p style="margin-top:16px; font-size:14px; color:#64748b;">Atentamente,<br><strong style="color:#94a3b8;">El equipo de BigDad</strong></p>
                 </div>
 
             </div>
 
             {{-- ── FOOTER ── --}}
             <div class="footer">
-                <div class="footer-logo">Big-Dad</div>
+                <div class="footer-logo">BigDad</div>
                 <p class="footer-text">
-                    © {{ date('Y') }} Big-Dad. Todos los derechos reservados.<br>
+                    © {{ date('Y') }} BigDad. Todos los derechos reservados.<br>
                     La comunidad #1 de Lifestyle y citas exclusivas en Latinoamérica.<br><br>
                     Si no creaste esta cuenta, puedes ignorar este correo de forma segura.<br>
                     <a href="{{ url('/') }}">big-dad.com</a>

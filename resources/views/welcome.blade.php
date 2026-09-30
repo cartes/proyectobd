@@ -11,19 +11,19 @@
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
 
     <!-- SEO Meta Tags -->
-    <title>Big-dad: #1 Sugar Dating en Latinoamérica | Citas Exclusivas y Lujos</title>
+    <title>BigDad: #1 Sugar Dating en Latinoamérica | Citas Exclusivas y Lujos</title>
     <meta name="description"
-        content="Únete a Big-dad, la comunidad de élite para Sugar Daddies y Sugar Babies en Latinoamérica." />
+        content="Únete a BigDad, la comunidad de élite para Sugar Daddies y Sugar Babies en Latinoamérica." />
     <meta name="keywords"
         content="sugar daddy latinoamerica, sugar baby, citas exclusivas, dating de lujo, relaciones mutuamente beneficiosas, buscar pareja con dinero, sugar dating internacional" />
-    <meta name="author" content="Big-dad Elite Dating" />
+    <meta name="author" content="BigDad Elite Dating" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="{{ url('/') }}" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ url('/') }}" />
-    <meta property="og:title" content="Big-dad: El Club de Citas para Gente Exitosa en Latinoamérica" />
+    <meta property="og:title" content="BigDad: El Club de Citas para Gente Exitosa en Latinoamérica" />
     <meta property="og:description"
         content="¿Buscas un estilo de vida premium? Conecta con personas que comparten tus mismos gustos y ambiciones. La red social exclusiva para Sugar Dating en Latinoamérica." />
     <meta property="og:image" content="{{ asset('images/og-image.jpg') }}" />
@@ -34,9 +34,9 @@
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="{{ url('/') }}" />
-    <meta property="twitter:title" content="Big-dad: Citas de Lujo y Luxury Lifestyle" />
+    <meta property="twitter:title" content="BigDad: Citas de Lujo y Luxury Lifestyle" />
     <meta property="twitter:description"
-        content="Descubre el Sugar Dating en Latinoamérica de forma segura y exclusiva. Únete a la comunidad Big-dad hoy." />
+        content="Descubre el Sugar Dating en Latinoamérica de forma segura y exclusiva. Únete a la comunidad BigDad hoy." />
     <meta property="twitter:image" content="{{ asset('images/og-image.jpg') }}" />
 
     <!-- Fonts -->
@@ -55,34 +55,30 @@
         {
             "@@context": "https://schema.org",
             "@@type": "WebSite",
-            "name": "Big-dad Latinoamérica",
+            "name": "BigDad Latinoamérica",
             "url": "{{ url('/') }}",
-            "inLanguage": "es-CL",
+            "alternateName": ["BigDad", "Big-Dad", "Big Dad", "bigdad"],
+            "inLanguage": "es",
             "description": "Plataforma líder de Sugar Dating y citas exclusivas en Latinoamérica.",
-            "keywords": "sugar daddy latinoamerica, sugar baby, citas exclusivas, dating de lujo, relaciones mutuamente beneficiosas, buscar pareja con dinero, sugar dating internacional",
-            "potentialAction": {
-                "@@type": "SearchAction",
-                "target": {
-                    "@@type": "EntryPoint",
-                    "urlTemplate": "{{ url('/') }}/search?q={search_term_string}"
-                },
-                "query-input": "required name=search_term_string"
-            }
+            "publisher": { "@@id": "{{ url('/') }}#organization" }
         }
     </script>
     <script type="application/ld+json">
         {
             "@@context": "https://schema.org",
             "@@type": "Organization",
-            "name": "Big-dad",
+            "@@id": "{{ url('/') }}#organization",
+            "name": "BigDad",
+            "alternateName": ["Big-Dad", "Big Dad", "bigdad"],
             "url": "{{ url('/') }}",
             "description": "Plataforma de Sugar Dating exclusiva que conecta Sugar Daddies y Sugar Babies en Latinoamérica.",
             "keywords": "sugar daddy, sugar baby, citas exclusivas, dating de lujo, sugar dating latinoamerica",
             "logo": {
                 "@@type": "ImageObject",
                 "url": "{{ asset('favicon.png') }}",
-                "caption": "Big-dad Logo"
+                "caption": "BigDad Logo"
             },
+            {{-- TODO: agregar URLs oficiales de redes sociales (Instagram, X/Twitter, TikTok, Facebook) --}}
             "sameAs": [
                 "https://www.instagram.com/big_dad.app/"
             ],
@@ -100,20 +96,16 @@
             "@@type": "WebPage",
             "@@id": "{{ url('/') }}",
             "url": "{{ url('/') }}",
-            "name": "Big-dad: #1 Sugar Dating en Latinoamérica | Citas Exclusivas y Lujos",
-            "description": "Únete a Big-dad, la comunidad de élite para Sugar Daddies y Sugar Babies en Latinoamérica. Encuentra tu compañero de lujo para viajes, cenas y conexiones exclusivas.",
+            "name": "BigDad: #1 Sugar Dating en Latinoamérica | Citas Exclusivas y Lujos",
+            "description": "Únete a BigDad, la comunidad de élite para Sugar Daddies y Sugar Babies en Latinoamérica. Encuentra tu compañero de lujo para viajes, cenas y conexiones exclusivas.",
             "keywords": "sugar daddy latinoamerica, sugar baby, citas exclusivas, dating de lujo, relaciones mutuamente beneficiosas, buscar pareja con dinero, sugar dating internacional",
-            "inLanguage": "es-CL",
+            "inLanguage": "es",
             "isPartOf": {
                 "@@type": "WebSite",
-                "name": "Big-dad Latinoamérica",
+                "name": "BigDad Latinoamérica",
                 "url": "{{ url('/') }}"
             },
-            "publisher": {
-                "@@type": "Organization",
-                "name": "Big-dad",
-                "url": "{{ url('/') }}"
-            },
+            "publisher": { "@@id": "{{ url('/') }}#organization" },
             "image": "{{ asset('images/og-image.jpg') }}"
         }
     </script>
@@ -250,12 +242,16 @@
                     ✨ La comunidad #1 de Lifestyle en Latinoamérica
                 </span>
 
-                <h1 class="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight animation-delay-300">
+                <h1 class="text-2xl md:text-4xl font-black mb-4 leading-tight tracking-tight text-white">
+                    BigDad: Sugar Dating en Latinoamérica
+                </h1>
+
+                <p class="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight animation-delay-300">
                     La <span
                         class="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400">Buena
                         Vida</span><br>
                     es Mejor Compartida
-                </h1>
+                </p>
             </div>
 
             <p
@@ -325,7 +321,7 @@
                     Tu<br class="hidden md:block"> Nuevo Estilo de Vida
                 </h2>
                 <p class="text-slate-400 max-w-xl mx-auto text-lg">
-                    En Big-dad, simplificamos las reglas del juego. Conecta con personas de élite en toda Latinoamérica.
+                    En BigDad, simplificamos las reglas del juego. Conecta con personas de élite en toda Latinoamérica.
                 </p>
             </div>
 
@@ -431,7 +427,7 @@
                                 https://images.unsplash.com/photo-1544911845-1f34a3eb46b1?q=75&w=900&auto=format&fit=crop 900w,
                                 https://images.unsplash.com/photo-1544911845-1f34a3eb46b1?q=75&w=1300&auto=format&fit=crop 1300w"
                             sizes="(min-width: 1024px) 50vw, 100vw" width="900" height="500" loading="lazy"
-                            decoding="async" alt="Pareja disfrutando de una cita de lujo en Big-dad"
+                            decoding="async" alt="Pareja disfrutando de una cita de lujo en BigDad"
                             class="relative rounded-[2rem] shadow-2xl w-full object-cover h-[500px]">
 
                         <!-- Floating Badge -->
@@ -450,7 +446,7 @@
 
                 <div class="lg:w-1/2">
                     <span class="text-pink-500 font-bold tracking-widest uppercase text-sm mb-2 block">¿Por qué
-                        Big-dad?</span>
+                        BigDad?</span>
                     <h2 class="text-4xl md:text-5xl font-black mb-8 leading-tight">Más que Citas,<br>Un <span
                             class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-400">Estilo
                             de
@@ -619,6 +615,30 @@
                     </a>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Sugar Dating por país (enlaces internos) -->
+    <section class="py-16 bg-slate-950 border-t border-white/5">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-2xl md:text-4xl font-black mb-8">Sugar Dating por país</h2>
+            <ul class="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+                @foreach (config('seo_countries.featured', []) as $featuredSlug)
+                    @php $featuredName = config("seo_countries.countries.{$featuredSlug}.name", $featuredSlug); @endphp
+                    <li>
+                        <a href="{{ route('archive.country', $featuredSlug) }}"
+                            class="inline-block px-6 py-3 rounded-full border border-pink-500/30 bg-pink-500/10 text-pink-300 font-bold hover:bg-pink-500/20 transition-colors">
+                            Sugar Babies en {{ $featuredName }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('archive.country.daddies', $featuredSlug) }}"
+                            class="inline-block px-6 py-3 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 font-bold hover:bg-indigo-500/20 transition-colors">
+                            Sugar Daddy en {{ $featuredName }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
         </div>
     </section>
 

@@ -1,21 +1,21 @@
 @extends('layouts.public-static')
 
-@section('meta_title', 'Quiénes Somos | Big-dad, comunidad de Sugar Dating en Latinoamérica')
+@section('meta_title', 'Quiénes Somos | BigDad, comunidad de Sugar Dating en Latinoamérica')
 @section('meta_description',
-    'Conoce quiénes somos en Big-dad: una plataforma de Sugar Dating pensada para conexiones claras, privadas y exclusivas en Latinoamérica.')
+    'Conoce quiénes somos en BigDad: una plataforma de Sugar Dating pensada para conexiones claras, privadas y exclusivas en Latinoamérica.')
 @section('meta_keywords',
-    'quienes somos big-dad, sugar dating latinoamerica, plataforma sugar daddy, comunidad sugar baby, citas exclusivas latam, relaciones mutuamente beneficiosas')
+    'quienes somos bigdad, sugar dating latinoamerica, plataforma sugar daddy, comunidad sugar baby, citas exclusivas latam, relaciones mutuamente beneficiosas')
 @section('canonical_url', route('about.index'))
 
-@section('og_title', 'Quiénes Somos | Big-dad')
+@section('og_title', 'Quiénes Somos | BigDad')
 @section('og_description',
-    'Descubre la visión, valores y propuesta de Big-dad, la comunidad de Sugar Dating enfocada en privacidad, seguridad y experiencias reales en Latinoamérica.')
+    'Descubre la visión, valores y propuesta de BigDad, la comunidad de Sugar Dating enfocada en privacidad, seguridad y experiencias reales en Latinoamérica.')
 @section('og_url', route('about.index'))
 @section('og_image', asset('images/quienes-somos/experiencia-sugar-dating.jpg'))
 
-@section('twitter_title', 'Quiénes Somos | Big-dad')
+@section('twitter_title', 'Quiénes Somos | BigDad')
 @section('twitter_description',
-    'Nuestra historia, valores y visión sobre el Sugar Dating moderno en Latinoamérica. Conoce por qué Big-dad apuesta por conexiones auténticas y seguras.')
+    'Nuestra historia, valores y visión sobre el Sugar Dating moderno en Latinoamérica. Conoce por qué BigDad apuesta por conexiones auténticas y seguras.')
 @section('twitter_image', asset('images/quienes-somos/experiencia-sugar-dating.jpg'))
 
 @section('head_meta')
@@ -50,8 +50,8 @@
             "@@type": "AboutPage",
             "@@id": "{{ route('about.index') }}",
             "url": "{{ route('about.index') }}",
-            "name": "Quiénes Somos | Big-dad",
-            "description": "Página sobre la visión, valores y enfoque de Big-dad como plataforma de Sugar Dating en Latinoamérica.",
+            "name": "Quiénes Somos | BigDad",
+            "description": "Página sobre la visión, valores y enfoque de BigDad como plataforma de Sugar Dating en Latinoamérica.",
             "inLanguage": "es-CL",
             "primaryImageOfPage": {
                 "@@type": "ImageObject",
@@ -60,7 +60,7 @@
             },
             "about": {
                 "@@type": "Organization",
-                "name": "Big-dad",
+                "name": "BigDad",
                 "url": "{{ url('/') }}"
             },
             "breadcrumb": {
@@ -80,18 +80,18 @@
             "mainEntity": [
                 {
                     "@@type": "Question",
-                    "name": "¿Qué es Big-dad?",
+                    "name": "¿Qué es BigDad?",
                     "acceptedAnswer": {
                         "@@type": "Answer",
-                        "text": "Big-dad es una plataforma enfocada en Sugar Dating para adultos que buscan conexiones claras, privadas y mutuamente beneficiosas en Latinoamérica."
+                        "text": "BigDad es una plataforma enfocada en Sugar Dating para adultos que buscan conexiones claras, privadas y mutuamente beneficiosas en Latinoamérica."
                     }
                 },
                 {
                     "@@type": "Question",
-                    "name": "¿Qué diferencia a Big-dad de otras plataformas?",
+                    "name": "¿Qué diferencia a BigDad de otras plataformas?",
                     "acceptedAnswer": {
                         "@@type": "Answer",
-                        "text": "Big-dad prioriza la privacidad, la moderación del contenido, la claridad en las expectativas y una experiencia pensada para perfiles que valoran discreción, estilo de vida y conexiones reales."
+                        "text": "BigDad prioriza la privacidad, la moderación del contenido, la claridad en las expectativas y una experiencia pensada para perfiles que valoran discreción, estilo de vida y conexiones reales."
                     }
                 },
                 {
@@ -107,7 +107,7 @@
                     "name": "¿Dónde puedo aprender más sobre Sugar Dating?",
                     "acceptedAnswer": {
                         "@@type": "Answer",
-                        "text": "Puedes visitar el blog de Big-dad para leer guías, consejos y artículos explicativos sobre Sugar Dating, seguridad, privacidad y estilo de vida."
+                        "text": "Puedes visitar el blog de BigDad para leer guías, consejos y artículos explicativos sobre Sugar Dating, seguridad, privacidad y estilo de vida."
                     }
                 }
             ]
@@ -126,12 +126,12 @@
                 </span>
 
                 <h1 class="mt-6 max-w-4xl text-4xl font-black leading-tight md:text-6xl">
-                    Quiénes somos en <span class="text-pink-500">Big-dad</span> y por qué creemos en conexiones más claras,
+                    Quiénes somos en <span class="text-pink-500">BigDad</span> y por qué creemos en conexiones más claras,
                     privadas y auténticas.
                 </h1>
 
                 <p class="mt-6 max-w-3xl text-lg leading-8 text-slate-300 md:text-xl">
-                    Big-dad nació para ofrecer una experiencia de Sugar Dating mejor pensada: sin ruido, sin promesas
+                    BigDad nació para ofrecer una experiencia de Sugar Dating mejor pensada: sin ruido, sin promesas
                     vacías y con una visión adulta de las relaciones exclusivas. Reunimos a personas que valoran la
                     honestidad, el estilo de vida, la ambición y la posibilidad de construir vínculos mutuamente
                     beneficiosos con respeto.
@@ -204,7 +204,7 @@
 
             <div class="mt-16 space-y-8 text-lg leading-9 text-slate-300">
                 <p>
-                    En Big-dad creemos que las relaciones modernas requieren plataformas modernas. Muchas personas no se
+                    En BigDad creemos que las relaciones modernas requieren plataformas modernas. Muchas personas no se
                     sienten representadas por aplicaciones generalistas donde todo ocurre demasiado rápido, con poca
                     información y casi ninguna compatibilidad real. Nosotros apostamos por una experiencia distinta:
                     una comunidad enfocada en el Sugar Dating, construida para adultos que desean conocer personas con
@@ -214,7 +214,7 @@
                 <p>
                     Nuestro proyecto parte de una idea simple: cuando las expectativas están claras, la experiencia es
                     mejor para todos. Por eso hablamos de relaciones transparentes, beneficios mutuos y respeto por los
-                    tiempos, límites y objetivos de cada persona. Big-dad no intenta disfrazar el interés, sino ordenar
+                    tiempos, límites y objetivos de cada persona. BigDad no intenta disfrazar el interés, sino ordenar
                     el encuentro entre personas que quieren conversar desde la honestidad, evitando malentendidos y
                     creando un espacio donde la afinidad, la admiración y la discreción puedan crecer con naturalidad.
                 </p>
@@ -234,7 +234,7 @@
         <div class="mx-auto max-w-5xl px-6">
             <div class="max-w-3xl">
                 <span class="text-sm font-bold uppercase tracking-[0.3em] text-pink-300">Cómo entendemos la comunidad</span>
-                <h2 class="mt-4 text-3xl font-black text-white md:text-4xl">Qué hacemos diferente en Big-dad</h2>
+                <h2 class="mt-4 text-3xl font-black text-white md:text-4xl">Qué hacemos diferente en BigDad</h2>
             </div>
 
             <div class="mt-12 grid gap-8 md:grid-cols-2">
@@ -308,7 +308,7 @@
                 </p>
 
                 <p>
-                    En Big-dad preferimos un lenguaje claro porque sabemos que una comunidad sana se construye desde la
+                    En BigDad preferimos un lenguaje claro porque sabemos que una comunidad sana se construye desde la
                     información correcta. Cuando las personas entienden mejor el contexto, pueden entrar a la plataforma
                     con expectativas más realistas, una mejor comunicación y mayor capacidad para identificar lo que sí
                     desean y lo que no. Ese criterio es parte de nuestra identidad: no solo conectamos perfiles, también
@@ -345,7 +345,7 @@
                 <p>
                     Si quieres conocer mejor nuestra mirada, explorar consejos prácticos y aprender más sobre privacidad,
                     estilo de vida, compatibilidad y encuentros seguros, te invitamos a recorrer
-                    <a href="{{ route('blog.index') }}" class="font-semibold text-pink-400 hover:text-pink-300">el blog de Big-dad</a>.
+                    <a href="{{ route('blog.index') }}" class="font-semibold text-pink-400 hover:text-pink-300">el blog de BigDad</a>.
                     Allí reunimos contenido pensado para responder dudas frecuentes, inspirar conversaciones de calidad y
                     ofrecer contexto antes de dar el siguiente paso dentro de la plataforma.
                 </p>
@@ -384,7 +384,7 @@
 
             <div class="mt-12 grid gap-6">
                 <article class="rounded-3xl border border-white/10 bg-slate-900/80 p-8 shadow-sm shadow-slate-950/30">
-                    <h3 class="text-xl font-bold text-white">¿Big-dad es solo para personas con experiencia previa?</h3>
+                    <h3 class="text-xl font-bold text-white">¿BigDad es solo para personas con experiencia previa?</h3>
                     <p class="mt-3 text-lg leading-8 text-slate-300">
                         No. También es un punto de entrada para quienes buscan informarse mejor antes de participar. Por
                         eso combinamos la experiencia social con contenido editorial que ayude a entender el contexto y
@@ -415,11 +415,11 @@
 
     <section class="bg-gradient-to-r from-pink-600 via-rose-600 to-purple-700 py-20 text-white">
         <div class="mx-auto max-w-5xl px-6 text-center">
-            <span class="text-sm font-bold uppercase tracking-[0.3em] text-pink-100">Big-dad</span>
+            <span class="text-sm font-bold uppercase tracking-[0.3em] text-pink-100">BigDad</span>
             <h2 class="mt-4 text-4xl font-black md:text-5xl">Una comunidad para conectar con más intención</h2>
             <p class="mx-auto mt-6 max-w-3xl text-lg leading-8 text-pink-50">
                 Si compartes nuestra visión sobre claridad, privacidad y experiencias premium, te invitamos a explorar la
-                plataforma, leer el blog y descubrir cómo Big-dad está redefiniendo el Sugar Dating en Latinoamérica.
+                plataforma, leer el blog y descubrir cómo BigDad está redefiniendo el Sugar Dating en Latinoamérica.
             </p>
             <div class="mt-8 flex flex-wrap justify-center gap-4">
                 <a href="{{ route('register') }}"

@@ -22,7 +22,7 @@
             <div class="relative flex items-center justify-between">
                 <div>
                     <h2 class="text-3xl font-extrabold tracking-tight">¡Hola, {{ $user->name }}! 💎</h2>
-                    <p class="text-white/80 mt-2 text-lg">Tu espacio personal en Big-dad</p>
+                    <p class="text-white/80 mt-2 text-lg">Tu espacio personal en BigDad</p>
                 </div>
                 <div class="text-right">
                     @if (!$user->isPremium())

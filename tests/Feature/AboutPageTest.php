@@ -16,7 +16,7 @@ class AboutPageTest extends TestCase
         $response = $this->get(route('about.index'));
 
         $response->assertOk()
-            ->assertSee('Quiénes Somos | Big-dad', false)
+            ->assertSee('Quiénes Somos | BigDad', false)
             ->assertSee('experiencia en sugar dating')
             ->assertSee('https://big-dad.com/blog/que-es-un-sugar-daddy', false)
             ->assertSee(route('blog.index'), false)

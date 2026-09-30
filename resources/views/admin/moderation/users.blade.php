@@ -442,7 +442,7 @@
                         photo_required: {
                             key: 'photo_required',
                             title: '📸 Solicitud de Foto',
-                            subject: '📸 Acción requerida: Sube una foto a tu perfil de Big-Dad',
+                            subject: '📸 Acción requerida: Sube una foto a tu perfil de BigDad',
                             message: 'Hola {name},\n\nNotamos que tu perfil aún no cuenta con una foto de perfil. Para garantizar la seguridad y autenticidad de nuestra comunidad, y para que tu cuenta sea visible para otros miembros, es necesario que subas al menos una foto clara.\n\nPor favor, ingresa a tu cuenta y sube tu foto lo antes posible.',
                             actionUrl: '{{ route('profile.photos.index') }}',
                             actionText: 'Subir mi foto de perfil'
@@ -450,7 +450,7 @@
                         profile_incomplete: {
                             key: 'profile_incomplete',
                             title: '💎 Completar Perfil',
-                            subject: '💎 Impulsa tus conexiones: Completa tu información en Big-Dad',
+                            subject: '💎 Impulsa tus conexiones: Completa tu información en BigDad',
                             message: 'Hola {name},\n\nTu perfil está casi listo, pero aún te faltan detalles importantes como tu descripción o estilo de vida. Los perfiles completos reciben significativamente más atención y matches de calidad.\n\nTe invitamos a actualizar tus datos hoy mismo.',
                             actionUrl: '{{ route('profile.edit') }}',
                             actionText: 'Completar mi perfil'
@@ -458,8 +458,8 @@
                         community_warning: {
                             key: 'community_warning',
                             title: '⚠️ Aviso de Normas',
-                            subject: '⚠️ Aviso importante sobre tu cuenta en Big-Dad',
-                            message: 'Hola {name},\n\nHemos detectado que parte del contenido de tu cuenta o actividad no cumple con las reglas de convivencia y términos de Big-Dad. Te solicitamos revisar y corregir tu información para evitar la suspensión temporal o definitiva de tu cuenta.',
+                            subject: '⚠️ Aviso importante sobre tu cuenta en BigDad',
+                            message: 'Hola {name},\n\nHemos detectado que parte del contenido de tu cuenta o actividad no cumple con las reglas de convivencia y términos de BigDad. Te solicitamos revisar y corregir tu información para evitar la suspensión temporal o definitiva de tu cuenta.',
                             actionUrl: '{{ route('legal.rules') }}',
                             actionText: 'Ver reglas de la comunidad'
                         },

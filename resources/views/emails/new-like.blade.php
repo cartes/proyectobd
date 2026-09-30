@@ -1,7 +1,7 @@
 <x-mail::message>
     # ¡Hola {{ $recipientName }}!
 
-    Alguien ha mostrado interés en tu perfil de **Big-Dad**... ❤️
+    Alguien ha mostrado interés en tu perfil de **BigDad**... ❤️
 
     **{{ $likerName }}** te ha dado un like. ¿Quieres ver quién es y si hay match?
 

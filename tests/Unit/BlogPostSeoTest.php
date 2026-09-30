@@ -88,7 +88,7 @@ class BlogPostSeoTest extends TestCase
         ]);
 
         $this->assertStringContainsString('lifestyle premium', $post->seo_description);
-        $this->assertStringContainsString('Big-Dad', $post->seo_description);
+        $this->assertStringContainsString('BigDad', $post->seo_description);
     }
 
     /**

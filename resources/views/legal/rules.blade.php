@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reglas de la Comunidad - Big-Dad</title>
+    <title>Reglas de la Comunidad - BigDad</title>
     <meta name="description"
-        content="Revisa las reglas de la comunidad Big-Dad para mantener un ambiente seguro, respetuoso y positivo en nuestra plataforma de citas exclusivas.">
+        content="Revisa las reglas de la comunidad BigDad para mantener un ambiente seguro, respetuoso y positivo en nuestra plataforma de citas exclusivas.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ route('legal.rules') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -65,7 +65,7 @@
                 <section>
                     <h2 class="text-3xl font-bold text-purple-400 mb-4">2. Honestidad y Perfiles Reales</h2>
                     <p class="text-gray-300 leading-relaxed">
-                        Big-Dad se basa en la confianza. Proporcionar información falsa, usar fotos de terceros o
+                        BigDad se basa en la confianza. Proporcionar información falsa, usar fotos de terceros o
                         intentar engañar a otros miembros resultará en la expulsión permanente.
                     </p>
                 </section>

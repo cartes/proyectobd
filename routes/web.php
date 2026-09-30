@@ -45,17 +45,10 @@ Route::withoutMiddleware([
     Route::get('/app-media/{path}', [StorageController::class, 'showPublicFile'])->where('path', '.*');
 });
 
-// SEO Sitemap (static file served directly)
-// Generate with: php artisan sitemap:generate
-Route::get('/sitemap.xml', function () {
-    $path = public_path('sitemap.xml');
-
-    if (! file_exists($path)) {
-        abort(404, 'Sitemap not found. Run: php artisan sitemap:generate');
-    }
-
-    return response()->file($path, [
-        'Content-Type' => 'application/xml',
+// SEO Sitemap dinámico (cache 1h). Regenerar al instante con: php artisan sitemap:generate
+Route::get('/sitemap.xml', function (\App\Services\SitemapService $sitemap) {
+    return response($sitemap->cached(), 200, [
+        'Content-Type' => 'application/xml; charset=UTF-8',
     ]);
 })->name('sitemap');
 
@@ -298,9 +291,22 @@ Route::get('/sugar-babies/{iso}/{city}', function (string $iso, string $city) {
     return redirect()->route('archive.city', [$country->slug, $cityModel->slug], 301);
 })->where('iso', '[A-Za-z]{2}');
 
+Route::get('/sugar-daddies/{iso}', function (string $iso) {
+    $country = \App\Models\Country::where('iso_code', strtoupper($iso))->firstOrFail();
+
+    return redirect()->route('archive.country.daddies', $country->slug, 301);
+})->where('iso', '[A-Za-z]{2}');
+
 // Archives Públicos por País (slug amigable, ej: /sugar-babies/venezuela)
-Route::get('/sugar-babies/{country:slug}', [\App\Http\Controllers\CountryArchiveController::class, 'index'])->name('archive.country');
+Route::get('/sugar-babies/{country:slug}', [\App\Http\Controllers\CountryArchiveController::class, 'index'])
+    ->defaults('type', 'sugar_baby')
+    ->name('archive.country');
 Route::get('/sugar-babies/{country:slug}/{city:slug}', [\App\Http\Controllers\CityArchiveController::class, 'index'])->name('archive.city');
+
+// Sugar Daddies por país: solo contenido + CTA (los perfiles de Sugar Daddies son siempre privados)
+Route::get('/sugar-daddies/{country:slug}', [\App\Http\Controllers\CountryArchiveController::class, 'index'])
+    ->defaults('type', 'sugar_daddy')
+    ->name('archive.country.daddies');
 
 // Tracking de Engagement desde Email
 Route::get('/e/{token}', [App\Http\Controllers\EngagementController::class, 'track'])->name('engagement.track');

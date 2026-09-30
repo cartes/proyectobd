@@ -11,14 +11,14 @@
     <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
 
     <!-- SEO Meta Tags -->
-    <title>Blog Big-dad: Lifestyle, Consejos y Relaciones Exclusivas</title>
+    <title>Blog BigDad: Lifestyle, Consejos y Relaciones Exclusivas</title>
     <meta name="description"
         content="Descubre artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica." />
     <meta name="keywords"
         content="sugar dating blog, lifestyle premium, relaciones sugar, sugar daddy latinoamerica, sugar baby consejos" />
-    <meta name="author" content="Big-dad" />
+    <meta name="author" content="BigDad" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
-    <link rel="canonical" href="{{ $posts->url($posts->currentPage()) }}" />
+    <link rel="canonical" href="{{ $posts->currentPage() > 1 ? $posts->url($posts->currentPage()) : route('blog.index') }}" />
 
     @if ($posts->previousPageUrl())
         <link rel="prev" href="{{ $posts->previousPageUrl() }}" />
@@ -30,7 +30,7 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ route('blog.index') }}" />
-    <meta property="og:title" content="Blog Big-dad: Lifestyle, Consejos y Relaciones Exclusivas" />
+    <meta property="og:title" content="Blog BigDad: Lifestyle, Consejos y Relaciones Exclusivas" />
     <meta property="og:description"
         content="Descubre artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica." />
     <meta property="og:image" content="{{ asset('images/og-image.jpg') }}" />
@@ -39,7 +39,7 @@
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="{{ route('blog.index') }}" />
-    <meta name="twitter:title" content="Blog Big-dad: Lifestyle, Consejos y Relaciones Exclusivas" />
+    <meta name="twitter:title" content="Blog BigDad: Lifestyle, Consejos y Relaciones Exclusivas" />
     <meta name="twitter:description"
         content="Descubre artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica." />
     <meta name="twitter:image" content="{{ asset('images/og-image.jpg') }}" />
@@ -49,12 +49,12 @@
     {
         "@@context": "https://schema.org",
         "@type": "Blog",
-        "name": "Blog Big-dad",
+        "name": "Blog BigDad",
         "description": "Artículos, consejos y noticias sobre relaciones sugar, lifestyle premium y citas exclusivas en Latinoamérica.",
         "url": "{{ route('blog.index') }}",
         "publisher": {
             "@@type": "Organization",
-            "name": "Big-dad",
+            "name": "BigDad",
             "url": "{{ url('/') }}",
             "logo": {
                 "@@type": "ImageObject",
@@ -135,7 +135,7 @@
             </span>
             <h1 class="text-5xl md:text-6xl font-black mb-6 leading-tight">
                 El Blog de <span
-                    class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-400">Big-Dad</span>
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-400">BigDad</span>
             </h1>
             <p class="text-xl text-slate-300 max-w-2xl mx-auto font-light">
                 Descubre artículos exclusivos sobre el estilo de vida Sugar, consejos para citas exitosas y novedades de
@@ -195,7 +195,7 @@
                                             class="w-6 h-6 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-[10px] font-bold text-white">
                                             {{ substr($post->author?->name ?? 'BD', 0, 1) }}
                                         </div>
-                                        <span>{{ $post->author?->name ?? 'Big-Dad' }}</span>
+                                        <span>{{ $post->author?->name ?? 'BigDad' }}</span>
                                     </div>
                                     <span>{{ $post->published_at?->format('d M') ?? '' }}</span>
                                 </div>

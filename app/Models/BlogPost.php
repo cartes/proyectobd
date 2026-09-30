@@ -116,7 +116,7 @@ class BlogPost extends Model
      */
     public function getSeoDescriptionAttribute(): string
     {
-        $fallback = 'Descubre lo último en lifestyle premium y conexiones exclusivas en Latinoamérica. Lee más en Big-Dad Blog.';
+        $fallback = 'Descubre lo último en lifestyle premium y conexiones exclusivas en Latinoamérica. Lee más en BigDad Blog.';
 
         if (! empty($this->meta_description)) {
             return $this->meta_description;

@@ -6,7 +6,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h2 class="text-2xl font-bold">¡Hola, {{ Auth::user()->name }}! 🛡️</h2>
-                    <p class="text-red-100 mt-1">Gestiona Big-dad desde tu panel de control</p>
+                    <p class="text-red-100 mt-1">Gestiona BigDad desde tu panel de control</p>
                 </div>
                 <div class="text-right">
                     <p class="text-sm text-red-100">{{ now()->format('d M Y') }}</p>

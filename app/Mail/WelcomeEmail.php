@@ -29,9 +29,9 @@ class WelcomeEmail extends Mailable implements ShouldQueue
         return new Envelope(
             from: new \Illuminate\Mail\Mailables\Address(
                 config('mail.from.address', 'hola@big-dad.com'),
-                config('mail.from.name', 'Big-Dad')
+                config('mail.from.name', 'BigDad')
             ),
-            subject: 'Bienvenido a Big-Dad 🥂 | Verifica tu acceso VIP',
+            subject: 'Bienvenido a BigDad 🥂 | Verifica tu acceso VIP',
         );
     }
 

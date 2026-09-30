@@ -173,7 +173,7 @@
 
             {{-- ── HEADER ── --}}
             <div class="header">
-                <div class="logo-text">Big-Dad<span class="logo-dot"></span></div>
+                <div class="logo-text">BigDad<span class="logo-dot"></span></div>
                 <p class="tagline">Mensaje de Moderación</p>
             </div>
 
@@ -190,7 +190,7 @@
                 @if(!empty($actionUrl))
                     <div class="cta-wrapper">
                         <a href="{{ $actionUrl }}" class="cta-button" target="_blank">
-                            ✨ {{ $actionText ?? 'Ir a Big-Dad' }}
+                            ✨ {{ $actionText ?? 'Ir a BigDad' }}
                         </a>
                     </div>
                 @endif
@@ -202,9 +202,9 @@
 
             {{-- ── FOOTER ── --}}
             <div class="footer">
-                <div class="footer-logo">Big-Dad</div>
+                <div class="footer-logo">BigDad</div>
                 <p class="footer-text">
-                    © {{ date('Y') }} Big-Dad. Citas exclusivas y Lifestyle en Latinoamérica.<br>
+                    © {{ date('Y') }} BigDad. Citas exclusivas y Lifestyle en Latinoamérica.<br>
                     Este es un mensaje administrativo enviado por el equipo de moderación.<br>
                     <a href="{{ url('/') }}">big-dad.com</a>
                 </p>

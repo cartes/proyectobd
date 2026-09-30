@@ -1,21 +1,21 @@
 @extends('layouts.public-static')
 
-@section('meta_title', 'Planes Premium | Big-dad')
+@section('meta_title', 'Planes Premium | BigDad')
 @section('meta_description',
-    'Conoce los planes premium de Big-dad y descubre cómo potenciar tu perfil, visibilidad y conexiones exclusivas en Latinoamérica.')
+    'Conoce los planes premium de BigDad y descubre cómo potenciar tu perfil, visibilidad y conexiones exclusivas en Latinoamérica.')
 @section('meta_keywords',
-    'planes big-dad, premium sugar daddy, suscripción sugar dating, planes premium latam, membresía big-dad')
+    'planes bigdad, premium sugar daddy, suscripción sugar dating, planes premium latam, membresía bigdad')
 @section('canonical_url', route(request()->routeIs('subscription.plans') ? 'subscription.plans' : 'plans.public'))
 
-@section('og_title', 'Planes Premium | Big-dad')
+@section('og_title', 'Planes Premium | BigDad')
 @section('og_description',
-    'Explora los planes premium de Big-dad para desbloquear beneficios exclusivos, mayor visibilidad y una experiencia superior dentro de la plataforma.')
+    'Explora los planes premium de BigDad para desbloquear beneficios exclusivos, mayor visibilidad y una experiencia superior dentro de la plataforma.')
 @section('og_url', url()->current())
 @section('og_image', asset('images/og-image.jpg'))
 
-@section('twitter_title', 'Planes Premium | Big-dad')
+@section('twitter_title', 'Planes Premium | BigDad')
 @section('twitter_description',
-    'Descubre los planes premium de Big-dad y eleva tu experiencia con funciones exclusivas, más visibilidad y mejores conexiones.')
+    'Descubre los planes premium de BigDad y eleva tu experiencia con funciones exclusivas, más visibilidad y mejores conexiones.')
 @section('twitter_image', asset('images/og-image.jpg'))
 
 @section('content')
@@ -39,7 +39,7 @@
                     @guest
                         Potencia tu perfil, obtén mayor visibilidad y conecta con Sugar Babies exclusivas hoy mismo.
                     @else
-                        Desbloquea funciones exclusivas y eleva tu experiencia en Big-dad al siguiente nivel.
+                        Desbloquea funciones exclusivas y eleva tu experiencia en BigDad al siguiente nivel.
                     @endguest
                 </p>
             </div>

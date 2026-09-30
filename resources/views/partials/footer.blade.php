@@ -89,6 +89,6 @@
         </div>
     </div>
     <div class="container mx-auto px-6 mt-16 pt-8 border-t border-white/5 text-center text-xs">
-        <p>&copy; {{ date('Y') }} Big-dad Latinoamérica. Todos los derechos reservados. Hecho con ❤️ para toda LATAM.</p>
+        <p>&copy; {{ date('Y') }} BigDad Latinoamérica. Todos los derechos reservados. Hecho con ❤️ para toda LATAM.</p>
     </div>
 </footer>

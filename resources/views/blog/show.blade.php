@@ -254,13 +254,36 @@
                 </div>
             </div>
 
+            {{-- Enlaces internos a páginas por país --}}
+            @if (!empty($countryLinks))
+                <nav aria-label="Sugar dating por país" class="mt-16 dark-card rounded-2xl p-8">
+                    <h2 class="text-2xl font-bold text-white mb-6">Explora el sugar dating por país</h2>
+                    <ul class="flex flex-wrap gap-3">
+                        @foreach ($countryLinks as $countrySlug => $countryName)
+                            <li>
+                                <a href="{{ route('archive.country', $countrySlug) }}"
+                                    class="inline-block px-5 py-2 rounded-full glass-badge text-pink-300 font-semibold hover:text-white transition-colors">
+                                    Sugar Babies en {{ $countryName }}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('archive.country.daddies', $countrySlug) }}"
+                                    class="inline-block px-5 py-2 rounded-full glass-badge text-indigo-300 font-semibold hover:text-white transition-colors">
+                                    Sugar Daddy en {{ $countryName }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </nav>
+            @endif
+
             {{-- Related Posts --}}
             @if ($relatedPosts->count() > 0)
                 <div class="mt-16">
-                    <h3 class="text-3xl font-bold text-white mb-8 flex items-center gap-3">
+                    <h2 class="text-3xl font-bold text-white mb-8 flex items-center gap-3">
                         <div class="w-1 h-8 bg-gradient-to-b from-pink-500 to-purple-500 rounded-full"></div>
                         Artículos Relacionados
-                    </h3>
+                    </h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         @foreach ($relatedPosts as $related)
                             <article

@@ -3,7 +3,7 @@
 @section('meta_title', $category->meta_title ?: $category->name . ' - Blog - ' . config('app.name'))
 @section('meta_description', $category->meta_description ?: $category->description)
 
-@section('canonical_url', $posts->url($posts->currentPage()))
+@section('canonical_url', $posts->currentPage() > 1 ? $posts->url($posts->currentPage()) : route('blog.category', $category->slug))
 
 @section('seo_links')
     @if ($posts->previousPageUrl())
@@ -105,7 +105,7 @@
                                             class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
                                             {{ substr($post->author?->name ?? 'BD', 0, 1) }}
                                         </div>
-                                        <span class="text-sm text-gray-600">{{ $post->author?->name ?? 'Big-Dad' }}</span>
+                                        <span class="text-sm text-gray-600">{{ $post->author?->name ?? 'BigDad' }}</span>
                                     </div>
                                     @if ($post->reading_time)
                                         <span class="text-xs text-gray-500">

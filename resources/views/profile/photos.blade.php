@@ -79,7 +79,7 @@
                             <span class="font-black text-amber-300">5x más mensajes</span> de Sugar Daddies Premium.
                         </p>
                         <p class="text-white/70 text-base max-w-xl mx-auto mb-8 italic">
-                            Sube al menos una foto para desbloquear todo el poder de Big-dad. Los Daddies están esperando conocerte… 🔥
+                            Sube al menos una foto para desbloquear todo el poder de BigDad. Los Daddies están esperando conocerte… 🔥
                         </p>
                     @else
                         {{-- Mensaje para Sugar Daddies --}}

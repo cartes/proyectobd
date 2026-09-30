@@ -14,7 +14,7 @@ class HowItWorksPageTest extends TestCase
         $response = $this->get(route('como-funciona'));
 
         $response->assertOk()
-            ->assertSee('Cómo Funciona | Big-dad', false)
+            ->assertSee('Cómo Funciona | BigDad', false)
             ->assertSee('wordmark-light', false)
             ->assertSee('Quiénes Somos')
             ->assertSee('Crear cuenta gratis')

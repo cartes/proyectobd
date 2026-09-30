@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('meta_title', config('app.name', 'Big-dad'))</title>
-    <meta name="description" content="@yield('meta_description', 'Big-dad - La plataforma líder de Sugar Dating en Latinoamérica')">
-    <meta name="keywords" content="@yield('meta_keywords', 'sugar dating, big-dad, citas exclusivas')">
-    <meta name="author" content="Big-dad">
+    <title>@yield('meta_title', config('app.name', 'BigDad'))</title>
+    <meta name="description" content="@yield('meta_description', 'BigDad - La plataforma líder de Sugar Dating en Latinoamérica')">
+    <meta name="keywords" content="@yield('meta_keywords', 'sugar dating, bigdad, citas exclusivas')">
+    <meta name="author" content="BigDad">
     <meta name="robots" content="@yield('meta_robots', 'index, follow')">
     <link rel="canonical" href="@yield('canonical', url()->current())">
 
@@ -19,7 +19,7 @@
     <meta property="og:title" content="@hasSection('og_title')
 @yield('og_title')@else@yield('meta_title', config('app.name'))
 @endif">
-    <meta property="og:description" content="@yield('og_description', 'Big-dad - La plataforma líder de Sugar Dating en Latinoam&#233;rica')">
+    <meta property="og:description" content="@yield('og_description', 'BigDad - La plataforma líder de Sugar Dating en Latinoam&#233;rica')">
     <meta property="og:image" content="@yield('og_image', asset('images/og-image.jpg'))">
 
     <!-- Twitter -->
@@ -28,7 +28,7 @@
     <meta property="twitter:title" content="@hasSection('twitter_title')
 @yield('twitter_title')@else@yield('meta_title', config('app.name'))
 @endif">
-    <meta property="twitter:description" content="@yield('twitter_description', 'Big-dad - La plataforma líder de Sugar Dating en Latinoam&#233;rica')">
+    <meta property="twitter:description" content="@yield('twitter_description', 'BigDad - La plataforma líder de Sugar Dating en Latinoam&#233;rica')">
     <meta property="twitter:image" content="@yield('twitter_image', asset('images/og-image.jpg'))">
 
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
@@ -99,7 +99,7 @@
 
         <!-- Footer -->
         <div class="relative z-10 mt-8 text-center text-white/80 text-sm pb-10">
-            <p>&copy; 2025 Big-dad. Conexiones auténticas y discretas.</p>
+            <p>&copy; 2025 BigDad. Conexiones auténticas y discretas.</p>
             <div class="mt-2 space-x-4">
                 <a href="#" class="hover:text-white transition-colors">Términos</a>
                 <a href="#" class="hover:text-white transition-colors">Privacidad</a>

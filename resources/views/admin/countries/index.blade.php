@@ -8,7 +8,7 @@
         {{-- Header Section --}}
         <div class="mb-8">
             <h1 class="text-3xl font-outfit font-black text-white mb-2">🌍 Gestión de Países</h1>
-            <p class="text-gray-400">Activa o desactiva países donde Big-dad puede ofrecer soporte.</p>
+            <p class="text-gray-400">Activa o desactiva países donde BigDad puede ofrecer soporte.</p>
         </div>
 
         {{-- Country Management Table --}}

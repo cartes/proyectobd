@@ -215,7 +215,7 @@
             <div class="relative z-10 max-w-2xl mx-auto">
                 <div class="text-8xl mb-8 animate-bounce">✨</div>
                 <h3 class="text-4xl md:text-5xl font-black text-white mb-6 uppercase tracking-tighter">Tu historia comienza aquí</h3>
-                <p class="text-white/80 mb-12 text-xl font-medium leading-relaxed">Completa los detalles de tu perfil para destacar y atraer las mejores conexiones en Big-dad.</p>
+                <p class="text-white/80 mb-12 text-xl font-medium leading-relaxed">Completa los detalles de tu perfil para destacar y atraer las mejores conexiones en BigDad.</p>
                 <a href="{{ route('profile.edit') }}" 
                    class="inline-block px-12 py-5 bg-white text-indigo-600 font-black rounded-2xl transition-all duration-300 hover:scale-110 shadow-[0_20px_40px_rgba(0,0,0,0.3)] uppercase tracking-widest text-sm" 
                    style="color: var(--theme-primary);">

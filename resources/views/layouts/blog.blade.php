@@ -8,7 +8,7 @@
     <meta name="robots" content="max-image-preview:large">
 
     {{-- SEO Meta Tags --}}
-    <title>@yield('meta_title', config('app.name', 'Big-dad') . ' - Blog')</title>
+    <title>@yield('meta_title', config('app.name', 'BigDad') . ' - Blog')</title>
     <meta name="description" content="@yield('meta_description', 'Descubre artículos, consejos y noticias en nuestro blog.')">
     <meta name="keywords" content="@yield('meta_keywords', 'blog, artículos, noticias')">
     <meta name="author" content="@yield('author', config('app.name'))">

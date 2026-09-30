@@ -91,7 +91,7 @@ class BlogSettingsController extends Controller
             Artisan::call('sitemap:generate');
 
             return redirect()->back()
-                ->with('success', '✅ Sitemap regenerado exitosamente en public/sitemap.xml');
+                ->with('success', '✅ Sitemap regenerado exitosamente (/sitemap.xml)');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', '❌ Error al regenerar el sitemap: '.$e->getMessage());

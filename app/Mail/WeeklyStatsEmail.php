@@ -27,7 +27,7 @@ class WeeklyStatsEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Tu resumen semanal de actividad en Big-Dad 📈',
+            subject: 'Tu resumen semanal de actividad en BigDad 📈',
         );
     }
 

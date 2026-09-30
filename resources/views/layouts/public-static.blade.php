@@ -6,29 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('meta_title', 'Big-dad | Sugar Dating en Latinoamérica')</title>
+    <title>@yield('meta_title', 'BigDad | Sugar Dating en Latinoamérica')</title>
     <meta name="description"
-        content="@yield('meta_description', 'Big-dad, la plataforma líder de Sugar Dating en Latinoamérica.')">
+        content="@yield('meta_description', 'BigDad, la plataforma líder de Sugar Dating en Latinoamérica.')">
     <meta name="keywords"
-        content="@yield('meta_keywords', 'big-dad, sugar dating, sugar daddy, sugar baby, citas exclusivas')">
-    <meta name="author" content="@yield('meta_author', 'Big-dad')">
+        content="@yield('meta_keywords', 'bigdad, sugar dating, sugar daddy, sugar baby, citas exclusivas')">
+    <meta name="author" content="@yield('meta_author', 'BigDad')">
     <meta name="robots" content="@yield('meta_robots', 'index, follow')">
     <link rel="canonical" href="@yield('canonical_url', url()->current())">
 
     <meta property="og:type" content="@yield('og_type', 'website')">
-    <meta property="og:title" content="@yield('og_title', trim(strip_tags($__env->yieldContent('meta_title', 'Big-dad'))))">
+    <meta property="og:title" content="@yield('og_title', trim(strip_tags($__env->yieldContent('meta_title', 'BigDad'))))">
     <meta property="og:description"
-        content="@yield('og_description', trim(strip_tags($__env->yieldContent('meta_description', 'Big-dad, la plataforma líder de Sugar Dating en Latinoamérica.'))))">
+        content="@yield('og_description', trim(strip_tags($__env->yieldContent('meta_description', 'BigDad, la plataforma líder de Sugar Dating en Latinoamérica.'))))">
     <meta property="og:url" content="@yield('og_url', url()->current())">
     <meta property="og:image" content="@yield('og_image', asset('images/og-image.jpg'))">
     <meta property="og:locale" content="@yield('og_locale', 'es_CL')">
-    <meta property="og:site_name" content="Big-dad">
+    <meta property="og:site_name" content="BigDad">
 
     <meta name="twitter:card" content="@yield('twitter_card', 'summary_large_image')">
     <meta name="twitter:title"
-        content="@yield('twitter_title', trim(strip_tags($__env->yieldContent('meta_title', 'Big-dad'))))">
+        content="@yield('twitter_title', trim(strip_tags($__env->yieldContent('meta_title', 'BigDad'))))">
     <meta name="twitter:description"
-        content="@yield('twitter_description', trim(strip_tags($__env->yieldContent('meta_description', 'Big-dad, la plataforma líder de Sugar Dating en Latinoamérica.'))))">
+        content="@yield('twitter_description', trim(strip_tags($__env->yieldContent('meta_description', 'BigDad, la plataforma líder de Sugar Dating en Latinoamérica.'))))">
     <meta name="twitter:image" content="@yield('twitter_image', asset('images/og-image.jpg'))">
     @yield('head_meta')
     @yield('structured_data')

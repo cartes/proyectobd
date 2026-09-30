@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Términos y Condiciones - Big-Dad</title>
+    <title>Términos y Condiciones - BigDad</title>
     <meta name="description"
-        content="Lee los Términos y Condiciones de Big-Dad, la plataforma líder de Sugar Dating en Latinoamérica. Conoce tus derechos y responsabilidades.">
+        content="Lee los Términos y Condiciones de BigDad, la plataforma líder de Sugar Dating en Latinoamérica. Conoce tus derechos y responsabilidades.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ route('legal.terms') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -60,7 +60,7 @@
                 <section>
                     <h2 class="text-3xl font-bold text-amber-400 mb-4">1. Introducción</h2>
                     <p class="text-gray-300 leading-relaxed">
-                        Bienvenido a <strong class="text-white">Big-Dad</strong>, una plataforma de conexión social
+                        Bienvenido a <strong class="text-white">BigDad</strong>, una plataforma de conexión social
                         diseñada para facilitar relaciones mutuamente beneficiosas entre adultos. Al acceder y utilizar
                         nuestros servicios, aceptas estar sujeto a estos Términos y Condiciones ("Términos"). Si no
                         estás de acuerdo con alguna parte de estos términos, no debes utilizar nuestra plataforma.
@@ -71,7 +71,7 @@
                 <section>
                     <h2 class="text-3xl font-bold text-amber-400 mb-4">2. Elegibilidad</h2>
                     <div class="space-y-4 text-gray-300">
-                        <p class="leading-relaxed">Para utilizar Big-Dad, debes:</p>
+                        <p class="leading-relaxed">Para utilizar BigDad, debes:</p>
                         <ul class="list-disc list-inside space-y-2 ml-4">
                             <li>Tener al menos <strong class="text-white">18 años de edad</strong></li>
                             <li>Tener capacidad legal para celebrar contratos vinculantes</li>
@@ -117,7 +117,7 @@
                     <h2 class="text-3xl font-bold text-amber-400 mb-4">4. Uso Aceptable</h2>
                     <div class="space-y-4 text-gray-300">
                         <h3 class="text-xl font-bold text-white">4.1 Conducta Permitida</h3>
-                        <p class="leading-relaxed">Big-Dad es una plataforma para adultos que buscan relaciones
+                        <p class="leading-relaxed">BigDad es una plataforma para adultos que buscan relaciones
                             consensuadas y mutuamente beneficiosas. Debes usar el servicio de manera respetuosa y legal.
                         </p>
 
@@ -204,7 +204,7 @@
                     <h2 class="text-3xl font-bold text-amber-400 mb-4">8. Limitación de Responsabilidad</h2>
                     <div class="space-y-4 text-gray-300">
                         <p class="leading-relaxed">
-                            Big-Dad es una plataforma de conexión. <strong class="text-white">No somos responsables
+                            BigDad es una plataforma de conexión. <strong class="text-white">No somos responsables
                                 de:</strong>
                         </p>
                         <ul class="list-disc list-inside space-y-2 ml-4">
@@ -271,7 +271,7 @@
                             Si tienes preguntas sobre estos Términos y Condiciones, contáctanos:
                         </p>
                         <div class="bg-white/5 border border-white/10 rounded-2xl p-6 mt-4">
-                            <p class="text-white font-bold mb-2">Big-Dad</p>
+                            <p class="text-white font-bold mb-2">BigDad</p>
                             <p>Email: <a href="mailto:legal@big-dad.com"
                                     class="text-amber-400 hover:text-amber-300">legal@big-dad.com</a></p>
                             <p>Soporte: <a href="mailto:soporte@big-dad.com"
@@ -285,7 +285,7 @@
                     <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-6">
                         <p class="text-amber-400 font-bold mb-2">⚠️ Importante</p>
                         <p class="text-gray-300 leading-relaxed">
-                            Al usar Big-Dad, confirmas que has leído, entendido y aceptado estos Términos y Condiciones
+                            Al usar BigDad, confirmas que has leído, entendido y aceptado estos Términos y Condiciones
                             en su totalidad. Si no estás de acuerdo, debes dejar de usar la plataforma inmediatamente.
                         </p>
                     </div>

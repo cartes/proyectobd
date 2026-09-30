@@ -27,7 +27,7 @@ class NewLikeEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '¡Alguien tiene interés en ti en Big-Dad! ❤️',
+            subject: '¡Alguien tiene interés en ti en BigDad! ❤️',
         );
     }
 

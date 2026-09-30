@@ -28,7 +28,7 @@ class AdminDirectMessageMail extends Mailable implements ShouldQueue
         return new Envelope(
             from: new Address(
                 config('mail.from.address', 'hola@big-dad.com'),
-                config('mail.from.name', 'Big-Dad')
+                config('mail.from.name', 'BigDad')
             ),
             subject: $this->subjectLine,
         );

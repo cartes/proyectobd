@@ -1,7 +1,7 @@
-@section('meta_title', 'Registro Gratis | Big-dad - Sugar Dating Elite en Latinoamérica')
-@section('meta_description', 'Crea tu cuenta gratis en Big-dad y descubre miles de Sugar Babies y Sugar Daddies
+@section('meta_title', 'Registro Gratis | BigDad - Sugar Dating Elite en Latinoamérica')
+@section('meta_description', 'Crea tu cuenta gratis en BigDad y descubre miles de Sugar Babies y Sugar Daddies
     verificados. Únete a la comunidad premium de citas exclusivas.')
-@section('meta_keywords', 'registro sugar dating, crear cuenta sugar baby, registrarse sugar daddy gratis, big-dad
+@section('meta_keywords', 'registro sugar dating, crear cuenta sugar baby, registrarse sugar daddy gratis, bigdad
     registro')
 
     <x-guest-layout>
@@ -225,7 +225,7 @@
                                         <div class="flex items-center justify-between gap-1 mb-1">
                                             <span class="text-[11px] font-bold tracking-wider uppercase"
                                                   :class="userType === 'sugar_baby' ? 'text-pink-600' : 'text-purple-600'">
-                                                ¡Vibra Big-dad 10/10! ✨
+                                                ¡Vibra BigDad 10/10! ✨
                                             </span>
                                             <button type="button" @click="nextCompliment()" 
                                                     class="text-[11px] font-semibold text-gray-500 hover:text-pink-600 flex items-center gap-1 transition-colors px-2 py-0.5 rounded-full hover:bg-white border border-transparent hover:border-pink-200"
@@ -341,7 +341,7 @@
                 <label class="flex items-start space-x-2 text-xs text-gray-600">
                     <input type="checkbox" required
                         class="mt-1 rounded border-gray-300 text-purple-600 focus:ring-purple-500">
-                    <span>Acepto los términos y condiciones y la política de privacidad de Big-dad</span>
+                    <span>Acepto los términos y condiciones y la política de privacidad de BigDad</span>
                 </label>
             </div>
 
@@ -389,16 +389,16 @@
                                 return [
                                     '¡Wooow, sí que eres guapísimo! Con esa foto vas a causar sensación 🔥',
                                     '¡Qué bien te ves! Te va a ir súper bien por aquí ✨',
-                                    '¡Esa sonrisa lo dice todo! Vas a conquistar muchas miradas en Big-dad 💖',
+                                    '¡Esa sonrisa lo dice todo! Vas a conquistar muchas miradas en BigDad 💖',
                                     '¡Qué estilazo! Listo para vivir experiencias increíbles 😍',
                                     '¡Foto espectacular! Una mejor vida siempre es mejor acompañada 🥂',
-                                    '¡Simplemente radiante! Listo para destacar en Big-dad 💎'
+                                    '¡Simplemente radiante! Listo para destacar en BigDad 💎'
                                 ];
                             } else if (isFemale) {
                                 return [
                                     '¡Wooow, sí que eres guapísima! Con esa foto vas a causar sensación 🔥',
                                     '¡Qué linda! Te va a ir súper bien por aquí ✨',
-                                    '¡Esa sonrisa lo dice todo! Vas a conquistar miradas en Big-dad 💖',
+                                    '¡Esa sonrisa lo dice todo! Vas a conquistar miradas en BigDad 💖',
                                     '¡Qué estilazo! Lista para vivir experiencias increíbles 😍',
                                     '¡Foto espectacular! Una mejor vida siempre es mejor acompañada 🥂',
                                     '¡Simplemente radiante! Los Sugar Daddies más selectos van a querer conocerte ya 💎'
@@ -407,9 +407,9 @@
                                 return [
                                     '¡Wooow, te ves increíble! Con esa foto vas a causar sensación 🔥',
                                     '¡Qué gran estilo! Te va a ir súper bien por aquí ✨',
-                                    '¡Esa sonrisa lo dice todo! Vas a conquistar miradas en Big-dad 💖',
+                                    '¡Esa sonrisa lo dice todo! Vas a conquistar miradas en BigDad 💖',
                                     '¡Foto espectacular! Una mejor vida siempre es mejor acompañada 🥂',
-                                    '¡Vibra 10/10! Lista/o para vivir experiencias únicas en Big-dad 💎'
+                                    '¡Vibra 10/10! Lista/o para vivir experiencias únicas en BigDad 💎'
                                 ];
                             }
                         } else {

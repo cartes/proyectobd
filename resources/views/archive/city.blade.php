@@ -1,16 +1,17 @@
 @extends('layouts.mobile-app')
 
 @php
-    $pageTitle = 'Sugar Babies en ' . $city->name . ', ' . $country->name . ' | Big-Dad';
-    $metaDescription = 'Conoce ' . $users->total() . ' Sugar Babies de ' . $city->name . ', ' . $country->name . ' en Big-Dad. Perfiles verificados buscando conexiones especiales. ¡Únete gratis!';
+    $pageTitle = 'Sugar Babies en ' . $city->name . ', ' . $country->name . ' | BigDad';
+    $metaDescription = 'Sugar Babies en ' . $city->name . ', ' . $country->name . ': perfiles moderados, chat solo con match mutuo y total discreción en BigDad. ¡Únete gratis!';
     $canonicalUrl = route('archive.city', [$country->slug, $city->slug]) . ($users->currentPage() > 1 ? '?page=' . $users->currentPage() : '');
     $ogImage = $users->isNotEmpty() && $users->first()->primaryPhoto ? $users->first()->primaryPhoto->url : asset('favicon.png');
 @endphp
 
+@section('full_title', $pageTitle)
 @section('page-title', $pageTitle)
 @section('meta_robots', 'index, follow')
 @section('meta_description', $metaDescription)
-@section('canonical_url', route('archive.city', [$country->slug, $city->slug]))
+@section('canonical_url', $canonicalUrl)
 @section('og_title', $pageTitle)
 @section('og_description', $metaDescription)
 @section('og_url', $canonicalUrl)
@@ -28,24 +29,18 @@
                 {
                     "@@type": "ListItem",
                     "position": 1,
-                    "name": "Big-Dad",
+                    "name": "BigDad",
                     "item": "{{ url('/') }}"
                 },
                 {
                     "@@type": "ListItem",
                     "position": 2,
-                    "name": "Sugar Babies",
-                    "item": "{{ url('/sugar-babies') }}"
-                },
-                {
-                    "@@type": "ListItem",
-                    "position": 3,
-                    "name": "{{ $country->name }}",
+                    "name": "Sugar Babies en {{ $country->name }}",
                     "item": "{{ route('archive.country', $country->slug) }}"
                 },
                 {
                     "@@type": "ListItem",
-                    "position": 4,
+                    "position": 3,
                     "name": "{{ $city->name }}",
                     "item": "{{ route('archive.city', [$country->slug, $city->slug]) }}"
                 }

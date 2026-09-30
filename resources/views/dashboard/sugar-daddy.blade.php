@@ -26,7 +26,7 @@
                         ¡Hola, {{ $user->name }}!
                         <svg class="w-8 h-8 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]" fill="currentColor" viewBox="0 0 24 24"><path d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.55 18.55 20 18 20H6C5.45 20 5 19.55 5 19V18H19V19Z"/></svg>
                     </h2>
-                    <p class="text-indigo-100 mt-2 text-lg font-medium opacity-90">Descubre conexiones auténticas en Big-dad</p>
+                    <p class="text-indigo-100 mt-2 text-lg font-medium opacity-90">Descubre conexiones auténticas en BigDad</p>
                 </div>
                 <div class="text-right">
                     @if (!$user->isPremium())

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Big-dad') }} - Dashboard</title>
+    <title>{{ config('app.name', 'BigDad') }} - Dashboard</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">

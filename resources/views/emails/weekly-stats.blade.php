@@ -1,5 +1,5 @@
 <x-mail::message>
-    # ¡Tu resumen semanal de Big-Dad, {{ $name }}! 📈
+    # ¡Tu resumen semanal de BigDad, {{ $name }}! 📈
 
     Aquí tienes lo que ha pasado en tu perfil esta última semana:
 

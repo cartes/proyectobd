@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('page-title', 'Big-Dad') - {{ config('app.name') }}</title>
+    @hasSection('full_title')
+        <title>@yield('full_title')</title>
+    @else
+        <title>@yield('page-title', 'BigDad') - {{ config('app.name') }}</title>
+    @endif
     <meta name="robots" content="@yield('meta_robots', 'noindex, nofollow')">
 
     {{-- SEO: Description & Canonical --}}
@@ -362,7 +366,7 @@
                         </a>
                     @else
                         {{-- Bottom Nav for Guests --}}
-                        <a href="{{ route('archive.country', ['country' => 'CL']) }}" {{-- Default to CL if no context --}}
+                        <a href="{{ route('archive.country', ['country' => isset($country) && $country instanceof \App\Models\Country ? $country->slug : 'chile']) }}" {{-- País actual o Chile por defecto (slug final, sin redirección) --}}
                             class="{{ $navItemClass }} {{ request()->routeIs('archive.country') ? $activeClass : $inactiveClass }}">
                             <div
                                 class="p-2 rounded-xl {{ request()->routeIs('archive.country') ? 'bg-white/10 shadow-lg' : '' }}">

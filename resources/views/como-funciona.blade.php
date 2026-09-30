@@ -1,21 +1,21 @@
 @extends('layouts.public-static')
 
-@section('meta_title', 'Cómo Funciona | Big-dad, Sugar Dating exclusivo en Latinoamérica')
+@section('meta_title', 'Cómo Funciona | BigDad, Sugar Dating exclusivo en Latinoamérica')
 @section('meta_description',
-    'Descubre cómo funciona Big-dad: crea tu perfil, encuentra conexiones compatibles y vive una experiencia de Sugar Dating más clara, privada y segura en Latinoamérica.')
+    'Descubre cómo funciona BigDad: crea tu perfil, encuentra conexiones compatibles y vive una experiencia de Sugar Dating más clara, privada y segura en Latinoamérica.')
 @section('meta_keywords',
-    'como funciona big-dad, sugar dating latinoamerica, sugar daddy, sugar baby, relaciones exclusivas, plataforma sugar dating')
+    'como funciona bigdad, sugar dating latinoamerica, sugar daddy, sugar baby, relaciones exclusivas, plataforma sugar dating')
 @section('canonical_url', route('como-funciona'))
 
-@section('og_title', 'Cómo Funciona | Big-dad')
+@section('og_title', 'Cómo Funciona | BigDad')
 @section('og_description',
-    'Conoce el proceso simple, discreto y seguro para usar Big-dad: registro, exploración, match mutuo y conexiones auténticas.')
+    'Conoce el proceso simple, discreto y seguro para usar BigDad: registro, exploración, match mutuo y conexiones auténticas.')
 @section('og_url', route('como-funciona'))
 @section('og_image', asset('images/og-image.jpg'))
 
-@section('twitter_title', 'Cómo Funciona | Big-dad')
+@section('twitter_title', 'Cómo Funciona | BigDad')
 @section('twitter_description',
-    'Así funciona Big-dad: una experiencia clara, privada y cuidada para Sugar Dating en Latinoamérica.')
+    'Así funciona BigDad: una experiencia clara, privada y cuidada para Sugar Dating en Latinoamérica.')
 @section('twitter_image', asset('images/og-image.jpg'))
 
 @section('head_meta')
@@ -88,8 +88,8 @@
             "@@type": "WebPage",
             "@@id": "{{ route('como-funciona') }}",
             "url": "{{ route('como-funciona') }}",
-            "name": "Cómo Funciona | Big-dad",
-            "description": "Guía paso a paso para usar Big-dad, la plataforma de Sugar Dating enfocada en privacidad, seguridad y conexiones auténticas en Latinoamérica.",
+            "name": "Cómo Funciona | BigDad",
+            "description": "Guía paso a paso para usar BigDad, la plataforma de Sugar Dating enfocada en privacidad, seguridad y conexiones auténticas en Latinoamérica.",
             "inLanguage": "es-CL",
             "breadcrumb": {
                 "@@type": "BreadcrumbList",
@@ -105,8 +105,8 @@
         {
             "@@context": "https://schema.org",
             "@@type": "HowTo",
-            "name": "Cómo usar Big-dad",
-            "description": "Paso a paso para crear tu perfil, encontrar compatibilidades y conversar dentro de Big-dad.",
+            "name": "Cómo usar BigDad",
+            "description": "Paso a paso para crear tu perfil, encontrar compatibilidades y conversar dentro de BigDad.",
             "totalTime": "PT5M",
             "step": [
                 {
@@ -144,7 +144,7 @@
             "mainEntity": [
                 {
                     "@@type": "Question",
-                    "name": "¿Es gratis registrarse en Big-dad?",
+                    "name": "¿Es gratis registrarse en BigDad?",
                     "acceptedAnswer": {
                         "@@type": "Answer",
                         "text": "Sí. Puedes crear tu perfil y comenzar a explorar la plataforma sin costo."
@@ -160,10 +160,10 @@
                 },
                 {
                     "@@type": "Question",
-                    "name": "¿Es seguro usar Big-dad?",
+                    "name": "¿Es seguro usar BigDad?",
                     "acceptedAnswer": {
                         "@@type": "Answer",
-                        "text": "Big-dad prioriza la moderación de perfiles, el match mutuo para habilitar chats y herramientas de privacidad para la comunidad."
+                        "text": "BigDad prioriza la moderación de perfiles, el match mutuo para habilitar chats y herramientas de privacidad para la comunidad."
                     }
                 }
             ]
@@ -192,13 +192,13 @@
 
                     <h1 class="mt-6 max-w-4xl text-5xl font-black leading-tight md:text-7xl">
                         Así funciona
-                        <span class="gradient-text-pink">Big-dad</span>
+                        <span class="gradient-text-pink">BigDad</span>
                         para conexiones más claras y exclusivas.
                     </h1>
 
                     <p class="mt-8 max-w-3xl text-xl leading-relaxed text-slate-300 md:text-2xl">
                         Diseñamos una experiencia pública coherente con el resto del sitio: menos artificio, más claridad.
-                        En Big-dad todo gira en torno a perfiles moderados, privacidad, match mutuo y conversaciones con expectativas transparentes.
+                        En BigDad todo gira en torno a perfiles moderados, privacidad, match mutuo y conversaciones con expectativas transparentes.
                     </p>
 
                     <div class="mt-10 flex flex-wrap gap-4">
@@ -301,7 +301,7 @@
                     Una plataforma, <span class="gradient-text-pink">dos recorridos</span>
                 </h2>
                 <p class="mt-4 text-lg leading-relaxed text-slate-400">
-                    Big-dad ordena la experiencia según el tipo de perfil. Así cada persona ve señales, beneficios y dinámicas más coherentes con su rol.
+                    BigDad ordena la experiencia según el tipo de perfil. Así cada persona ve señales, beneficios y dinámicas más coherentes con su rol.
                 </p>
             </div>
 
@@ -442,7 +442,7 @@
             <div class="space-y-4">
                 <details class="faq-item group overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-900/60 transition-colors hover:border-pink-500/30">
                     <summary class="flex cursor-pointer items-center justify-between p-6 text-base font-bold text-white select-none">
-                        <span>¿Es gratis registrarse en Big-dad?</span>
+                        <span>¿Es gratis registrarse en BigDad?</span>
                         <span class="faq-icon ml-4 flex-shrink-0 text-2xl font-light text-pink-400">+</span>
                     </summary>
                     <div class="px-6 pb-6 text-sm leading-relaxed text-slate-400">
@@ -462,7 +462,7 @@
 
                 <details class="faq-item group overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-900/60 transition-colors hover:border-pink-500/30">
                     <summary class="flex cursor-pointer items-center justify-between p-6 text-base font-bold text-white select-none">
-                        <span>¿Es seguro usar Big-dad?</span>
+                        <span>¿Es seguro usar BigDad?</span>
                         <span class="faq-icon ml-4 flex-shrink-0 text-2xl font-light text-pink-400">+</span>
                     </summary>
                     <div class="px-6 pb-6 text-sm leading-relaxed text-slate-400">

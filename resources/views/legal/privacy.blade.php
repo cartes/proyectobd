@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Política de Privacidad - Big-Dad</title>
+    <title>Política de Privacidad - BigDad</title>
     <meta name="description"
-        content="Conoce cómo Big-Dad protege tu privacidad y maneja tus datos personales. Política de privacidad completa de la plataforma líder de Sugar Dating.">
+        content="Conoce cómo BigDad protege tu privacidad y maneja tus datos personales. Política de privacidad completa de la plataforma líder de Sugar Dating.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ route('legal.privacy') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -57,7 +57,7 @@
                 <section>
                     <h2 class="text-3xl font-bold text-pink-400 mb-4">1. Recopilación de Información</h2>
                     <p class="text-gray-300 leading-relaxed">
-                        En Big-Dad, recopilamos información para proporcionar mejores servicios a nuestros usuarios.
+                        En BigDad, recopilamos información para proporcionar mejores servicios a nuestros usuarios.
                         Esto incluye información proporcionada por ti (como nombre, correo electrónico, fotos y
                         preferencias) e información recopilada automáticamente (como dirección IP, tipo de dispositivo y
                         patrones de uso).
@@ -78,7 +78,7 @@
                     <p class="text-gray-300 leading-relaxed">
                         No vendemos tu información personal a terceros. Compartimos datos solo según sea necesario para
                         operar la plataforma (por ejemplo, con procesadores de pago), cumplir con la ley o proteger los
-                        derechos de Big-Dad y sus usuarios.
+                        derechos de BigDad y sus usuarios.
                     </p>
                 </section>
 

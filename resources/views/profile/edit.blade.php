@@ -7,7 +7,7 @@
         <h1 class="text-4xl font-montserrat font-bold bg-gradient-to-r {{ Auth::user()->user_type === 'sugar_daddy' ? 'from-purple-600 to-purple-800' : 'from-pink-600 to-pink-800' }} bg-clip-text text-transparent mb-3">
             ✏️ Editar Perfil
         </h1>
-        <p class="text-gray-600 text-lg">Completa tu información para destacar en Big-dad</p>
+        <p class="text-gray-600 text-lg">Completa tu información para destacar en BigDad</p>
     </div>
 
     <form action="{{ route('profile.update') }}" method="POST" x-data="profileForm()">
@@ -216,7 +216,7 @@
             {{-- Qué busco --}}
             <div class="mt-6">
                 <label class="block text-gray-700 font-bold mb-3 text-sm uppercase tracking-wide">
-                    ¿Qué buscas en Big-dad?
+                    ¿Qué buscas en BigDad?
                 </label>
                 <textarea name="looking_for" rows="4" maxlength="500"
                           class="w-full px-5 py-4 bg-gradient-to-br from-fuchsia-50 to-fuchsia-100/50 border-2 border-fuchsia-200 rounded-2xl 

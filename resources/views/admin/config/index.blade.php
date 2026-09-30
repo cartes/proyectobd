@@ -32,7 +32,7 @@
             <div class="lg:col-span-1">
                 <h3 class="text-xl font-bold text-white mb-2">🌍 Gestión de Países</h3>
                 <p class="text-gray-400 text-sm">
-                    Activa o desactiva países donde Big-dad puede ofrecer soporte. Los países inactivos no estarán
+                    Activa o desactiva países donde BigDad puede ofrecer soporte. Los países inactivos no estarán
                     disponibles para nuevos registros.
                 </p>
             </div>

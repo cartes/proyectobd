@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seguridad - Big-Dad</title>
+    <title>Seguridad - BigDad</title>
     <meta name="description"
-        content="Tu seguridad es nuestra prioridad. Conoce las medidas de seguridad, consejos y recursos de Big-Dad para citas seguras y discretas.">
+        content="Tu seguridad es nuestra prioridad. Conoce las medidas de seguridad, consejos y recursos de BigDad para citas seguras y discretas.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ route('legal.safety') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])

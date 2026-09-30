@@ -1,14 +1,14 @@
-@section('meta_title', 'Iniciar Sesión | Big-dad Sugar Dating')
-@section('meta_description', 'Accede a tu cuenta Big-dad y conecta con Sugar Babies y Sugar Daddies verificados en toda
+@section('meta_title', 'Iniciar Sesión | BigDad Sugar Dating')
+@section('meta_description', 'Accede a tu cuenta BigDad y conecta con Sugar Babies y Sugar Daddies verificados en toda
     Latinoamérica. Plataforma segura y discreta.')
-@section('meta_keywords', 'login sugar dating, ingresar big-dad, acceso plataforma sugar, iniciar sesión')
+@section('meta_keywords', 'login sugar dating, ingresar bigdad, acceso plataforma sugar, iniciar sesión')
 
 <x-guest-layout>
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <div class="text-center mb-8">
         <h2 class="text-2xl font-bold text-gray-800">Iniciar Sesión</h2>
-        <p class="text-gray-600 mt-2">Bienvenido de vuelta a Big-dad</p>
+        <p class="text-gray-600 mt-2">Bienvenido de vuelta a BigDad</p>
     </div>
 
     <form method="POST" action="{{ route('login') }}" class="space-y-6">
@@ -70,7 +70,7 @@
         <div class="space-y-4">
             <button type="submit"
                 class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-4 focus:ring-purple-200">
-                Entrar a Big-dad
+                Entrar a BigDad
             </button>
 
             <div class="text-center">
