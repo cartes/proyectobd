@@ -31,11 +31,13 @@ class BlogController extends Controller
             ->get();
 
         // Posts by month for chart (last 6 months)
-        $postsByMonth = BlogPost::selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as count')
-            ->where('created_at', '>=', now()->subMonths(6))
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
+        // Agrupado en PHP para ser portable entre MySQL/PostgreSQL (son pocos registros)
+        $postsByMonth = BlogPost::where('created_at', '>=', now()->subMonths(6))
+            ->get(['created_at'])
+            ->groupBy(fn ($post) => $post->created_at->format('Y-m'))
+            ->map(fn ($group, $month) => (object) ['month' => $month, 'count' => $group->count()])
+            ->sortKeys()
+            ->values();
 
         return view('admin.blog.dashboard', compact('stats', 'recentPosts', 'popularPosts', 'postsByMonth'));
     }

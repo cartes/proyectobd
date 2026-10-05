@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\AiSearchService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class DiscoveryController extends Controller
 {
@@ -44,23 +45,25 @@ class DiscoveryController extends Controller
 
         // Filtro por rango de edad
         if ($request->filled('age_min')) {
-            $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= ?', [$request->age_min]);
+            // Edad mínima => nació como máximo hace N años (portable MySQL/PostgreSQL y usa índice)
+            $query->where('birth_date', '<=', now()->subYears((int) $request->age_min)->toDateString());
         }
 
         if ($request->filled('age_max')) {
-            $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) <= ?', [$request->age_max]);
+            // Edad máxima => nació después de hace (N+1) años
+            $query->where('birth_date', '>', now()->subYears((int) $request->age_max + 1)->toDateString());
         }
 
         // Obtener usuarios y paginar
         $users = $query->latest()->paginate(12);
 
         // Opciones para filtros
-        $cities = User::where('user_type', $targetUserType)
+        $cities = Cache::remember('discover.cities.'.$targetUserType, 600, fn () => User::where('user_type', $targetUserType)
             ->whereNotNull('city')
             ->distinct()
             ->pluck('city')
             ->sort()
-            ->values();
+            ->values());
 
         $interestsOptions = ProfileDetail::interestsOptions();
 
