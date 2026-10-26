@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es-CL">
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
@@ -19,6 +19,9 @@
     <meta name="author" content="BigDad Elite Dating" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="{{ url('/') }}" />
+    @foreach (['es', 'es-CL', 'es-MX', 'es-AR', 'es-CO', 'es-PE', 'es-UY', 'es-EC', 'x-default'] as $hreflang)
+        <link rel="alternate" hreflang="{{ $hreflang }}" href="{{ url('/') }}" />
+    @endforeach
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -119,8 +122,16 @@
         function gtag() {
             dataLayer.push(arguments);
         }
-        gtag('js', new Date());
-        gtag('config', 'G-G035SGF3GT');
+        // Excluye las visitas del propietario: abrir /?no_track=1 una vez por navegador.
+        try {
+            const q = new URLSearchParams(location.search).get('no_track');
+            if (q === '1') localStorage.setItem('no_track', '1');
+            if (q === '0') localStorage.removeItem('no_track');
+        } catch (e) {}
+        if (!(function() { try { return localStorage.getItem('no_track') === '1'; } catch (e) { return false; } })()) {
+            gtag('js', new Date());
+            gtag('config', 'G-G035SGF3GT');
+        }
     </script>
 </head>
 
@@ -422,7 +433,7 @@
                         <div
                             class="absolute -inset-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-[2rem] blur-lg opacity-30">
                         </div>
-                        <img src="https://images.unsplash.com/photo-1544911845-1f34a3eb46b1?q=75&w=900&auto=format&fit=crop"
+                        <img src="https://images.unsplash.com/photo-1544911845-1f34a3eb46b1?q=80&w=1300&auto=format&fit=crop"
                             srcset="https://images.unsplash.com/photo-1544911845-1f34a3eb46b1?q=75&w=600&auto=format&fit=crop 600w,
                                 https://images.unsplash.com/photo-1544911845-1f34a3eb46b1?q=75&w=900&auto=format&fit=crop 900w,
                                 https://images.unsplash.com/photo-1544911845-1f34a3eb46b1?q=75&w=1300&auto=format&fit=crop 1300w"

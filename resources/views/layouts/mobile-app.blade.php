@@ -20,6 +20,7 @@
     @hasSection('canonical_url')
         <link rel="canonical" href="@yield('canonical_url')">
     @endif
+    @stack('hreflang')
 
     {{-- Open Graph --}}
     @hasSection('og_title')

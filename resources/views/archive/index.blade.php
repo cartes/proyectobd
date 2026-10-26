@@ -67,6 +67,13 @@
 @section('meta_robots', $metaRobots)
 @section('meta_description', $metaDescription)
 @section('canonical_url', $canonicalUrl)
+
+@push('hreflang')
+    @if ($country->iso_code)
+        <link rel="alternate" hreflang="es-{{ strtoupper($country->iso_code) }}" href="{{ $canonicalUrl }}">
+        <link rel="alternate" hreflang="x-default" href="{{ $canonicalUrl }}">
+    @endif
+@endpush
 @section('og_title', $pageTitle)
 @section('og_description', $metaDescription)
 @section('og_url', $canonicalUrl)
